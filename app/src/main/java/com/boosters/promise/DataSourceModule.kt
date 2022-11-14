@@ -17,7 +17,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DataSourceModule {
 
-    private const val PROMISE_DATABASE = "Promise_Database"
+    private const val PROMISE_DATABASE_NAME = "Promise_Database"
+    private const val REMOTE_DATABASE_URL = "https://promise-c3e7d-default-rtdb.firebaseio.com/"
 
     @Provides
     @Singleton
@@ -31,7 +32,7 @@ object DataSourceModule {
         @ApplicationContext appContext: Context,
         gson: Gson
     ): PromiseDatabase {
-        return Room.databaseBuilder(appContext, PromiseDatabase::class.java, PROMISE_DATABASE)
+        return Room.databaseBuilder(appContext, PromiseDatabase::class.java, PROMISE_DATABASE_NAME)
             .addTypeConverter(UserTypeConverter(gson))
             .build()
     }
@@ -39,7 +40,7 @@ object DataSourceModule {
     @Provides
     @Singleton
     fun providePromiseRemoteDatabase(): FirebaseDatabase {
-        return Firebase.database("https://promise-c3e7d-default-rtdb.firebaseio.com/")
+        return Firebase.database(REMOTE_DATABASE_URL)
     }
 
 }
