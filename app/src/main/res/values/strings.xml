@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Promise</string>
+    <string name="invite_member">초대할 멤버</string>
+    <string name="delete_member">멤버 삭제</string>
+    <string name="user_profile_image">사용자 프로필 이미지</string>
+    <string name="confirm">완료</string>
 </resources>
