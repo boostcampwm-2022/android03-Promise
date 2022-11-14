@@ -1,6 +1,7 @@
 package com.boosters.promise
 
 import android.os.Bundle
+import android.text.format.DateFormat.is24HourFormat
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -28,16 +29,15 @@ class AddPromiseActivity : AppCompatActivity() {
     }
 
     private fun selectDateListener(cal: Calendar) = View.OnClickListener {
-        val today = MaterialDatePicker.todayInUtcMilliseconds()
         val datePicker = MaterialDatePicker.Builder.datePicker()
-            .setSelection(today)
+            .setSelection(cal.timeInMillis)
             .setInputMode(INPUT_MODE_CALENDAR)
             .setTitleText(getString(R.string.title_datepicker))
             .build()
 
         datePicker.show(supportFragmentManager, DATEPICKER_TAG)
         datePicker.addOnPositiveButtonClickListener {
-            cal.timeInMillis = datePicker.selection ?: today
+            cal.timeInMillis = datePicker.selection ?: cal.timeInMillis
             binding.buttonAddPromiseSelectDate.text =
                 getString(R.string.date_format).format(
                     cal.get(Calendar.YEAR),
@@ -48,8 +48,10 @@ class AddPromiseActivity : AppCompatActivity() {
     }
 
     private fun selectTimeListener(cal: Calendar) = View.OnClickListener {
+        val isSystem24Hour = is24HourFormat(this)
+        val clockFormat = if (isSystem24Hour) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
         val timePicker = MaterialTimePicker.Builder()
-            .setTimeFormat(TimeFormat.CLOCK_24H)
+            .setTimeFormat(clockFormat)
             .setHour(cal.get(Calendar.HOUR))
             .setMinute(cal.get(Calendar.MINUTE))
             .setInputMode(INPUT_MODE_CLOCK)
@@ -62,7 +64,7 @@ class AddPromiseActivity : AppCompatActivity() {
             cal.set(Calendar.MINUTE, timePicker.minute)
             binding.buttonAddPromiseSelectTime.text =
                 getString(R.string.time_format).format(
-                    cal.get(Calendar.HOUR),
+                    cal.get(Calendar.HOUR_OF_DAY),
                     cal.get(Calendar.MINUTE)
                 )
         }
