@@ -9,6 +9,7 @@ class PromiseRepositoryImpl @Inject constructor(
 
     override suspend fun addPromise(promise: Promise) {
         promiseLocalDataSource.addPromise(promise)
+        promiseRemoteDataSource.addPromise(promise)
     }
 
     override suspend fun removePromise(promise: Promise) {
