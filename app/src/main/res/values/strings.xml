@@ -4,4 +4,9 @@
     <string name="time_format">%02d:%02d</string>
     <string name="title_timepicker">약속 시간을 설정하세요.</string>
     <string name="title_datepicker">약속 날짜를 설정하세요.</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="search_address">주소 검색</string>
+    <string name="select_time">시간 선택</string>
+    <string name="select_date">날짜 선택</string>
 </resources>

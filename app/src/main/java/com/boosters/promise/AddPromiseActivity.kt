@@ -5,6 +5,7 @@ import android.text.format.DateFormat.is24HourFormat
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.DialogFragment
 import com.boosters.promise.databinding.ActivityAddPromiseBinding
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.datepicker.MaterialDatePicker.INPUT_MODE_CALENDAR
@@ -26,6 +27,7 @@ class AddPromiseActivity : AppCompatActivity() {
         val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         binding.buttonAddPromiseSelectDate.setOnClickListener(selectDateListener(calendar))
         binding.buttonAddPromiseSelectTime.setOnClickListener(selectTimeListener(calendar))
+        binding.buttonAddPromiseSearchAddress.setOnClickListener(searchAddressListener())
     }
 
     private fun selectDateListener(cal: Calendar) = View.OnClickListener {
@@ -70,8 +72,24 @@ class AddPromiseActivity : AppCompatActivity() {
         }
     }
 
+    private fun searchAddressListener() = View.OnClickListener {
+        SearchAddressDialogFragment()
+            .setOnSearchAddressDialogListener(object :
+                SearchAddressDialogFragment.SearchAddressDialogListener {
+                override fun onDialogPositiveClick(dialog: DialogFragment, result: String) {
+                    binding.buttonAddPromiseSearchAddress.text = result
+                }
+
+                override fun onDialogNegativeClick(dialog: DialogFragment) {
+                    binding.buttonAddPromiseSearchAddress.text = getString(R.string.search_address)
+                }
+            })
+            .show(supportFragmentManager, SEARCH_DIALOG_TAG)
+    }
+
     companion object {
         const val DATEPICKER_TAG = "New Selected Date"
         const val TIMEPICKER_TAG = "New Selected Time"
+        const val SEARCH_DIALOG_TAG = "New Search Address Dialog"
     }
 }
