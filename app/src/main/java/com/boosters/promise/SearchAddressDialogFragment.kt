@@ -7,13 +7,19 @@ import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import com.boosters.promise.databinding.DialogSearchAddressBinding
+import com.boosters.promise.network.LocalResponse
+import com.boosters.promise.network.Retrofit.promiseService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class SearchAddressDialogFragment : DialogFragment() {
 
     private lateinit var listener: SearchAddressDialogListener
+    private lateinit var searchResult: LocalResponse
 
     interface SearchAddressDialogListener {
-        fun onDialogPositiveClick(dialog: DialogFragment, result: String)
+        fun onDialogPositiveClick(dialog: DialogFragment, result: LocalResponse)
         fun onDialogNegativeClick(dialog: DialogFragment)
     }
 
@@ -24,7 +30,6 @@ class SearchAddressDialogFragment : DialogFragment() {
         return activity?.let {
             val builder = AlertDialog.Builder(it)
             val inflater = requireActivity().layoutInflater
-            var searchResult = ""
 
             _binding =
                 DataBindingUtil.inflate(inflater, R.layout.dialog_search_address, null, false)
@@ -33,7 +38,9 @@ class SearchAddressDialogFragment : DialogFragment() {
                 isSubmitButtonEnabled = true
                 setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
-                        searchResult = query.orEmpty()
+                        CoroutineScope(Dispatchers.IO).launch {
+                            searchResult = promiseService.searchLocalQuery(query.orEmpty(), 3)
+                        }
 
                         return false
                     }

@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.text.format.DateFormat.is24HourFormat
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.parseAsHtml
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import com.boosters.promise.databinding.ActivityAddPromiseBinding
+import com.boosters.promise.network.LocalResponse
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.datepicker.MaterialDatePicker.INPUT_MODE_CALENDAR
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -76,8 +78,22 @@ class AddPromiseActivity : AppCompatActivity() {
         SearchAddressDialogFragment()
             .setOnSearchAddressDialogListener(object :
                 SearchAddressDialogFragment.SearchAddressDialogListener {
-                override fun onDialogPositiveClick(dialog: DialogFragment, result: String) {
-                    binding.buttonAddPromiseSearchAddress.text = result
+                override fun onDialogPositiveClick(dialog: DialogFragment, result: LocalResponse) {
+                    val items = result.items
+
+                    if (items.isNotEmpty()) {
+                        items.first()?.let { firstItem ->
+                            binding.buttonAddPromiseSearchAddress.text =
+                                getString(R.string.address_format).format(
+                                    firstItem.title,
+                                    firstItem.mapx,
+                                    firstItem.mapy
+                                ).parseAsHtml()
+                        }
+                    } else {
+                        binding.buttonAddPromiseSearchAddress.text =
+                            getString(R.string.search_address)
+                    }
                 }
 
                 override fun onDialogNegativeClick(dialog: DialogFragment) {
