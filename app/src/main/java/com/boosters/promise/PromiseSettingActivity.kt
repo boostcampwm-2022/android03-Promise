@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import androidx.activity.viewModels
 import com.boosters.promise.databinding.ActivityPromiseSettingBinding
 import com.google.android.material.chip.Chip
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PromiseSettingActivity : AppCompatActivity() {
 
     private var binding: ActivityPromiseSettingBinding? = null
@@ -26,7 +28,8 @@ class PromiseSettingActivity : AppCompatActivity() {
         viewModel.promiseMemberList.observe(this) {
             val chipGroup = binding?.chipGroupPromiseSetting
             val children = it?.mapIndexed { index, user ->
-                val chip = LayoutInflater.from(chipGroup?.context).inflate(R.layout.item_promise_member, chipGroup,false) as Chip
+                val chip = LayoutInflater.from(chipGroup?.context)
+                    .inflate(R.layout.item_promise_member, chipGroup, false) as Chip
                 chip.isCheckable = false
                 chip.text = user.userName
                 chip.setOnCloseIconClickListener {
