@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
@@ -28,9 +29,9 @@
             android:id="@+id/textView_promiseSetting_promiseDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:text="@string/promiseSetting_promiseDate"
             android:textColor="@color/black"
-            android:layout_marginTop="20dp"
             app:layout_constraintStart_toStartOf="@+id/textView_promiseSetting_promiseTitle"
             app:layout_constraintTop_toBottomOf="@+id/textView_promiseSetting_promiseTitle" />
 
@@ -41,8 +42,8 @@
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:hint="@string/promiseSetting_promiseDate_placeholder"
-            app:endIconMode="custom"
             app:endIconDrawable="@drawable/ic_calendar"
+            app:endIconMode="custom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/textView_promiseSetting_promiseDate"
             app:layout_constraintTop_toBottomOf="@+id/textView_promiseSetting_promiseDate">
@@ -57,9 +58,9 @@
             android:id="@+id/textView_promiseSetting_promiseTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:text="@string/promiseSetting_promiseTime"
             android:textColor="@color/black"
-            android:layout_marginTop="10dp"
             app:layout_constraintStart_toStartOf="@+id/textInputLayout_promiseSetting_promiseDate"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout_promiseSetting_promiseDate" />
 
@@ -71,8 +72,8 @@
             android:layout_marginTop="10dp"
             android:hint="@string/promiseSetting_promiseTime_placeholder"
             android:inputType="textPersonName"
-            app:endIconMode="custom"
             app:endIconDrawable="@drawable/ic_clock"
+            app:endIconMode="custom"
             app:layout_constraintStart_toStartOf="@+id/textView_promiseSetting_promiseTime"
             app:layout_constraintTop_toBottomOf="@+id/textView_promiseSetting_promiseTime">
 
@@ -86,9 +87,9 @@
             android:id="@+id/textView_promiseSetting_promisePlace"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:text="@string/promiseSetting_promisePlace"
             android:textColor="@color/black"
-            android:layout_marginTop="10dp"
             app:layout_constraintStart_toStartOf="@+id/textInputLayout_promiseSetting_promiseTime"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout_promiseSetting_promiseTime" />
 
@@ -97,11 +98,11 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_marginTop="10dp"
             android:hint="@string/promiseSetting_promisePlace_placeholder"
             android:inputType="textPersonName"
-            android:layout_marginTop="10dp"
-            app:endIconMode="custom"
             app:endIconDrawable="@drawable/ic_marker"
+            app:endIconMode="custom"
             app:layout_constraintStart_toStartOf="@+id/textView_promiseSetting_promisePlace"
             app:layout_constraintTop_toBottomOf="@+id/textView_promiseSetting_promisePlace">
 
@@ -115,9 +116,9 @@
             android:id="@+id/textView_promiseSetting_promiseMember"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:text="@string/promiseSetting_promiseMember"
             android:textColor="@color/black"
-            android:layout_marginTop="10dp"
             app:layout_constraintStart_toStartOf="@+id/textInputLayout_promiseSetting_promisePlace"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout_promiseSetting_promisePlace" />
 
@@ -126,11 +127,11 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_marginTop="10dp"
             android:hint="@string/promiseSetting_promiseMember_placeholder"
             android:inputType="textPersonName"
-            android:layout_marginTop="10dp"
-            app:endIconMode="custom"
             app:endIconDrawable="@drawable/ic_add_member"
+            app:endIconMode="custom"
             app:layout_constraintStart_toStartOf="@+id/textView_promiseSetting_promiseMember"
             app:layout_constraintTop_toBottomOf="@+id/textView_promiseSetting_promiseMember">
 
@@ -161,11 +162,11 @@
             android:id="@+id/button_promiseSetting_completion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/promiseSetting_completion"
-            android:onClick="@{() -> promiseSettingViewModel.onClickCompletionButton()}"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="30dp"
+            android:layout_marginEnd="20dp"
+            android:onClick="@{() -> promiseSettingViewModel.onClickCompletionButton()}"
+            android:text="@string/promiseSetting_completion"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -173,16 +174,22 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_promiseSetting_update"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="수정"
+            android:layout_marginStart="20dp"
             android:onClick="@{() -> promiseSettingViewModel.onClickUpdateButton()}"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="30dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:text="수정"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/button_promiseSetting_delete" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_promiseSetting_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> promiseSettingViewModel.onClickDeleteButton()}"
+            android:text="삭제"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/button_promiseSetting_update"
             app:layout_constraintTop_toBottomOf="@+id/button_promiseSetting_completion" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

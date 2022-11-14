@@ -41,10 +41,18 @@ class PromiseSettingViewModel @Inject constructor(
     }
 
     fun onClickUpdateButton() {
-        val user = User("123", "유수미${count++}", 1.0, 2.0)
+        val user = User("123", "유수미${count}", 1.0, 2.0)
         val promise = Promise("1", "엄마와의 데이트", "영등포", 1.0, 2.0, "2022/11/14", "12:00", listOf(user))
         viewModelScope.launch {
             promiseRepository.updatePromise(promise)
+        }
+    }
+
+    fun onClickDeleteButton() {
+        val user = User("123", "유수미${count}", 1.0, 2.0)
+        val promise = Promise("1", "엄마와의 데이트", "영등포", 1.0, 2.0, "2022/11/14", "12:00", listOf(user))
+        viewModelScope.launch {
+            promiseRepository.removePromise(promise)
         }
     }
 
