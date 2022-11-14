@@ -26,7 +26,7 @@ class PromiseRemoteDataSourceImpl @Inject constructor(
     }
 
     override suspend fun addPromise(promise: Promise) {
-        promiseRef.push().setValue(promise)
+        promiseRef.child(promise.id).setValue(promise)
     }
 
     override suspend fun removePromise(promise: Promise) {
