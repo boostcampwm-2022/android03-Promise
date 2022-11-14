@@ -14,10 +14,7 @@ class PromiseRepositoryImpl @Inject constructor(
 
     override suspend fun removePromise(promise: Promise) {
         promiseLocalDataSource.removePromise(promise)
-    }
-
-    override suspend fun updatePromise(promise: Promise) {
-        promiseLocalDataSource.addPromise(promise)
+        promiseRemoteDataSource.removePromise(promise)
     }
 
     override suspend fun getPromiseList(date: String): List<Promise> {

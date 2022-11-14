@@ -11,7 +11,7 @@ class PromiseLocalDataSourceImpl @Inject constructor(
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            database.promiseItemDao().deleteAll()
+            //database.promiseItemDao().deleteAll()
         }
     }
 
@@ -21,10 +21,6 @@ class PromiseLocalDataSourceImpl @Inject constructor(
 
     override suspend fun removePromise(promise: Promise) {
         database.promiseItemDao().delete(promise)
-    }
-
-    override suspend fun updatePromise(promise: Promise) {
-        database.promiseItemDao().update(promise)
     }
 
     override suspend fun getPromiseList(date: String): List<Promise> {

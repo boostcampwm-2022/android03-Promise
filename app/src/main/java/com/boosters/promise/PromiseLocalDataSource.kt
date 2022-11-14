@@ -6,8 +6,6 @@ interface PromiseLocalDataSource {
 
     suspend fun removePromise(promise: Promise)
 
-    suspend fun updatePromise(promise: Promise)
-
     suspend fun getPromiseList(date: String): List<Promise>
 
 }
