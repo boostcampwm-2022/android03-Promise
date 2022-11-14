@@ -1,8 +1,5 @@
 package com.boosters.promise
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class PromiseLocalDataSourceImpl @Inject constructor(
@@ -10,9 +7,9 @@ class PromiseLocalDataSourceImpl @Inject constructor(
 ) : PromiseLocalDataSource {
 
     init {
-        CoroutineScope(Dispatchers.IO).launch {
+        //CoroutineScope(Dispatchers.IO).launch {
             //database.promiseItemDao().deleteAll()
-        }
+        //}
     }
 
     override suspend fun addPromise(promise: Promise) {
