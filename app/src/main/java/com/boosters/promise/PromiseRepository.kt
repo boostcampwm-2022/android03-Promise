@@ -6,4 +6,6 @@ interface PromiseRepository {
 
     suspend fun removePromise(promise: Promise)
 
+    suspend fun updatePromise(promise: Promise)
+
 }

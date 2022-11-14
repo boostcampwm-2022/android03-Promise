@@ -23,4 +23,8 @@ class PromiseLocalDataSourceImpl @Inject constructor(
         database.promiseItemDao().delete(promise)
     }
 
+    override suspend fun updatePromise(promise: Promise) {
+        database.promiseItemDao().update(promise)
+    }
+
 }

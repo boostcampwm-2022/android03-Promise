@@ -8,6 +8,9 @@ interface PromiseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(promise: Promise)
 
+    @Update
+    suspend fun update(promise: Promise)
+
     @Delete
     suspend fun delete(promise: Promise)
 
