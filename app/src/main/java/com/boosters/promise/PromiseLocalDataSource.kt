@@ -8,4 +8,6 @@ interface PromiseLocalDataSource {
 
     suspend fun updatePromise(promise: Promise)
 
+    suspend fun getPromiseList(date: String): List<Promise>
+
 }

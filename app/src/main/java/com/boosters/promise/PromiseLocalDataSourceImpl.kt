@@ -27,4 +27,8 @@ class PromiseLocalDataSourceImpl @Inject constructor(
         database.promiseItemDao().update(promise)
     }
 
+    override suspend fun getPromiseList(date: String): List<Promise> {
+        return database.promiseItemDao().getPromiseList(date)
+    }
+
 }

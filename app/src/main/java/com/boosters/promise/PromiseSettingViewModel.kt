@@ -1,5 +1,6 @@
 package com.boosters.promise
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,7 +16,7 @@ class PromiseSettingViewModel @Inject constructor(
 
     private val _promiseMemberList = MutableLiveData<MutableList<User>?>()
     val promiseMemberList: LiveData<MutableList<User>?> get() = _promiseMemberList
-    var count = 0
+    private var count = 0
 
     private fun addMember() {
         val promiseMemberList =
@@ -42,9 +43,11 @@ class PromiseSettingViewModel @Inject constructor(
 
     fun onClickUpdateButton() {
         val user = User("123", "유수미${count}", 1.0, 2.0)
-        val promise = Promise("1", "엄마와의 데이트", "영등포", 1.0, 2.0, "2022/11/14", "12:00", listOf(user))
+        val promise = Promise("1", "엄마와의 데이트", "영등포", 1.0, 2.0, "2022/11/13", "12:00", listOf(user))
         viewModelScope.launch {
             promiseRepository.updatePromise(promise)
+            val promiseList = promiseRepository.getPromiseList("2022/11/14")
+            Log.d("MainActicity", "${promiseList}")
         }
     }
 

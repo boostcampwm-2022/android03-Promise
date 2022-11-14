@@ -20,4 +20,8 @@ class PromiseRepositoryImpl @Inject constructor(
         promiseLocalDataSource.addPromise(promise)
     }
 
+    override suspend fun getPromiseList(date: String): List<Promise> {
+        return promiseLocalDataSource.getPromiseList(date)
+    }
+
 }

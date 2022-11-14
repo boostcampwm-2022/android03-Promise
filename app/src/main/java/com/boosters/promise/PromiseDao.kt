@@ -14,8 +14,8 @@ interface PromiseDao {
     @Delete
     suspend fun delete(promise: Promise)
 
-    @Query("SELECT * FROM promise")
-    suspend fun getAll(): List<Promise>
+    @Query("SELECT * FROM promise WHERE date = :date")
+    suspend fun getPromiseList(date: String): List<Promise>
 
     @Query("DELETE FROM promise")
     suspend fun deleteAll()
