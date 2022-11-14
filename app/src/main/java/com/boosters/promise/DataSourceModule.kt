@@ -17,7 +17,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DataSourceModule {
 
-    private const val PROMISE_DATABASE = "PROMISE_Database"
+    private const val PROMISE_DATABASE = "Promise_Database"
 
     @Provides
     @Singleton

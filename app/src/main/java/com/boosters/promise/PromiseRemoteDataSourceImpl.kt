@@ -11,7 +11,7 @@ class PromiseRemoteDataSourceImpl @Inject constructor(
     private val database: FirebaseDatabase
 ) : PromiseRemoteDataSource {
 
-    private val promiseRef = database.getReference("promise")
+    private val promiseRef = database.getReference(DATABASE_PROMISE_REF_PATH)
 
     init {
         promiseRef.addValueEventListener(object : ValueEventListener {
@@ -33,6 +33,10 @@ class PromiseRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun removePromise(promise: Promise) {
         promiseRef.child(promise.id).removeValue()
+    }
+
+    companion object {
+        private const val DATABASE_PROMISE_REF_PATH = "promise"
     }
 
 }
