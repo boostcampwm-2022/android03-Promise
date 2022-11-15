@@ -1,12 +1,14 @@
-package com.boosters.promise.invite
+package com.boosters.promise.ui.invite
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import com.boosters.promise.R
+import com.boosters.promise.data.invite.FriendFakeRepository
 import com.boosters.promise.databinding.ActivityInviteBinding
 
 class InviteActivity : AppCompatActivity() {
+
     private var binding: ActivityInviteBinding? = null
     private val viewModel: InviteViewModel = InviteViewModel(FriendFakeRepository())
     private val inviteAdapter = InviteAdapter()
@@ -23,4 +25,5 @@ class InviteActivity : AppCompatActivity() {
         binding = null
         super.onDestroy()
     }
+
 }

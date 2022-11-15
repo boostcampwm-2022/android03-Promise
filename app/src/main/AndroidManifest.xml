@@ -13,7 +13,7 @@
         android:theme="@style/Theme.Promise"
         tools:targetApi="33">
         <activity
-            android:name=".invite.InviteActivity"
+            android:name=".ui.invite.InviteActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
