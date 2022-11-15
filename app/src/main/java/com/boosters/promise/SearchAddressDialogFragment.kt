@@ -7,8 +7,8 @@ import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import com.boosters.promise.databinding.DialogSearchAddressBinding
-import com.boosters.promise.network.LocalResponse
 import com.boosters.promise.network.Retrofit.promiseService
+import com.boosters.promise.util.LocalMapper.asLocal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,10 +17,10 @@ import kotlinx.coroutines.withContext
 class SearchAddressDialogFragment : DialogFragment() {
 
     private lateinit var listener: SearchAddressDialogListener
-    private lateinit var searchResult: LocalResponse
+    private var searchResult: Local? = null
 
     interface SearchAddressDialogListener {
-        fun onDialogPositiveClick(dialog: DialogFragment, result: LocalResponse)
+        fun onDialogPositiveClick(dialog: DialogFragment, resultItem: Local?)
         fun onDialogNegativeClick(dialog: DialogFragment)
     }
 
@@ -35,7 +35,11 @@ class SearchAddressDialogFragment : DialogFragment() {
             _binding =
                 DataBindingUtil.inflate(inflater, R.layout.dialog_search_address, null, false)
 
-            val adapter = SearchAddressListAdapter()
+            val adapter = SearchAddressListAdapter { item ->
+                binding.searchViewDialogSearchAddress.setQuery(item.title, true)
+                searchResult = item
+            }
+
             binding.listViewDialogSearchAddressResult.adapter = adapter
 
             binding.searchViewDialogSearchAddress.apply {
@@ -44,13 +48,15 @@ class SearchAddressDialogFragment : DialogFragment() {
                     override fun onQueryTextSubmit(query: String?): Boolean {
 
                         CoroutineScope(Dispatchers.IO).launch {
-                            searchResult = promiseService.searchLocalQuery(query.orEmpty(), 5)
+                            val result = promiseService.searchLocalQuery(query.orEmpty(), 5)
                             withContext(Dispatchers.Main) {
-                                adapter.submitList(searchResult.items)
+                                adapter.submitList(result.items.map { item ->
+                                    item?.asLocal()
+                                })
                             }
                         }
 
-                        return false
+                        return true
                     }
 
                     override fun onQueryTextChange(newText: String?): Boolean = false

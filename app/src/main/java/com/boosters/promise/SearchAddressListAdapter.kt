@@ -2,14 +2,15 @@ package com.boosters.promise
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.text.parseAsHtml
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.boosters.promise.databinding.ItemSearchAddressResultBinding
-import com.boosters.promise.network.LocalItemResponse
 
-class SearchAddressListAdapter :
-    ListAdapter<LocalItemResponse, SearchAddressListAdapter.SearchAddressViewHolder>(diffUtil) {
+class SearchAddressListAdapter(
+    private val onClickListener: (item: Local) -> Unit
+) : ListAdapter<Local, SearchAddressListAdapter.SearchAddressViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchAddressViewHolder {
         return SearchAddressViewHolder(parent)
@@ -25,24 +26,21 @@ class SearchAddressListAdapter :
     ) {
         private val binding = ItemSearchAddressResultBinding.bind(itemView)
 
-        fun bind(item: LocalItemResponse) {
-            binding.textViewItemSearchAddressResultTitle.text = item.title
+        fun bind(item: Local) {
+            binding.textViewItemSearchAddressResultTitle.text = item.title.parseAsHtml()
+            itemView.setOnClickListener {
+                onClickListener(item)
+            }
         }
     }
 
     companion object {
-        val diffUtil = object : DiffUtil.ItemCallback<LocalItemResponse>() {
-            override fun areItemsTheSame(
-                oldItem: LocalItemResponse,
-                newItem: LocalItemResponse
-            ): Boolean {
+        val diffUtil = object : DiffUtil.ItemCallback<Local>() {
+            override fun areItemsTheSame(oldItem: Local, newItem: Local): Boolean {
                 return oldItem.address == newItem.address
             }
 
-            override fun areContentsTheSame(
-                oldItem: LocalItemResponse,
-                newItem: LocalItemResponse
-            ): Boolean {
+            override fun areContentsTheSame(oldItem: Local, newItem: Local): Boolean {
                 return oldItem == newItem
             }
         }

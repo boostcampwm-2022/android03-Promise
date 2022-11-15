@@ -1,14 +1,14 @@
 package com.boosters.promise
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.format.DateFormat
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import com.boosters.promise.databinding.ActivityPromiseSettingBinding
-import com.boosters.promise.network.LocalResponse
 import com.google.android.material.chip.Chip
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -19,30 +19,38 @@ import java.util.*
 @AndroidEntryPoint
 class PromiseSettingActivity : AppCompatActivity() {
 
-    private var binding: ActivityPromiseSettingBinding? = null
+    private lateinit var binding: ActivityPromiseSettingBinding
     private val viewModel: PromiseSettingViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPromiseSettingBinding.inflate(layoutInflater)
-        binding?.lifecycleOwner = this
-        binding?.promiseSettingViewModel = viewModel
-        setContentView(binding?.root)
+        binding.lifecycleOwner = this
+        binding.promiseSettingViewModel = viewModel
+        setContentView(binding.root)
         setObserver()
 
         val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        binding?.appCompatEditTextPromiseSettingPromiseDate?.setOnClickListener(selectDateListener(calendar))
-        binding?.appCompatEditTextPromiseSettingPromiseTime?.setOnClickListener(selectTimeListener(calendar))
-        binding?.appCompatEditTextPromiseSettingPromisePlace?.setOnClickListener(searchAddressListener())
+        binding.appCompatEditTextPromiseSettingPromiseDate.setOnClickListener(
+            selectDateListener(
+                calendar
+            )
+        )
+        binding.appCompatEditTextPromiseSettingPromiseTime.setOnClickListener(
+            selectTimeListener(
+                calendar
+            )
+        )
+        binding.appCompatEditTextPromiseSettingPromisePlace.setOnClickListener(searchAddressListener())
 
     }
 
     private fun setObserver() {
         viewModel.promiseMemberList.observe(this) {
-            val chipGroup = binding?.chipGroupPromiseSetting
+            val chipGroup = binding.chipGroupPromiseSetting
             val children = it?.mapIndexed { index, user ->
-                val chip = LayoutInflater.from(chipGroup?.context)
+                val chip = LayoutInflater.from(chipGroup.context)
                     .inflate(R.layout.item_promise_member, chipGroup, false) as Chip
                 chip.isCheckable = false
                 chip.text = user.userName
@@ -51,14 +59,14 @@ class PromiseSettingActivity : AppCompatActivity() {
                 }
                 chip
             }
-            chipGroup?.removeAllViews()
+            chipGroup.removeAllViews()
             children?.forEach { chip ->
-                chipGroup?.addView(chip)
+                chipGroup.addView(chip)
             }
         }
     }
 
-    fun selectDateListener(cal: Calendar) = View.OnClickListener {
+    private fun selectDateListener(cal: Calendar) = View.OnClickListener {
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setSelection(cal.timeInMillis)
             .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
@@ -68,10 +76,17 @@ class PromiseSettingActivity : AppCompatActivity() {
         datePicker.show(supportFragmentManager, DATEPICKER_TAG)
         datePicker.addOnPositiveButtonClickListener {
             cal.timeInMillis = datePicker.selection ?: cal.timeInMillis
+            binding.appCompatEditTextPromiseSettingPromiseDate.setText(
+                getString(R.string.date_format).format(
+                    cal.get(Calendar.YEAR),
+                    cal.get(Calendar.MONTH),
+                    cal.get(Calendar.DAY_OF_MONTH)
+                )
+            )
         }
     }
 
-    fun selectTimeListener(cal: Calendar) = View.OnClickListener {
+    private fun selectTimeListener(cal: Calendar) = View.OnClickListener {
         val isSystem24Hour = DateFormat.is24HourFormat(this)
         val clockFormat = if (isSystem24Hour) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
         val timePicker = MaterialTimePicker.Builder()
@@ -86,27 +101,29 @@ class PromiseSettingActivity : AppCompatActivity() {
         timePicker.addOnPositiveButtonClickListener {
             cal.set(Calendar.HOUR, timePicker.hour)
             cal.set(Calendar.MINUTE, timePicker.minute)
+            binding.appCompatEditTextPromiseSettingPromiseTime.setText(
+                getString(R.string.time_format).format(
+                    cal.get(Calendar.HOUR_OF_DAY),
+                    cal.get(Calendar.MINUTE)
+                )
+            )
         }
     }
 
-    fun searchAddressListener() = View.OnClickListener {
+    private fun searchAddressListener() = View.OnClickListener {
         SearchAddressDialogFragment()
             .setOnSearchAddressDialogListener(object :
                 SearchAddressDialogFragment.SearchAddressDialogListener {
-                override fun onDialogPositiveClick(dialog: DialogFragment, result: LocalResponse) {
-                    val items = result.items
-
-                    if (items.isNotEmpty()) {
-                        items.first()?.let { firstItem ->
-
-                        }
-                    } else {
+                override fun onDialogPositiveClick(dialog: DialogFragment, resultItem: Local?) {
+                    Log.d("test", resultItem.toString())
+                    resultItem?.run {
+                        binding.appCompatEditTextPromiseSettingPromisePlace.setText(
+                            getString(R.string.address_format).format(title, x, y)
+                        )
                     }
                 }
 
-                override fun onDialogNegativeClick(dialog: DialogFragment) {
-                    binding?.textViewPromiseSettingPromisePlace?.text = getString(R.string.search_address)
-                }
+                override fun onDialogNegativeClick(dialog: DialogFragment) {}
             })
             .show(supportFragmentManager, SEARCH_DIALOG_TAG)
     }
