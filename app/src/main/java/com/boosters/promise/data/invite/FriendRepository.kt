@@ -1,9 +1,9 @@
 package com.boosters.promise.data.invite
 
-import com.boosters.promise.ui.model.UserState
+import com.boosters.promise.data.invite.source.local.User
 
 interface FriendRepository {
 
-    fun getFriends(): List<UserState>
+    suspend fun getFriends(): List<User>
 
 }
