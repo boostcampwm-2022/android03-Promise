@@ -1,5 +1,6 @@
 package com.boosters.promise
 
+import android.util.Log
 import javax.inject.Inject
 
 class PromiseRepositoryImpl @Inject constructor(
@@ -8,13 +9,17 @@ class PromiseRepositoryImpl @Inject constructor(
 ) : PromiseRepository {
 
     override suspend fun addPromise(promise: Promise) {
-        promiseLocalDataSource.addPromise(promise)
-        promiseRemoteDataSource.addPromise(promise)
+        val result = promiseRemoteDataSource.addPromise(promise)
+        if (result != null) {
+            promiseLocalDataSource.addPromise(result)
+        }
     }
 
     override suspend fun removePromise(promise: Promise) {
-        promiseLocalDataSource.removePromise(promise)
-        promiseRemoteDataSource.removePromise(promise)
+        val isSuccessful = promiseRemoteDataSource.removePromise(promise)
+        if (isSuccessful) {
+            promiseLocalDataSource.removePromise(promise)
+        }
     }
 
     override suspend fun getPromiseList(date: String): List<Promise> {

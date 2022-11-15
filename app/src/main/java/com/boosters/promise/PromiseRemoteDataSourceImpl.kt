@@ -1,10 +1,10 @@
 package com.boosters.promise
 
 import android.util.Log
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PromiseRemoteDataSourceImpl @Inject constructor(
@@ -27,12 +27,39 @@ class PromiseRemoteDataSourceImpl @Inject constructor(
         })
     }
 
-    override suspend fun addPromise(promise: Promise) {
-        promiseRef.child(promise.id).setValue(promise)
+    override suspend fun addPromise(promise: Promise): Promise? {
+        var key: String? = promise.id
+        var result = promise
+        if (key == "") {
+            key = promiseRef.push().key ?: ""
+            result = promise.copy(id = key)
+        }
+        return withContext(Dispatchers.IO) {
+            key?.let {
+                try {
+                    val task = promiseRef.child(it).setValue(result)
+                    task.await()
+                    if (!task.isSuccessful) key = null
+                } catch (e: DatabaseException) {
+                    return@withContext null
+                }
+            }
+            result
+        }
     }
 
-    override suspend fun removePromise(promise: Promise) {
-        promiseRef.child(promise.id).removeValue()
+    override suspend fun removePromise(promise: Promise): Boolean {
+        return withContext(Dispatchers.IO) {
+            val isSuccessful = try {
+                val task = promise.id.let { promiseRef.child(it).removeValue() }
+                task.await()
+                Log.d("TAG","${task.result}")
+                task.isSuccessful
+            } catch (e: DatabaseException) {
+                false
+            }
+            isSuccessful
+        }
     }
 
     companion object {

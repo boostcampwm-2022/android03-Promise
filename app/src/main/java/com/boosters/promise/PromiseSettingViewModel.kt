@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.Room
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.*
@@ -35,7 +36,7 @@ class PromiseSettingViewModel @Inject constructor(
     fun onClickCompletionButton() {
         val user = User("123", "유수미${count++}", 1.0, 2.0)
         val promise = Promise(
-            Date().time.toString(),
+            "",
             "꽁치와의 데이트",
             "홍대",
             1.0,
@@ -53,7 +54,7 @@ class PromiseSettingViewModel @Inject constructor(
     fun onClickUpdateButton() {
         val user = User("123", "유수미${count}", 1.0, 2.0)
         val promise = Promise(
-            "1668435826347",
+            "-NGu0GJFZKmY4qHTirxB",
             "엄마와의 데이트",
             "영등포",
             1.0,
@@ -71,12 +72,12 @@ class PromiseSettingViewModel @Inject constructor(
     fun onClickDeleteButton() {
         val user = User("123", "유수미${count}", 1.0, 2.0)
         val promise = Promise(
-            "1668435826347",
+            "-NGu05_dzkrSv1IF75pM",
             "엄마와의 데이트",
             "영등포",
             1.0,
             2.0,
-            "2022/11/14",
+            "2022/11/13",
             "12:00",
             listOf(user)
         )
