@@ -20,7 +20,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:queryHint="검색할 주소를 입력하세요." />
+            app:queryHint="@string/search_address_hint" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listView_dialogSearchAddress_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/searchView_dialogSearchAddress"
+            tools:listitem="@layout/item_search_address_result" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

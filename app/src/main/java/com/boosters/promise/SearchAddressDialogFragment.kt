@@ -12,6 +12,7 @@ import com.boosters.promise.network.Retrofit.promiseService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SearchAddressDialogFragment : DialogFragment() {
 
@@ -34,12 +35,19 @@ class SearchAddressDialogFragment : DialogFragment() {
             _binding =
                 DataBindingUtil.inflate(inflater, R.layout.dialog_search_address, null, false)
 
+            val adapter = SearchAddressListAdapter()
+            binding.listViewDialogSearchAddressResult.adapter = adapter
+
             binding.searchViewDialogSearchAddress.apply {
                 isSubmitButtonEnabled = true
                 setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
+
                         CoroutineScope(Dispatchers.IO).launch {
-                            searchResult = promiseService.searchLocalQuery(query.orEmpty(), 3)
+                            searchResult = promiseService.searchLocalQuery(query.orEmpty(), 5)
+                            withContext(Dispatchers.Main) {
+                                adapter.submitList(searchResult.items)
+                            }
                         }
 
                         return false
