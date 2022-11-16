@@ -3,7 +3,7 @@ package com.boosters.promise.ui.model
 import com.boosters.promise.data.promise.Location
 import com.boosters.promise.data.promise.PromiseRequestBody
 
-data class Promise(
+data class PromiseState(
     val promiseId: String = "",
     val title: String = "",
     val destinationName: String = "",
@@ -13,7 +13,7 @@ data class Promise(
     val members: List<String>? = null
 )
 
-fun Promise.toPromiseRequestBody() =
+fun PromiseState.toPromiseRequestBody() =
     PromiseRequestBody(
         promiseId = promiseId,
         title = title,

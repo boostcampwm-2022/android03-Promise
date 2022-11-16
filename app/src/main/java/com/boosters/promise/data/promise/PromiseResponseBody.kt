@@ -1,6 +1,6 @@
 package com.boosters.promise.data.promise
 
-import com.boosters.promise.ui.model.Promise
+import com.boosters.promise.ui.model.PromiseState
 
 data class PromiseResponseBody(
     val promiseId: String = "",
@@ -12,8 +12,8 @@ data class PromiseResponseBody(
     val members: List<String>? = null
 )
 
-fun PromiseResponseBody.toPromise() =
-    Promise(
+fun PromiseResponseBody.PromiseState() =
+    PromiseState(
         promiseId = promiseId,
         title = title,
         destinationName = destinationName,
