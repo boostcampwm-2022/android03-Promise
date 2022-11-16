@@ -38,4 +38,7 @@
 
     <!-- 회원가입 화면 -->
     <string name="signUp_inputError">특수문자, 공백 제외 8자 이하를 입력해주세요.</string>
+    <string name="signUp_title">환영합니다!</string>
+    <string name="signUp_nameDescription">이름을 입력해주세요.</string>
+    <string name="signUp_signUpRequest">시작하기</string>
 </resources>
