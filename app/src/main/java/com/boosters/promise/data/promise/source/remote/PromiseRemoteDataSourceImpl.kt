@@ -1,6 +1,8 @@
-package com.boosters.promise
+package com.boosters.promise.data.promise.source.remote
 
 import android.util.Log
+import com.boosters.promise.data.promise.Promise
+import com.boosters.promise.data.promise.source.PromiseRemoteDataSource
 import com.google.firebase.database.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await

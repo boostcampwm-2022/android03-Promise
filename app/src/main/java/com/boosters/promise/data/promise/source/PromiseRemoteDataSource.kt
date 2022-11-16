@@ -1,4 +1,6 @@
-package com.boosters.promise
+package com.boosters.promise.data.promise.source
+
+import com.boosters.promise.data.promise.Promise
 
 interface PromiseRemoteDataSource {
 

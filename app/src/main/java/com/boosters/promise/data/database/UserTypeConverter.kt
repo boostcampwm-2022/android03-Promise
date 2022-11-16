@@ -1,7 +1,8 @@
-package com.boosters.promise
+package com.boosters.promise.data.database
 
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
+import com.boosters.promise.data.user.User
 import com.google.gson.Gson
 
 @ProvidedTypeConverter

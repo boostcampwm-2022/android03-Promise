@@ -1,15 +1,15 @@
-package com.boosters.promise.network
+package com.boosters.promise.data.promise.source.remote
 
 import com.google.gson.annotations.SerializedName
 
-data class LocalResponse(
+data class PlaceResponse(
     @SerializedName("total") val total: Int,
     @SerializedName("start") val start: Int,
     @SerializedName("display") val display: Int,
-    @SerializedName("items") val items: List<LocalItemResponse?>
+    @SerializedName("items") val items: List<PlaceItemResponse?>
 )
 
-data class LocalItemResponse(
+data class PlaceItemResponse(
     @SerializedName("title") val title: String,
     @SerializedName("link") val link: String,
     @SerializedName("category") val category: String,

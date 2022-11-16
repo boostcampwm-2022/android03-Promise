@@ -1,4 +1,4 @@
-package com.boosters.promise
+package com.boosters.promise.data.user
 
 data class User(
     val userCode: String,

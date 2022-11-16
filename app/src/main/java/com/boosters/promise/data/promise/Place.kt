@@ -1,6 +1,6 @@
-package com.boosters.promise
+package com.boosters.promise.data.promise
 
-data class Local(
+data class Place(
     val title: String,
     val link: String,
     val category: String,

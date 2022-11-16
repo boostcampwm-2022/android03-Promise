@@ -1,7 +1,9 @@
-package com.boosters.promise
+package com.boosters.promise.data.promise.di
 
 import android.content.Context
 import androidx.room.Room
+import com.boosters.promise.data.database.PromiseDatabase
+import com.boosters.promise.data.database.UserTypeConverter
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase

@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".SearchAddressDialogFragment">
+        tools:context=".ui.promise.SearchAddressDialogFragment">
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchView_dialogSearchAddress"
