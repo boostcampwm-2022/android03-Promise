@@ -7,6 +7,7 @@ import com.boosters.promise.data.invite.FriendRepository
 import com.boosters.promise.data.invite.FriendRepositoryImpl
 import com.boosters.promise.data.invite.source.local.FriendLocalDataSource
 import com.boosters.promise.data.invite.source.local.FriendLocalDataSourceImpl
+import com.boosters.promise.data.invite.source.local.UserDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,6 +21,12 @@ object DataModule {
 
     @Singleton
     @Provides
+    fun provideUserDao(userDataBase: UserDataBase): UserDao {
+        return userDataBase.userDao()
+    }
+
+    @Singleton
+    @Provides
     fun provideUserDatabase(@ApplicationContext applicationContext: Context): UserDataBase {
         return Room.databaseBuilder(
             applicationContext,
@@ -30,8 +37,8 @@ object DataModule {
 
     @Singleton
     @Provides
-    fun provideFriendLocalDataSource(userDataBase: UserDataBase): FriendLocalDataSource{
-        return FriendLocalDataSourceImpl(userDataBase)
+    fun provideFriendLocalDataSource(userDao: UserDao): FriendLocalDataSource{
+        return FriendLocalDataSourceImpl(userDao)
     }
 
     @Singleton
