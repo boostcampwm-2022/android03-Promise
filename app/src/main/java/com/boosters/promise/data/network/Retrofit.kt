@@ -1,4 +1,4 @@
-package com.boosters.promise.network
+package com.boosters.promise.data.network
 
 import com.boosters.promise.BuildConfig
 import okhttp3.Interceptor

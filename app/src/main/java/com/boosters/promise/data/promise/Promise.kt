@@ -1,7 +1,8 @@
-package com.boosters.promise
+package com.boosters.promise.data.promise
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.boosters.promise.data.user.User
 
 @Entity(tableName = "promise")
 data class Promise(

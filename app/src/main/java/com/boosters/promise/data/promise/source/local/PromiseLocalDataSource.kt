@@ -1,6 +1,8 @@
-package com.boosters.promise
+package com.boosters.promise.data.promise.source.local
 
-interface PromiseRepository {
+import com.boosters.promise.data.promise.Promise
+
+interface PromiseLocalDataSource {
 
     suspend fun addPromise(promise: Promise)
 

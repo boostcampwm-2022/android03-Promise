@@ -1,6 +1,7 @@
-package com.boosters.promise
+package com.boosters.promise.data.database
 
 import androidx.room.*
+import com.boosters.promise.data.promise.Promise
 
 @Dao
 interface PromiseDao {

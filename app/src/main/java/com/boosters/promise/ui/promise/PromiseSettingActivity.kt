@@ -1,4 +1,4 @@
-package com.boosters.promise
+package com.boosters.promise.ui.promise
 
 import android.os.Bundle
 import android.text.format.DateFormat
@@ -8,6 +8,8 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
+import com.boosters.promise.R
+import com.boosters.promise.data.promise.Place
 import com.boosters.promise.databinding.ActivityPromiseSettingBinding
 import com.google.android.material.chip.Chip
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -114,7 +116,7 @@ class PromiseSettingActivity : AppCompatActivity() {
         SearchAddressDialogFragment()
             .setOnSearchAddressDialogListener(object :
                 SearchAddressDialogFragment.SearchAddressDialogListener {
-                override fun onDialogPositiveClick(dialog: DialogFragment, resultItem: Local?) {
+                override fun onDialogPositiveClick(dialog: DialogFragment, resultItem: Place?) {
                     Log.d("test", resultItem.toString())
                     resultItem?.run {
                         binding.appCompatEditTextPromiseSettingPromisePlace.setText(

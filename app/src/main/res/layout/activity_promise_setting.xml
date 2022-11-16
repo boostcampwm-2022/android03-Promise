@@ -6,7 +6,7 @@
 
         <variable
             name="promiseSettingViewModel"
-            type="com.boosters.promise.PromiseSettingViewModel" />
+            type="com.boosters.promise.ui.promise.PromiseSettingViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

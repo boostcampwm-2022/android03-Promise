@@ -1,20 +1,14 @@
-package com.boosters.promise
+package com.boosters.promise.ui.promise
 
-import android.text.format.DateFormat
-import android.view.View
-import androidx.core.text.parseAsHtml
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boosters.promise.network.LocalResponse
-import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.timepicker.MaterialTimePicker
-import com.google.android.material.timepicker.TimeFormat
+import com.boosters.promise.data.promise.Promise
+import com.boosters.promise.data.promise.source.remote.PromiseRepository
+import com.boosters.promise.data.user.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel

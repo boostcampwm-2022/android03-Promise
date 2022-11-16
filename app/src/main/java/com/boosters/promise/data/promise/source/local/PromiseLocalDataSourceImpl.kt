@@ -1,9 +1,7 @@
-package com.boosters.promise
+package com.boosters.promise.data.promise.source.local
 
-import android.util.Log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.boosters.promise.data.database.PromiseDatabase
+import com.boosters.promise.data.promise.Promise
 import javax.inject.Inject
 
 class PromiseLocalDataSourceImpl @Inject constructor(
