@@ -16,7 +16,7 @@
     <string name="promiseSetting_promiseMember">멤버  ⃰</string>
     <string name="promiseSetting_promiseMember_placeholder">함께할 사람을 초대하세요.</string>
     <string name="promiseSetting_completion">완료</string>
-    
+
     <!-- 약속 추가 다이얼로그 -->
     <string name="date_format">%d/%02d/%02d</string>
     <string name="time_format">%02d:%02d</string>
@@ -35,4 +35,7 @@
     <string name="delete_member">멤버 삭제</string>
     <string name="user_profile_image">사용자 프로필 이미지</string>
     <string name="confirm">완료</string>
+
+    <!-- 회원가입 화면 -->
+    <string name="signUp_inputError">특수문자, 공백 제외 8자 이하를 입력해주세요.</string>
 </resources>
