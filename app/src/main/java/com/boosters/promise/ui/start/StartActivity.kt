@@ -2,10 +2,18 @@ package com.boosters.promise.ui.start
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.boosters.promise.R
+import com.boosters.promise.databinding.ActivityStartBinding
+import com.boosters.promise.ui.start.adapter.PromiseListAdapter
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class StartActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityStartBinding
+    private val viewModel: StartViewModel by viewModels()
+    private lateinit var promiseListAdapter: PromiseListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen().apply {
@@ -18,8 +26,22 @@ class StartActivity : AppCompatActivity() {
             }
         }
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_start)
+        binding = ActivityStartBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setObserver()
 
+        promiseListAdapter = PromiseListAdapter {}
+        binding.recyclerViewHomePromiseList.adapter = promiseListAdapter
+
+        binding.buttonHomeGetPromise.setOnClickListener {
+            viewModel.getPromiseList(binding.editTextHomeGetPromise.text.toString())
+        }
+    }
+
+    private fun setObserver() {
+        viewModel.promiseList.observe(this) {
+            promiseListAdapter.submitList(it)
+        }
     }
 
     companion object {

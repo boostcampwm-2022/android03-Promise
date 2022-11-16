@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">이따만나</string>
 
+    <!-- 홈 화면 약속 리스트 아이템 화면 -->
+    <string name="start_item_promisePlace">장소</string>
+    <string name="start_item_promiseTime">일시</string>
+
     <!-- 약속 추가 화면 -->
     <string name="promiseSetting_promiseTitle">제목을 입력하세요</string>
     <string name="promiseSetting_promiseDate">날짜  ⃰</string>
@@ -12,7 +16,7 @@
     <string name="promiseSetting_promiseMember">멤버  ⃰</string>
     <string name="promiseSetting_promiseMember_placeholder">함께할 사람을 초대하세요.</string>
     <string name="promiseSetting_completion">완료</string>
-
+    
     <!-- 약속 추가 다이얼로그 -->
     <string name="date_format">%d/%02d/%02d</string>
     <string name="time_format">%02d:%02d</string>
