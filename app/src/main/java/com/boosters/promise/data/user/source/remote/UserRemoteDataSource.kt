@@ -6,6 +6,6 @@ interface UserRemoteDataSource {
 
     suspend fun requestSignUp(userName: String): Result<String>
 
-    fun getUserFlow(userCode: String): Flow<UserBody>
+    fun getUserBody(userCode: String): Flow<UserBody>
 
 }

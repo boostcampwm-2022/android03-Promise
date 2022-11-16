@@ -30,10 +30,10 @@ class UserRemoteDataSourceImplTest {
         val userName = "yang"
 
         val userCode = userRemoteDataSource.requestSignUp(userName).getOrNull()
-        val userFlow = userRemoteDataSource.getUserFlow(userCode ?: "")
+        val userBody = userRemoteDataSource.getUserBody(userCode ?: "")
 
         Assert.assertNotNull(userCode)
-        Assert.assertEquals(userName, userFlow.first().userName)
+        Assert.assertEquals(userName, userBody.first().userName)
     }
 
     companion object {

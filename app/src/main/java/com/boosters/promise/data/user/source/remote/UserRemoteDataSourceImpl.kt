@@ -24,7 +24,7 @@ class UserRemoteDataSourceImpl(
         userCode
     }
 
-    override fun getUserFlow(userCode: String): Flow<UserBody> =
+    override fun getUserBody(userCode: String): Flow<UserBody> =
         userCollectionReference.document(userCode).snapshots().mapNotNull {
             it.toObject(UserBody::class.java)
         }
