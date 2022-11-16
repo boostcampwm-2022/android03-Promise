@@ -10,17 +10,11 @@ class PromiseRepositoryImpl @Inject constructor(
 ) : PromiseRepository {
 
     override suspend fun addPromise(promise: Promise) {
-        val result = promiseRemoteDataSource.addPromise(promise)
-        if (result != null) {
-            promiseLocalDataSource.addPromise(result)
-        }
+        promiseRemoteDataSource.addPromise(promise)
     }
 
     override suspend fun removePromise(promise: Promise) {
-        val isSuccessful = promiseRemoteDataSource.removePromise(promise)
-        if (isSuccessful) {
-            promiseLocalDataSource.removePromise(promise)
-        }
+        promiseRemoteDataSource.removePromise(promise)
     }
 
     override suspend fun getPromiseList(date: String): List<Promise> {

@@ -4,8 +4,8 @@ import com.boosters.promise.data.promise.Promise
 
 interface PromiseRemoteDataSource {
 
-    suspend fun addPromise(promise: Promise): Promise?
+    suspend fun addPromise(promise: Promise)
 
-    suspend fun removePromise(promise: Promise): Boolean
+    suspend fun removePromise(promise: Promise)
 
 }
