@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <import type="com.boosters.promise.ui.promise.Event" />
         <variable
             name="promiseSettingViewModel"
             type="com.boosters.promise.ui.promise.PromiseSettingViewModel" />
@@ -51,9 +51,11 @@
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/appCompatEditText_promiseSetting_promiseDate"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="false"
-                android:layout_height="wrap_content" />
+                android:onClick="@{() -> promiseSettingViewModel.onClickPickerEditText(Event.ShowDatePicker)}"
+                android:text="@{promiseSettingViewModel.promiseUiState.date}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -82,9 +84,11 @@
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/appCompatEditText_promiseSetting_promiseTime"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="false"
-                android:layout_height="wrap_content" />
+                android:onClick="@{() -> promiseSettingViewModel.onClickPickerEditText(Event.ShowTimePicker)}"
+                android:text="@{promiseSettingViewModel.promiseUiState.time}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -112,10 +116,12 @@
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/appCompatEditText_promiseSetting_promisePlace"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="false"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:onClick="@{() -> promiseSettingViewModel.onClickPickerEditText(Event.ShowPlaceSearchDialog)}"
+                android:text="@{promiseSettingViewModel.promiseUiState.destination}"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView

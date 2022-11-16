@@ -1,4 +1,4 @@
-package com.boosters.promise.ui.promise.adapter
+package com.boosters.promise.ui.place.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -29,7 +29,7 @@ class SearchAddressListAdapter(
         private val binding = ItemSearchAddressResultBinding.bind(itemView)
 
         fun bind(item: Place) {
-            binding.textViewItemSearchAddressResultTitle.text = item.title.parseAsHtml()
+            binding.textViewItemSearchAddressResultTitle.text = item.placeTitle.parseAsHtml()
             itemView.setOnClickListener {
                 onClickListener(item)
             }

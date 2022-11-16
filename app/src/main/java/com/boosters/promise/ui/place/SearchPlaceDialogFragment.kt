@@ -1,4 +1,4 @@
-package com.boosters.promise.ui.promise
+package com.boosters.promise.ui.place
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -9,15 +9,15 @@ import androidx.fragment.app.DialogFragment
 import com.boosters.promise.R
 import com.boosters.promise.data.network.Retrofit.promiseService
 import com.boosters.promise.data.promise.Place
-import com.boosters.promise.databinding.DialogSearchAddressBinding
-import com.boosters.promise.ui.promise.adapter.SearchAddressListAdapter
-import com.boosters.promise.util.PlaceMapper.asPlace
+import com.boosters.promise.databinding.DialogSearchPlaceBinding
+import com.boosters.promise.ui.place.adapter.SearchAddressListAdapter
+import com.boosters.promise.util.PlaceMapper.toPlace
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SearchAddressDialogFragment : DialogFragment() {
+class SearchPlaceDialogFragment : DialogFragment() {
 
     private lateinit var listener: SearchAddressDialogListener
     private var searchResult: Place? = null
@@ -27,7 +27,7 @@ class SearchAddressDialogFragment : DialogFragment() {
         fun onDialogNegativeClick(dialog: DialogFragment)
     }
 
-    private lateinit var _binding: DialogSearchAddressBinding
+    private lateinit var _binding: DialogSearchPlaceBinding
     private val binding get() = _binding
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -36,10 +36,10 @@ class SearchAddressDialogFragment : DialogFragment() {
             val inflater = requireActivity().layoutInflater
 
             _binding =
-                DataBindingUtil.inflate(inflater, R.layout.dialog_search_address, null, false)
+                DataBindingUtil.inflate(inflater, R.layout.dialog_search_place, null, false)
 
             val adapter = SearchAddressListAdapter { item ->
-                binding.searchViewDialogSearchAddress.setQuery(item.title, false)
+                binding.searchViewDialogSearchAddress.setQuery(item.placeTitle, false)
                 searchResult = item
             }
 
@@ -54,7 +54,7 @@ class SearchAddressDialogFragment : DialogFragment() {
                             val result = promiseService.searchLocalQuery(query.orEmpty(), 5)
                             withContext(Dispatchers.Main) {
                                 adapter.submitList(result.items.map { item ->
-                                    item?.asPlace()
+                                    item?.toPlace()
                                 })
                             }
                         }
@@ -78,8 +78,8 @@ class SearchAddressDialogFragment : DialogFragment() {
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
-    fun setOnSearchAddressDialogListener(listenerImpl: SearchAddressDialogListener): DialogFragment {
+    fun setOnSearchPlaceDialogListener(listenerImpl: SearchAddressDialogListener): DialogFragment {
         listener = listenerImpl
-        return this@SearchAddressDialogFragment
+        return this@SearchPlaceDialogFragment
     }
 }

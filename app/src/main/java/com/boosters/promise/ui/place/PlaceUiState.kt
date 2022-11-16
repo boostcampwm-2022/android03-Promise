@@ -1,7 +1,7 @@
-package com.boosters.promise.data.promise
+package com.boosters.promise.ui.place
 
-data class Place(
-    val placeTitle: String,
+data class PlaceUiState(
+    val title: String,
     val link: String,
     val address: String,
     val roadAddress: String,
