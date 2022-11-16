@@ -1,5 +1,6 @@
 package com.boosters.promise.data.user.di
 
+import com.boosters.promise.data.user.source.remote.UserRemoteDataSource
 import com.boosters.promise.data.user.source.remote.UserRemoteDataSourceImpl
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -17,7 +18,7 @@ object UserRemoteDataSourceModule {
 
     @Singleton
     @Provides
-    fun provideUserRemoteDataSource() =
+    fun provideUserRemoteDataSource(): UserRemoteDataSource =
         UserRemoteDataSourceImpl(Firebase.firestore.collection(USERS_PATH))
 
 }
