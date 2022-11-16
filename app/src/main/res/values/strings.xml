@@ -25,4 +25,6 @@
     <string name="select_time">시간 선택</string>
     <string name="select_date">날짜 선택</string>
     <string name="search_address_hint">검색할 주소를 입력하세요.</string>
+
+  <string name="app_name">이따만나</string>
 </resources>
