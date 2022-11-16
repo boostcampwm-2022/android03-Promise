@@ -2,7 +2,7 @@ package com.boosters.promise.data.promise
 
 import com.boosters.promise.ui.model.PromiseState
 
-data class PromiseResponseBody(
+data class PromiseBody(
     val promiseId: String = "",
     val title: String = "",
     val destinationName: String = "",
@@ -12,7 +12,7 @@ data class PromiseResponseBody(
     val members: List<String>? = null
 )
 
-fun PromiseResponseBody.PromiseState() =
+fun PromiseBody.PromiseState() =
     PromiseState(
         promiseId = promiseId,
         title = title,

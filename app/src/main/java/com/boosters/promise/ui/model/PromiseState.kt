@@ -1,7 +1,7 @@
 package com.boosters.promise.ui.model
 
 import com.boosters.promise.data.promise.Location
-import com.boosters.promise.data.promise.PromiseRequestBody
+import com.boosters.promise.data.promise.PromiseBody
 
 data class PromiseState(
     val promiseId: String = "",
@@ -14,7 +14,7 @@ data class PromiseState(
 )
 
 fun PromiseState.toPromiseRequestBody() =
-    PromiseRequestBody(
+    PromiseBody(
         promiseId = promiseId,
         title = title,
         destinationName = destinationName,
