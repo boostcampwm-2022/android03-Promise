@@ -1,4 +1,4 @@
-package com.boosters.promise.data.promise.source.remote
+package com.boosters.promise.data.place.source.remote
 
 import com.google.gson.annotations.SerializedName
 

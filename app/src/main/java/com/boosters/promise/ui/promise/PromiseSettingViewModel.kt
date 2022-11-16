@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.promise.Promise
-import com.boosters.promise.data.promise.source.PromiseRepository
+import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.user.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*

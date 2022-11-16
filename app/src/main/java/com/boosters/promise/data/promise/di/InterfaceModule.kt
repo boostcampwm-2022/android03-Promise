@@ -1,7 +1,7 @@
 package com.boosters.promise.data.promise.di
 
-import com.boosters.promise.data.promise.source.PromiseRepository
-import com.boosters.promise.data.promise.source.PromiseRepositoryImpl
+import com.boosters.promise.data.promise.PromiseRepository
+import com.boosters.promise.data.promise.PromiseRepositoryImpl
 import com.boosters.promise.data.promise.source.local.PromiseLocalDataSource
 import com.boosters.promise.data.promise.source.local.PromiseLocalDataSourceImpl
 import com.boosters.promise.data.promise.source.remote.PromiseRemoteDataSource

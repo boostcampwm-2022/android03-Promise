@@ -1,4 +1,4 @@
-package com.boosters.promise.data.promise
+package com.boosters.promise.data.place
 
 data class Place(
     val placeTitle: String,

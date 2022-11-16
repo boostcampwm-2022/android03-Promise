@@ -8,9 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.boosters.promise.R
-import com.boosters.promise.data.promise.Place
+import com.boosters.promise.data.place.Place
 import com.boosters.promise.databinding.ActivityPromiseSettingBinding
-import com.boosters.promise.ui.place.SearchPlaceDialogFragment
+import com.boosters.promise.ui.place.PlaceSearchDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -119,9 +119,9 @@ class PromiseSettingActivity : AppCompatActivity() {
     }
 
     private fun showPlaceSearchDialog() {
-        SearchPlaceDialogFragment()
+        PlaceSearchDialogFragment()
             .setOnSearchPlaceDialogListener(object :
-                SearchPlaceDialogFragment.SearchAddressDialogListener {
+                PlaceSearchDialogFragment.SearchAddressDialogListener {
                 override fun onDialogPositiveClick(dialog: DialogFragment, resultItem: Place?) {
                     viewModel.setPromiseDestination(resultItem?.placeTitle.orEmpty())
                 }

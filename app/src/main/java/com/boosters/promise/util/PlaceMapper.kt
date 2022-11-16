@@ -1,8 +1,8 @@
 package com.boosters.promise.util
 
 import androidx.core.text.parseAsHtml
-import com.boosters.promise.data.promise.Place
-import com.boosters.promise.data.promise.source.remote.PlaceItemResponseBody
+import com.boosters.promise.data.place.Place
+import com.boosters.promise.data.place.source.remote.PlaceItemResponseBody
 import com.boosters.promise.ui.place.PlaceUiState
 
 object PlaceMapper {
