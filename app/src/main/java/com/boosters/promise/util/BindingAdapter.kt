@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 
 @Suppress("UNCHECKED_CAST")
-@BindingAdapter("items")
+@BindingAdapter("bind_items")
 fun <T> RecyclerView.setItems(items: List<T>?) {
 
     if (items.isNullOrEmpty()) {

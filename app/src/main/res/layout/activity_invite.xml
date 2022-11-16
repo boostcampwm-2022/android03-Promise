@@ -92,7 +92,9 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="@={viewModel.friendSearchQuery}"
+                android:afterTextChanged="@{() -> viewModel.searchFriends()}"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -101,7 +103,7 @@
             android:layout_height="0dp"
             android:paddingTop="10dp"
             android:paddingBottom="30dp"
-            items="@{viewModel.friends}"
+            bind_items="@{viewModel.friends}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@+id/button_member_confirm"
             app:layout_constraintEnd_toStartOf="@+id/member_right_guideline"
