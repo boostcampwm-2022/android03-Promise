@@ -1,11 +1,14 @@
 package com.boosters.promise.data.promise.source.remote
 
-import com.boosters.promise.data.promise.Promise
+import com.boosters.promise.data.promise.PromiseRequestBody
+import com.boosters.promise.data.promise.PromiseResponseBody
 
 interface PromiseRemoteDataSource {
 
-    suspend fun addPromise(promise: Promise)
+    fun addPromise(promise: PromiseRequestBody)
 
-    suspend fun removePromise(promise: Promise)
+    fun removePromise(promise: PromiseRequestBody)
+
+    suspend fun getPromiseList(date: String): MutableList<PromiseResponseBody>
 
 }

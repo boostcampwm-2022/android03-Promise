@@ -11,8 +11,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DataSourceModule {
 
-    private const val PROMISE_DATABASE_NAME = "Promise_Database"
-
     @Provides
     @Singleton
     fun providePromiseRemoteDatabase(): FirebaseFirestore {

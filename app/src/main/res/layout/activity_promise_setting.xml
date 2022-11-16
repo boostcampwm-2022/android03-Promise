@@ -186,26 +186,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout_promiseSetting_promiseMember" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_promiseSetting_update"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:onClick="@{() -> promiseSettingViewModel.onClickUpdateButton()}"
-            android:text="수정"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/button_promiseSetting_delete" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_promiseSetting_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="@{() -> promiseSettingViewModel.onClickDeleteButton()}"
-            android:text="삭제"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/button_promiseSetting_update"
-            app:layout_constraintTop_toBottomOf="@+id/button_promiseSetting_completion" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
