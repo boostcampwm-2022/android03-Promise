@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="promiseSettingViewModel"
+            type="com.boosters.promise.ui.promise.PromiseSettingViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="30dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/textView_promiseSetting_promiseTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/promiseSetting_promiseTitle"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView_promiseSetting_promiseDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/promiseSetting_promiseDate"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/textView_promiseSetting_promiseTitle"
+            app:layout_constraintTop_toBottomOf="@+id/textView_promiseSetting_promiseTitle" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout_promiseSetting_promiseDate"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="@string/promiseSetting_promiseDate_placeholder"
+            app:endIconDrawable="@drawable/ic_calendar"
+            app:endIconMode="custom"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/textView_promiseSetting_promiseDate"
+            app:layout_constraintTop_toBottomOf="@+id/textView_promiseSetting_promiseDate">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/appCompatEditText_promiseSetting_promiseDate"
+                android:layout_width="match_parent"
+                android:clickable="true"
+                android:focusable="false"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/textView_promiseSetting_promiseTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/promiseSetting_promiseTime"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayout_promiseSetting_promiseDate"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_promiseSetting_promiseDate" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout_promiseSetting_promiseTime"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="@string/promiseSetting_promiseTime_placeholder"
+            android:inputType="textPersonName"
+            app:endIconDrawable="@drawable/ic_clock"
+            app:endIconMode="custom"
+            app:layout_constraintStart_toStartOf="@+id/textView_promiseSetting_promiseTime"
+            app:layout_constraintTop_toBottomOf="@+id/textView_promiseSetting_promiseTime">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/appCompatEditText_promiseSetting_promiseTime"
+                android:layout_width="match_parent"
+                android:clickable="true"
+                android:focusable="false"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/textView_promiseSetting_promisePlace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/promiseSetting_promisePlace"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayout_promiseSetting_promiseTime"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_promiseSetting_promiseTime" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout_promiseSetting_promisePlace"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="@string/promiseSetting_promisePlace_placeholder"
+            android:inputType="textPersonName"
+            app:endIconDrawable="@drawable/ic_marker"
+            app:endIconMode="custom"
+            app:layout_constraintStart_toStartOf="@+id/textView_promiseSetting_promisePlace"
+            app:layout_constraintTop_toBottomOf="@+id/textView_promiseSetting_promisePlace">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/appCompatEditText_promiseSetting_promisePlace"
+                android:clickable="true"
+                android:focusable="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/textView_promiseSetting_promiseMember"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/promiseSetting_promiseMember"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayout_promiseSetting_promisePlace"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_promiseSetting_promisePlace" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout_promiseSetting_promiseMember"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="@string/promiseSetting_promiseMember_placeholder"
+            android:inputType="textPersonName"
+            app:endIconDrawable="@drawable/ic_add_member"
+            app:endIconMode="custom"
+            app:layout_constraintStart_toStartOf="@+id/textView_promiseSetting_promiseMember"
+            app:layout_constraintTop_toBottomOf="@+id/textView_promiseSetting_promiseMember">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/appCompatEditText_promiseSetting_promiseMember"
+                android:clickable="true"
+                android:focusable="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <HorizontalScrollView
+            android:id="@+id/scrollView_promiseSetting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_promiseSetting_promiseMember">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroup_promiseSetting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:singleLine="true" />
+
+        </HorizontalScrollView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_promiseSetting_completion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="20dp"
+            android:onClick="@{() -> promiseSettingViewModel.onClickCompletionButton()}"
+            android:text="@string/promiseSetting_completion"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_promiseSetting_promiseMember" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_promiseSetting_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:onClick="@{() -> promiseSettingViewModel.onClickUpdateButton()}"
+            android:text="수정"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/button_promiseSetting_delete" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_promiseSetting_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> promiseSettingViewModel.onClickDeleteButton()}"
+            android:text="삭제"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/button_promiseSetting_update"
+            app:layout_constraintTop_toBottomOf="@+id/button_promiseSetting_completion" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
