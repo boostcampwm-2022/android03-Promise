@@ -6,7 +6,7 @@ import androidx.room.Query
 @Dao
 interface UserDao {
 
-    @Query("SELECT * From user")
-    suspend fun getFriends(): List<User>
+    @Query("SELECT * FROM UserEntity")
+    suspend fun getFriends(): List<UserEntity>
 
 }

@@ -1,4 +1,4 @@
-package com.boosters.promise.di
+package com.boosters.promise.data.invite.di
 
 import android.content.Context
 import androidx.room.Room

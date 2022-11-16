@@ -6,7 +6,7 @@ class FriendLocalDataSourceImpl @Inject constructor(
     private val userDao: UserDao
 ) : FriendLocalDataSource {
 
-    override suspend fun getFriends(): List<User> {
+    override suspend fun getFriends(): List<UserEntity> {
         return userDao.getFriends()
     }
 
