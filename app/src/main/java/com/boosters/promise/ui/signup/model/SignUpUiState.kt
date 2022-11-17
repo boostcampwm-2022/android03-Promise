@@ -1,4 +1,4 @@
-package com.boosters.promise.ui.model
+package com.boosters.promise.ui.signup.model
 
 import androidx.annotation.StringRes
 

@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.R
 import com.boosters.promise.data.user.UserRepository
-import com.boosters.promise.ui.model.SignUpUiState
+import com.boosters.promise.ui.signup.model.SignUpUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
