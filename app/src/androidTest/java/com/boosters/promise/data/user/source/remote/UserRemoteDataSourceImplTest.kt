@@ -29,8 +29,8 @@ class UserRemoteDataSourceImplTest {
     fun requestSignUp_SignUpSuccess() = runBlocking {
         val userName = "yang"
 
-        val userCode = userRemoteDataSource.requestSignUp(userName).getOrNull()
-        val userBody = userRemoteDataSource.getUserBody(userCode ?: "")
+        val userCode = userRemoteDataSource.requestSignUp(userName).getOrNull()?.userCode
+        val userBody = userRemoteDataSource.getUser(userCode ?: "")
 
         Assert.assertNotNull(userCode)
         Assert.assertEquals(userName, userBody.first().userName)

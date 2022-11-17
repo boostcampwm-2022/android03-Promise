@@ -1,5 +1,6 @@
 package com.boosters.promise.data.user.source.remote
 
+import com.boosters.promise.data.user.User
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ktx.snapshots
 import kotlinx.coroutines.flow.Flow
@@ -10,23 +11,27 @@ class UserRemoteDataSourceImpl(
     private val userCollectionReference: CollectionReference
 ) : UserRemoteDataSource {
 
-    override suspend fun requestSignUp(userName: String): Result<String> = runCatching {
+    override suspend fun requestSignUp(userName: String): Result<User> = runCatching {
         val userCode = userCollectionReference.document().id.take(USER_CODE_LENGTH)
-
+        val userBody = UserBody(
+            userCode = userCode,
+            userName = userName,
+            location = null
+        )
         userCollectionReference.document(userCode).set(
-            UserBody(
-                userCode = userCode,
-                userName = userName,
-                location = null
-            )
+            userBody
         ).await()
 
-        userCode
+        userBody.toUser()
     }
 
-    override fun getUserBody(userCode: String): Flow<UserBody> =
+    override fun getUser(userCode: String): Flow<User> =
         userCollectionReference.document(userCode).snapshots().mapNotNull {
-            it.toObject(UserBody::class.java)
+            try {
+                it.toObject(UserBody::class.java)?.toUser()
+            } catch (e: NullPointerException) {
+                null
+            }
         }
 
     companion object {
