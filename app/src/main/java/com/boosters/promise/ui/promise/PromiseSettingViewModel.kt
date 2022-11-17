@@ -1,11 +1,9 @@
 package com.boosters.promise.ui.promise
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.promise.PromiseRepository
-import com.boosters.promise.data.user.User
+import com.boosters.promise.ui.invite.model.UserUiState
 import com.boosters.promise.ui.promise.model.PromiseUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -23,21 +21,16 @@ class PromiseSettingViewModel @Inject constructor(
     private val _promiseUiState = MutableStateFlow(PromiseUiState())
     val promiseUiState: StateFlow<PromiseUiState> = _promiseUiState.asStateFlow()
 
-    private val _promiseMemberList = MutableLiveData<MutableList<User>?>()
-    val promiseMemberList: LiveData<MutableList<User>?> get() = _promiseMemberList
-
-    private fun addMember() {
-        val promiseMemberList =
-            _promiseMemberList.value ?: emptyList<User>().map { it }.toMutableList()
-        //promiseMemberList.add() 선택된 멤버 추가하면 칩이 생긴다.
-        _promiseMemberList.value = promiseMemberList
+    fun updateMember(newMemberList: List<UserUiState>) {
+        _promiseUiState.update {
+            it.copy(members = newMemberList)
+        }
     }
 
     fun removeMember(removeIndex: Int) {
-        val promiseMemberList =
-            _promiseMemberList.value?.filterIndexed { index, _ -> index != removeIndex }
-                ?.toMutableList()
-        _promiseMemberList.value = promiseMemberList
+        _promiseUiState.update {
+            it.copy(members = it.members.filterIndexed { index, _ -> index != removeIndex })
+        }
     }
 
     fun onClickCompletionButton() {

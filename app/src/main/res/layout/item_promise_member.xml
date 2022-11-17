@@ -2,12 +2,20 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+        <variable
+            name="userUiState"
+            type="com.boosters.promise.ui.invite.model.UserUiState" />
+    </data>
+
     <com.google.android.material.chip.Chip
         android:id="@+id/chip_promiseSetting_promiseMember_name"
         style="@style/Promise.TextAppearance.MiddleNormal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="2dp"
+        android:text="@{userUiState.userName}"
+        android:checkable="false"
         app:closeIconEnabled="true" />
 
 </layout>
