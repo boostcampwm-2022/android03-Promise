@@ -1,4 +1,4 @@
-package com.boosters.promise.ui.place
+package com.boosters.promise.ui.place.model
 
 data class PlaceUiState(
     val title: String = "",

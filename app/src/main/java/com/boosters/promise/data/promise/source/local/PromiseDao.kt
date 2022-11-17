@@ -1,4 +1,4 @@
-package com.boosters.promise.data.database
+package com.boosters.promise.data.promise.source.local
 
 import androidx.room.*
 import com.boosters.promise.data.promise.Promise

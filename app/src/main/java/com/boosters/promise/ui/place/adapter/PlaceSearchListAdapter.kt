@@ -8,11 +8,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ItemSearchAddressResultBinding
-import com.boosters.promise.ui.place.PlaceUiState
+import com.boosters.promise.ui.place.model.PlaceUiState
 
-class SearchAddressListAdapter(
+class PlaceSearchListAdapter(
     private val onClickListener: (item: PlaceUiState) -> Unit
-) : ListAdapter<PlaceUiState, SearchAddressListAdapter.SearchAddressViewHolder>(diffUtil) {
+) : ListAdapter<PlaceUiState, PlaceSearchListAdapter.SearchAddressViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchAddressViewHolder {
         return SearchAddressViewHolder(parent)

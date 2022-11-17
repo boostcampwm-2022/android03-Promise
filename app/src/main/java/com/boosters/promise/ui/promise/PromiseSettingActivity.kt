@@ -24,28 +24,22 @@ import java.util.*
 class PromiseSettingActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPromiseSettingBinding
-    private val viewModel: PromiseSettingViewModel by viewModels()
+    private val promiseSettingViewModel: PromiseSettingViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPromiseSettingBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
-        binding.promiseSettingViewModel = viewModel
+        binding.promiseSettingViewModel = promiseSettingViewModel
         setContentView(binding.root)
         setObserver()
 
         lifecycleScope.launch {
-            viewModel.dialogEventFlow.collectLatest { event ->
+            promiseSettingViewModel.dialogEventFlow.collectLatest { event ->
                 when (event) {
-                    Event.ShowDatePicker -> {
-                        showDatePicker()
-                    }
-                    Event.ShowTimePicker -> {
-                        showTimePicker()
-                    }
-                    Event.ShowPlaceSearchDialog -> {
-                        showPlaceSearchDialog()
-                    }
+                    Event.ShowDatePicker -> showDatePicker()
+                    Event.ShowTimePicker -> showTimePicker()
+                    Event.ShowPlaceSearchDialog -> showPlaceSearchDialog()
                 }
             }
         }
@@ -53,7 +47,7 @@ class PromiseSettingActivity : AppCompatActivity() {
     }
 
     private fun setObserver() {
-        viewModel.promiseMemberList.observe(this) {
+        promiseSettingViewModel.promiseMemberList.observe(this) {
             val chipGroup = binding.chipGroupPromiseSetting
             val children = it?.mapIndexed { index, user ->
                 val chip = LayoutInflater.from(chipGroup.context)
@@ -61,7 +55,7 @@ class PromiseSettingActivity : AppCompatActivity() {
                 chip.isCheckable = false
                 chip.text = user.userName
                 chip.setOnCloseIconClickListener {
-                    viewModel.removeMember(index)
+                    promiseSettingViewModel.removeMember(index)
                 }
                 chip
             }
@@ -83,7 +77,7 @@ class PromiseSettingActivity : AppCompatActivity() {
         datePicker.show(supportFragmentManager, DATEPICKER_TAG)
         datePicker.addOnPositiveButtonClickListener {
             cal.timeInMillis = datePicker.selection ?: cal.timeInMillis
-            viewModel.setPromiseDate(
+            promiseSettingViewModel.setPromiseDate(
                 getString(R.string.date_format).format(
                     cal.get(Calendar.YEAR),
                     cal.get(Calendar.MONTH),
@@ -109,7 +103,7 @@ class PromiseSettingActivity : AppCompatActivity() {
         timePicker.addOnPositiveButtonClickListener {
             cal.set(Calendar.HOUR, timePicker.hour)
             cal.set(Calendar.MINUTE, timePicker.minute)
-            viewModel.setPromiseTime(
+            promiseSettingViewModel.setPromiseTime(
                 getString(R.string.time_format).format(
                     cal.get(Calendar.HOUR_OF_DAY),
                     cal.get(Calendar.MINUTE)
@@ -123,7 +117,7 @@ class PromiseSettingActivity : AppCompatActivity() {
             .setOnSearchPlaceDialogListener(object :
                 PlaceSearchDialogFragment.SearchAddressDialogListener {
                 override fun onDialogPositiveClick(dialog: DialogFragment, resultItem: Place?) {
-                    viewModel.setPromiseDestination(resultItem?.placeTitle.orEmpty())
+                    promiseSettingViewModel.setPromiseDestination(resultItem?.placeTitle.orEmpty())
                 }
 
                 override fun onDialogNegativeClick(dialog: DialogFragment) {}

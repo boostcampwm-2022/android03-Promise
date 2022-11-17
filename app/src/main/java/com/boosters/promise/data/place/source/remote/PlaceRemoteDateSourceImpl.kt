@@ -1,7 +1,6 @@
 package com.boosters.promise.data.place.source.remote
 
 import com.boosters.promise.data.network.NaverSearchService
-import com.boosters.promise.util.PlaceMapper.toPlace
 import javax.inject.Inject
 
 class PlaceRemoteDateSourceImpl @Inject constructor(

@@ -3,7 +3,8 @@ package com.boosters.promise.ui.place
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.place.PlaceRepository
-import com.boosters.promise.util.PlaceMapper.toPlaceUiModel
+import com.boosters.promise.data.place.toPlaceUiState
+import com.boosters.promise.ui.place.model.PlaceUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +24,7 @@ class PlaceSearchViewModel @Inject constructor(
         viewModelScope.launch {
             placeRepository.searchPlace(query).onSuccess { searchResult ->
                 _placeUiState.value = searchResult.map {
-                    it.toPlaceUiModel()
+                    it.toPlaceUiState()
                 }
             }
         }

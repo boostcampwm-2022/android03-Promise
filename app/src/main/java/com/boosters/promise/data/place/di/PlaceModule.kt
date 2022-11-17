@@ -8,17 +8,20 @@ import com.boosters.promise.data.place.source.remote.PlaceRemoteDateSourceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 object PlaceModule {
 
+    @Singleton
     @Provides
     fun providePlaceRepository(placeRemoteDataSource: PlaceRemoteDataSource): PlaceRepository {
         return PlaceRepositoryImpl(placeRemoteDataSource)
     }
 
+    @Singleton
     @Provides
     fun providePlaceRemoteDataSource(naverPlaceService: NaverSearchService): PlaceRemoteDataSource {
         return PlaceRemoteDateSourceImpl(naverPlaceService)

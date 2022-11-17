@@ -13,8 +13,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.boosters.promise.R
 import com.boosters.promise.data.place.Place
 import com.boosters.promise.databinding.DialogPlaceSearchBinding
-import com.boosters.promise.ui.place.adapter.SearchAddressListAdapter
-import com.boosters.promise.util.PlaceMapper.toPlace
+import com.boosters.promise.ui.place.adapter.PlaceSearchListAdapter
+import com.boosters.promise.ui.promise.model.toPlace
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -23,7 +23,7 @@ class PlaceSearchDialogFragment : DialogFragment() {
 
     private lateinit var _binding: DialogPlaceSearchBinding
     private val binding get() = _binding
-    private val viewModel: PlaceSearchViewModel by viewModels()
+    private val placeSearchViewModel: PlaceSearchViewModel by viewModels()
 
     private lateinit var listener: SearchAddressDialogListener
     private var selectedPlace: Place? = null
@@ -35,23 +35,23 @@ class PlaceSearchDialogFragment : DialogFragment() {
 
             _binding = DataBindingUtil.inflate(inflater, R.layout.dialog_place_search, null, false)
 
-            val adapter = SearchAddressListAdapter { item ->
+            val placeSearchListAdapter = PlaceSearchListAdapter { item ->
                 binding.searchViewDialogSearchAddress.setQuery(item.title, false)
                 selectedPlace = item.toPlace()
             }
-            binding.listViewDialogSearchAddressResult.adapter = adapter
+            binding.listViewDialogSearchAddressResult.adapter = placeSearchListAdapter
 
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.promiseUiState.collect { searchResult ->
-                        adapter.submitList(searchResult)
+                    placeSearchViewModel.promiseUiState.collect { searchResult ->
+                        placeSearchListAdapter.submitList(searchResult)
                     }
                 }
             }
 
             binding.searchViewDialogSearchAddress.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    viewModel.searchPlace(query.orEmpty())
+                    placeSearchViewModel.searchPlace(query.orEmpty())
                     return true
                 }
 
