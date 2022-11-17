@@ -4,28 +4,27 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boosters.promise.data.promise.PromiseRepository
-import com.boosters.promise.data.promise.toPromiseUiState
-import com.boosters.promise.ui.promise.model.PromiseUiState
+import com.boosters.promise.data.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class StartViewModel @Inject constructor(
-    private val promiseRepository: PromiseRepository
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
-    private val _promiseList = MutableLiveData<MutableList<PromiseUiState>?>()
-    val promiseList: LiveData<MutableList<PromiseUiState>?> get() = _promiseList
+    private val _isSignUp = MutableLiveData<Boolean>()
+    val isSignUp: LiveData<Boolean> = _isSignUp
 
-    fun getPromiseList(date: String) {
+    init {
         viewModelScope.launch {
-            val promiseList = mutableListOf<PromiseUiState>()
-            promiseRepository.getPromiseList(date).forEach {
-                promiseList.add(it.toPromiseUiState())
+            userRepository.getMyInfo().first().onSuccess {
+                _isSignUp.value = true
+            }.onFailure {
+                _isSignUp.value = false
             }
-            _promiseList.setValue(promiseList)
         }
     }
 
