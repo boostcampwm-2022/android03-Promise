@@ -21,8 +21,8 @@ class SignUpViewModel @Inject constructor(
     private val _signUpUiState = MutableLiveData<SignUpUiState>()
     val signUpUiState: LiveData<SignUpUiState> = _signUpUiState
 
-    private val _finishSignUp = MutableLiveData(false)
-    val finishSignUp: LiveData<Boolean> = _finishSignUp
+    private val _isCompleteSignUp = MutableLiveData(false)
+    val isCompleteSignUp: LiveData<Boolean> = _isCompleteSignUp
 
     fun requestSignUp() {
         enterName.value?.let { name ->
@@ -34,7 +34,7 @@ class SignUpViewModel @Inject constructor(
             viewModelScope.launch {
                 userRepository.requestSignUp(name)
                 _signUpUiState.value = SignUpUiState(false, null)
-                _finishSignUp.value = true
+                _isCompleteSignUp.value = true
             }
         }
     }
