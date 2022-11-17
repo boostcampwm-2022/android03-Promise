@@ -28,7 +28,7 @@
 
         <TextView
             android:id="@+id/textView_invite_userName"
-            style="@style/MiddleBold"
+            style="@style/Promise.TextAppearance.MiddleBold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -41,7 +41,7 @@
 
         <TextView
             android:id="@+id/textView_invite_userCode"
-            style="@style/Middle"
+            style="@style/Promise.TextAppearance.MiddleNormal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"

@@ -26,7 +26,7 @@
 
             <TextView
                 android:id="@+id/textView_home_promiseName"
-                style="@style/BigBold"
+                style="@style/Promise.TextAppearance.BigBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{promiseUiState.title}"
@@ -39,7 +39,7 @@
 
             <TextView
                 android:id="@+id/textView_home_placeTitle"
-                style="@style/BigBold"
+                style="@style/Promise.TextAppearance.BigBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/start_item_promisePlace"
@@ -51,7 +51,7 @@
 
             <TextView
                 android:id="@+id/textView_home_place"
-                style="@style/BigBold"
+                style="@style/Promise.TextAppearance.BigBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -64,7 +64,7 @@
 
             <TextView
                 android:id="@+id/textView_home_timeTitle"
-                style="@style/BigBold"
+                style="@style/Promise.TextAppearance.BigBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/start_item_promiseTime"
@@ -77,7 +77,7 @@
 
             <TextView
                 android:id="@+id/textView_home_time"
-                style="@style/BigBold"
+                style="@style/Promise.TextAppearance.BigBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"

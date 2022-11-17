@@ -45,7 +45,7 @@
 
         <TextView
             android:id="@+id/textView_invite_inviteMember"
-            style="@style/MiddleBold"
+            style="@style/Promise.TextAppearance.MiddleBold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/invite_member"
@@ -115,7 +115,7 @@
 
         <Button
             android:id="@+id/button_invite_confirm"
-            style="@style/MiddleBold"
+            style="@style/Promise.TextAppearance.MiddleBold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@drawable/button_confirm"
