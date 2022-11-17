@@ -31,6 +31,14 @@ class SignUpActivity : AppCompatActivity() {
             }
             signUpViewModel.requestSignUp()
         }
+
+        signUpViewModel.isCompleteSignUp.observe(this) { isCompleteSignUp ->
+            if (isCompleteSignUp) {
+//                startActivity(Intent(this, PromiseSettingActivity::class.java))
+                // TODO: Home 약속 리스트 화면으로 이동 구현
+                finish()
+            }
+        }
     }
 
 }
