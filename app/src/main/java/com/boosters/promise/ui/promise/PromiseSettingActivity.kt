@@ -1,8 +1,10 @@
 package com.boosters.promise.ui.promise
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.LayoutInflater
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
@@ -10,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import com.boosters.promise.R
 import com.boosters.promise.data.place.Place
 import com.boosters.promise.databinding.ActivityPromiseSettingBinding
+import com.boosters.promise.ui.invite.InviteActivity
 import com.boosters.promise.ui.place.PlaceSearchDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -25,6 +28,12 @@ class PromiseSettingActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPromiseSettingBinding
     private val promiseSettingViewModel: PromiseSettingViewModel by viewModels()
+    private val getContent =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val memberList = result.data?.getStringArrayExtra("memberList")
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,9 +46,10 @@ class PromiseSettingActivity : AppCompatActivity() {
         lifecycleScope.launch {
             promiseSettingViewModel.dialogEventFlow.collectLatest { event ->
                 when (event) {
-                    Event.ShowDatePicker -> showDatePicker()
-                    Event.ShowTimePicker -> showTimePicker()
-                    Event.ShowPlaceSearchDialog -> showPlaceSearchDialog()
+                    EventType.SELECT_DATE -> showDatePicker()
+                    EventType.SELECT_TIME -> showTimePicker()
+                    EventType.SELECT_PLACE_SEARCH -> showPlaceSearchDialog()
+                    EventType.SELECT_MEMBER -> showMember()
                 }
             }
         }
@@ -64,6 +74,11 @@ class PromiseSettingActivity : AppCompatActivity() {
                 chipGroup.addView(chip)
             }
         }
+    }
+
+    private fun showMember() {
+        val intent = Intent(this, InviteActivity::class.java)
+        getContent.launch(intent)
     }
 
     private fun showDatePicker() {

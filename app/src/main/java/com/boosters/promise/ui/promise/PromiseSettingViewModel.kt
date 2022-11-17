@@ -17,8 +17,8 @@ class PromiseSettingViewModel @Inject constructor(
     private val promiseRepository: PromiseRepository
 ) : ViewModel() {
 
-    private val _dialogEventFlow = MutableSharedFlow<Event>()
-    val dialogEventFlow: SharedFlow<Event> = _dialogEventFlow.asSharedFlow()
+    private val _dialogEventFlow = MutableSharedFlow<EventType>()
+    val dialogEventFlow: SharedFlow<EventType> = _dialogEventFlow.asSharedFlow()
 
     private val _promiseUiState = MutableStateFlow(PromiseUiState())
     val promiseUiState: StateFlow<PromiseUiState> = _promiseUiState.asStateFlow()
@@ -54,7 +54,7 @@ class PromiseSettingViewModel @Inject constructor(
         }
     }
 
-    fun onClickPickerEditText(event: Event) {
+    fun onClickPickerEditText(event: EventType) {
         viewModelScope.launch {
             _dialogEventFlow.emit(event)
         }
@@ -74,7 +74,7 @@ class PromiseSettingViewModel @Inject constructor(
 
     fun setPromiseDestination(destination: String) {
         _promiseUiState.update {
-            it.copy(destination = destination)
+            it.copy(destinationName = destination)
         }
     }
 }

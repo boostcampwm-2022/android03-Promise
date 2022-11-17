@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.boosters.promise.ui.model.UserUiState
+import com.boosters.promise.ui.invite.model.UserUiState
 import com.boosters.promise.databinding.ItemInviteMemberInfoBinding
 
 class InviteAdapter : ListAdapter<UserUiState, InviteAdapter.InviteViewHolder>(InviteDiffItemCallback()) {

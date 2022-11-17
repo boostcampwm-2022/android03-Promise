@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.promise.toPromiseUiState
-import com.boosters.promise.ui.model.PromiseUiState
+import com.boosters.promise.ui.promise.model.PromiseUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

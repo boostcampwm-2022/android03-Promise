@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.invite.FriendRepository
-import com.boosters.promise.ui.model.UserUiState
+import com.boosters.promise.ui.invite.model.UserUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

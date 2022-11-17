@@ -1,6 +1,6 @@
 package com.boosters.promise.data.promise
 
-import com.boosters.promise.ui.model.PromiseUiState
+import com.boosters.promise.ui.promise.model.PromiseUiState
 
 data class Promise(
     val promiseId: String,

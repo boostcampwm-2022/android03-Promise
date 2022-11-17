@@ -1,27 +1,26 @@
 package com.boosters.promise.ui.promise.model
 
-import com.boosters.promise.data.place.Place
-import com.boosters.promise.data.user.User
-import com.boosters.promise.ui.place.model.PlaceUiState
+import com.boosters.promise.data.promise.Location
+import com.boosters.promise.data.promise.Promise
 
 data class PromiseUiState(
-    val id: String = "",
+    val promiseId: String = "",
     val title: String = "",
-    val destination: String = "",
-    val destinationX: Int = 0,
-    val destinationY: Int = 0,
+    val destinationName: String = "",
+    val destinationLocation: Location? = null,
     val date: String = "",
     val time: String = "",
-    val members: List<User> = listOf()
+    val members: List<String> = listOf()
 )
 
-fun PlaceUiState.toPlace(): Place {
-    return Place(
-        placeTitle = title,
-        link = link,
-        address = address,
-        roadAddress = roadAddress,
-        x = x,
-        y = y
+fun PromiseUiState.toPromise() =
+    Promise(
+        promiseId = promiseId,
+        title = title,
+        destinationName = destinationName,
+        destinationLocation = destinationLocation,
+        date = date,
+        time = time,
+        members = members
     )
-}
+

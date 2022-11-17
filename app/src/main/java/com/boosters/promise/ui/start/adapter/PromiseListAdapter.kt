@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.boosters.promise.databinding.ItemPromiseBinding
-import com.boosters.promise.ui.model.PromiseUiState
+import com.boosters.promise.ui.promise.model.PromiseUiState
 
 class PromiseListAdapter(
     private val onClickListener: (item: PromiseUiState) -> Unit

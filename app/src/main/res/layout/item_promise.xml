@@ -6,7 +6,7 @@
 
         <variable
             name="promiseUiState"
-            type="com.boosters.promise.ui.model.PromiseUiState" />
+            type="com.boosters.promise.ui.promise.model.PromiseUiState" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
