@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boosters.promise.data.promise.source.remote.PromiseRepository
+import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.user.User
 import com.boosters.promise.ui.promise.model.PromiseUiState
 import dagger.hilt.android.lifecycle.HiltViewModel

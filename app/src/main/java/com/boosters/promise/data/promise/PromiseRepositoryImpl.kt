@@ -1,9 +1,6 @@
-package com.boosters.promise.data.promise.source.remote
+package com.boosters.promise.data.promise
 
 import com.boosters.promise.data.promise.source.PromiseRemoteDataSource
-import com.boosters.promise.data.promise.toPromise
-import com.boosters.promise.ui.model.Promise
-import com.boosters.promise.ui.model.toPromiseRequestBody
 import javax.inject.Inject
 
 class PromiseRepositoryImpl @Inject constructor(
@@ -11,17 +8,17 @@ class PromiseRepositoryImpl @Inject constructor(
 ) : PromiseRepository {
 
     override fun addPromise(promise: Promise) {
-        promiseRemoteDataSource.addPromise(promise.toPromiseRequestBody())
+        promiseRemoteDataSource.addPromise(promise)
     }
 
     override fun removePromise(promise: Promise) {
-        promiseRemoteDataSource.removePromise(promise.toPromiseRequestBody())
+        promiseRemoteDataSource.removePromise(promise)
     }
 
     override suspend fun getPromiseList(date: String): MutableList<Promise> {
         val promiseList = mutableListOf<Promise>()
         promiseRemoteDataSource.getPromiseList(date).forEach {
-            promiseList.add(it.toPromise())
+            promiseList.add(it)
         }
         return promiseList
     }

@@ -20,7 +20,7 @@ class InviteActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_invite)
         binding.lifecycleOwner = this
         binding.viewModel = inviteViewModel
-        binding.recyclerViewMemberFriendList.adapter = inviteAdapter
+        binding.recyclerViewInviteFriendList.adapter = inviteAdapter
     }
 
 }
