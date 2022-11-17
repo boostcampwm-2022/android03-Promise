@@ -18,7 +18,7 @@ class UserRepositoryImpl(
     override fun getUser(userCode: String): Flow<User> =
         userRemoteDataSource.getUser(userCode)
 
-    override suspend fun getMyInfo(): Flow<Result<User>> =
+    override fun getMyInfo(): Flow<Result<User>> =
         myInfoLocalDataSource.getMyInfo()
 
 }

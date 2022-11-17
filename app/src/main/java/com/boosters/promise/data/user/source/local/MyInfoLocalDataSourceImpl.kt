@@ -19,7 +19,7 @@ class MyInfoLocalDataSourceImpl(
         }
     }
 
-    override suspend fun getMyInfo(): Flow<Result<User>> =
+    override fun getMyInfo(): Flow<Result<User>> =
         myInfoPreferencesDataStore.data.catch { exception ->
             if (exception is IOException) emit(emptyPreferences())
         }.map { preferences ->
