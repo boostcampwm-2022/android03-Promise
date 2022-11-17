@@ -1,51 +1,35 @@
 package com.boosters.promise.ui.start
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.boosters.promise.databinding.ActivityStartBinding
-import com.boosters.promise.ui.start.adapter.PromiseListAdapter
+import com.boosters.promise.ui.signup.SignUpActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class StartActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityStartBinding
-    private val viewModel: StartViewModel by viewModels()
-    private lateinit var promiseListAdapter: PromiseListAdapter
+    private val startViewModel: StartViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen().apply {
             setKeepOnScreenCondition {
-                val start = System.currentTimeMillis()
-                // Job
-                val end = System.currentTimeMillis()
-                Thread.sleep((SPLASH_SCREEN_DURATION - (end - start)).coerceAtLeast(0))
+                startViewModel.isSignUp.observe(this@StartActivity) { isSignUp ->
+                    if (isSignUp) {
+//                        startActivity(Intent(this@StartActivity, PromiseSettingActivity::class.java))
+                        // TODO: Home 약속 리스트 화면으로 이동 구현
+                    } else {
+                        startActivity(Intent(this@StartActivity, SignUpActivity::class.java))
+                    }
+                    finish()
+                }
+                true
                 false
             }
         }
         super.onCreate(savedInstanceState)
-        binding = ActivityStartBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        setObserver()
-
-        promiseListAdapter = PromiseListAdapter {}
-        binding.recyclerViewHomePromiseList.adapter = promiseListAdapter
-
-        binding.buttonHomeGetPromise.setOnClickListener {
-            viewModel.getPromiseList(binding.editTextHomeGetPromise.text.toString())
-        }
-    }
-
-    private fun setObserver() {
-        viewModel.promiseList.observe(this) {
-            promiseListAdapter.submitList(it)
-        }
-    }
-
-    companion object {
-        private const val SPLASH_SCREEN_DURATION = 1_000
     }
 
 }
