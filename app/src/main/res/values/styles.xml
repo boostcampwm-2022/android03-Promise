@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Promise.TextAppearance.LargeBold" parent="TextAppearance.AppCompat">
+        <item name = "android:textSize">@dimen/large</item>
+        <item name = "android:textColor">@color/black</item>
+        <item name = "android:textStyle">bold</item>
+    </style>
+
+    <style name="Promise.TextAppearance.LargeNormal" parent="TextAppearance.AppCompat">
+        <item name = "android:textSize">@dimen/large</item>
+        <item name = "android:textColor">@color/black</item>
+    </style>
+
+    <style name="Promise.TextAppearance.BigBold" parent="TextAppearance.AppCompat">
+        <item name = "android:textSize">@dimen/big</item>
+        <item name = "android:textColor">@color/black</item>
+        <item name = "android:textStyle">bold</item>
+    </style>
+
+    <style name="Promise.TextAppearance.BigNormal" parent="TextAppearance.AppCompat">
+        <item name = "android:textSize">@dimen/big</item>
+        <item name = "android:textColor">@color/black</item>
+    </style>
+
+    <style name="Promise.TextAppearance.MiddleBold" parent="TextAppearance.AppCompat">
+        <item name = "android:textSize">@dimen/middle</item>
+        <item name = "android:textColor">@color/black</item>
+        <item name = "android:textStyle">bold</item>
+    </style>
+
+    <style name="Promise.TextAppearance.MiddleNormal" parent="TextAppearance.AppCompat">
+        <item name = "android:textSize">@dimen/middle</item>
+        <item name = "android:textColor">@color/black</item>
+    </style>
+
+    <style name="Promise.TextAppearance.MiddleGray" parent="TextAppearance.AppCompat">
+        <item name = "android:textSize">@dimen/middle</item>
+        <item name = "android:textColor">@color/silver_gray</item>
+    </style>
+
+    <style name="Promise.TextAppearance.SmallBold" parent="TextAppearance.AppCompat">
+        <item name = "android:textSize">@dimen/small</item>
+        <item name = "android:textColor">@color/black</item>
+        <item name = "android:textStyle">bold</item>
+    </style>
+
+    <style name="Promise.TextAppearance.SmallNormal" parent="TextAppearance.AppCompat">
+        <item name = "android:textSize">@dimen/small</item>
+        <item name = "android:textColor">@color/black</item>
+    </style>
+
+    <style name="Promise.TextAppearance.SmallGray" parent="TextAppearance.AppCompat">
+        <item name = "android:textSize">@dimen/small</item>
+        <item name = "android:textColor">@color/silver_gray</item>
+    </style>
+
+    <style name="Promise.Button.SquareButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/button_confirm</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/middle</item>
+        <item name="android:textStyle">bold</item>
+        <item name="backgroundTint">@null</item>
+    </style>
+</resources>

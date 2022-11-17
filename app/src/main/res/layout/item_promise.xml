@@ -26,12 +26,11 @@
 
             <TextView
                 android:id="@+id/textView_home_promiseName"
+                style="@style/Promise.TextAppearance.BigBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{promiseUiState.title}"
                 android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/textView_home_placeTitle"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.005"
@@ -40,12 +39,10 @@
 
             <TextView
                 android:id="@+id/textView_home_placeTitle"
+                style="@style/Promise.TextAppearance.BigBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/start_item_promisePlace"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@id/textView_home_timeTitle"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.005"
@@ -54,12 +51,11 @@
 
             <TextView
                 android:id="@+id/textView_home_place"
+                style="@style/Promise.TextAppearance.BigBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:text="@{promiseUiState.destinationName}"
-                android:textSize="20sp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@id/textView_home_timeTitle"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.01"
@@ -68,12 +64,11 @@
 
             <TextView
                 android:id="@+id/textView_home_timeTitle"
+                style="@style/Promise.TextAppearance.BigBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/start_item_promiseTime"
                 android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.005"
@@ -82,12 +77,11 @@
 
             <TextView
                 android:id="@+id/textView_home_time"
+                style="@style/Promise.TextAppearance.BigBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:text="@{promiseUiState.title}"
-                android:textSize="20sp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.01"

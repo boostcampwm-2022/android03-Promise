@@ -4,7 +4,7 @@
 
     <com.google.android.material.chip.Chip
         android:id="@+id/chip_promiseSetting_promiseMember_name"
-        style="@style/Widget.MaterialComponents.Chip.Choice"
+        style="@style/Promise.TextAppearance.MiddleNormal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="2dp"

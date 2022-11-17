@@ -36,7 +36,7 @@
             app:layout_constraintGuide_percent="0.1" />
 
         <com.google.android.material.textview.MaterialTextView
-            style="@style/TextAppearance.AppCompat.Headline"
+            style="@style/Promise.TextAppearance.BigBold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/signUp_title"
@@ -56,7 +56,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textView_signUp_nameDescription"
-            style="@style/TextAppearance.AppCompat.Large"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/signUp_nameDescription"
@@ -70,7 +70,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayout_signUp_enterName"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Promise.TextAppearance.MiddleNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:counterEnabled="true"
@@ -85,15 +85,16 @@
                 android:id="@+id/editText_signUp_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="text"
                 android:maxLength="6"
                 android:maxLines="1"
-                android:inputType="text"
                 android:text="@={signUpViewModel.enterName}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_signUp_SignUpRequest"
+            style="@style/Promise.Button.SquareButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="@{!signUpViewModel.signUpUiState.isRegistering}"
