@@ -31,7 +31,7 @@
         </activity>
         <activity
             android:name=".ui.invite.InviteActivity"
-            android:exported="true"
+            android:exported="false"
             android:theme="@style/Theme.Promise">
         </activity>
     </application>

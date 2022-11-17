@@ -19,6 +19,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DataModule {
 
+    const val USER = "user"
+
     @Singleton
     @Provides
     fun provideUserDao(userDataBase: UserDataBase): UserDao {
@@ -31,7 +33,7 @@ object DataModule {
         return Room.databaseBuilder(
             applicationContext,
             UserDataBase::class.java,
-            "user"
+            USER
         ).build()
     }
 

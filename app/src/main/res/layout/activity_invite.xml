@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -7,88 +9,90 @@
             type="com.boosters.promise.ui.invite.InviteViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.invite.InviteActivity">
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/member_left_guideline"
+            android:id="@+id/guideline_invite_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.05" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/member_right_guideline"
+            android:id="@+id/guideline_invite_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.95" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/member_top_guideline"
+            android:id="@+id/guideline_invite_top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.05" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/member_bottom_guideline"
+            android:id="@+id/guideline_invite_bottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.95" />
 
         <TextView
-            android:id="@+id/textView_member_inviteMember"
+            android:id="@+id/textView_invite_inviteMember"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/invite_member"
             android:textColor="@color/black"
             android:textSize="13sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/member_left_guideline"
-            app:layout_constraintTop_toTopOf="@+id/member_top_guideline" />
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_invite_right"
+            app:layout_constraintStart_toStartOf="@+id/guideline_invite_left"
+            app:layout_constraintTop_toTopOf="@+id/guideline_invite_top"
+            app:layout_constraintBottom_toTopOf="@id/recyclerView_invite_inviteList" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_member_inviteList"
+            android:id="@+id/recyclerView_invite_inviteList"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@id/member_center_guideline"
-            app:layout_constraintEnd_toStartOf="@+id/member_right_guideline"
-            app:layout_constraintStart_toStartOf="@+id/member_left_guideline"
-            app:layout_constraintTop_toBottomOf="@+id/textView_member_inviteMember"
+            app:layout_constraintBottom_toTopOf="@id/guideline_invite_center"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_invite_right"
+            app:layout_constraintStart_toStartOf="@+id/guideline_invite_left"
+            app:layout_constraintTop_toBottomOf="@+id/textView_invite_inviteMember"
             tools:listitem="@layout/item_invite_member" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/member_center_guideline"
+            android:id="@+id/guideline_invite_center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.2" />
 
         <com.google.android.material.divider.MaterialDivider
-            android:id="@+id/divider_member"
+            android:id="@+id/divider_invite"
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:background="@color/black"
-            app:layout_constraintEnd_toEndOf="@id/member_right_guideline"
-            app:layout_constraintStart_toStartOf="@+id/member_left_guideline"
-            app:layout_constraintTop_toBottomOf="@id/member_center_guideline" />
+            app:layout_constraintEnd_toEndOf="@id/guideline_invite_right"
+            app:layout_constraintStart_toStartOf="@+id/guideline_invite_left"
+            app:layout_constraintTop_toBottomOf="@id/guideline_invite_center" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout_member_searchMember"
+            android:id="@+id/textInputLayout_invite_searchMember"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@+id/member_right_guideline"
-            app:layout_constraintStart_toStartOf="@+id/member_left_guideline"
-            app:layout_constraintTop_toBottomOf="@id/divider_member">
+            app:layout_constraintEnd_toStartOf="@+id/guideline_invite_right"
+            app:layout_constraintStart_toStartOf="@+id/guideline_invite_left"
+            app:layout_constraintTop_toBottomOf="@id/divider_invite"
+            app:layout_constraintBottom_toTopOf="@id/recyclerView_invite_friendList">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -98,21 +102,21 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_member_friendList"
+            android:id="@+id/recyclerView_invite_friendList"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:paddingTop="10dp"
             android:paddingBottom="30dp"
             bind_items="@{viewModel.friends}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@+id/button_member_confirm"
-            app:layout_constraintEnd_toStartOf="@+id/member_right_guideline"
-            app:layout_constraintStart_toStartOf="@+id/member_left_guideline"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_member_searchMember"
+            app:layout_constraintBottom_toTopOf="@+id/button_invite_confirm"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_invite_right"
+            app:layout_constraintStart_toStartOf="@+id/guideline_invite_left"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_invite_searchMember"
             tools:listitem="@layout/item_invite_member_info" />
 
         <Button
-            android:id="@+id/button_member_confirm"
+            android:id="@+id/button_invite_confirm"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@drawable/button_confirm"
@@ -121,9 +125,10 @@
             android:textSize="18sp"
             android:textStyle="bold"
             app:backgroundTint="@null"
-            app:layout_constraintBottom_toTopOf="@+id/member_bottom_guideline"
-            app:layout_constraintEnd_toStartOf="@+id/member_right_guideline"
-            app:layout_constraintStart_toStartOf="@+id/member_left_guideline"
+            app:layout_constraintBottom_toTopOf="@+id/guideline_invite_bottom"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_invite_right"
+            app:layout_constraintStart_toStartOf="@+id/guideline_invite_left"
+            app:layout_constraintTop_toBottomOf="@id/recyclerView_invite_friendList"
             app:layout_constraintWidth_percent="0.7" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

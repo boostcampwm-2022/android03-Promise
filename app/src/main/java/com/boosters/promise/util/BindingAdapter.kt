@@ -7,13 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 @Suppress("UNCHECKED_CAST")
 @BindingAdapter("bind_items")
 fun <T> RecyclerView.setItems(items: List<T>?) {
-
-    if (items.isNullOrEmpty()) {
-        return
-    }
-
     (adapter as ListAdapter<T, RecyclerView.ViewHolder>).submitList(items) {
         scrollToPosition(0)
     }
-
 }

@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.boosters.promise.ui.model.UserState
+import com.boosters.promise.ui.model.UserUiState
 import com.boosters.promise.databinding.ItemInviteMemberInfoBinding
 
-class InviteAdapter : ListAdapter<UserState, InviteAdapter.InviteViewHolder>(InviteDiffItemCallback()) {
+class InviteAdapter : ListAdapter<UserUiState, InviteAdapter.InviteViewHolder>(InviteDiffItemCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InviteViewHolder {
         return InviteViewHolder(
@@ -26,8 +26,8 @@ class InviteAdapter : ListAdapter<UserState, InviteAdapter.InviteViewHolder>(Inv
     class InviteViewHolder(
         private val binding: ItemInviteMemberInfoBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(userState: UserState) {
-            binding.user = userState
+        fun bind(userUiState: UserUiState) {
+            binding.user = userUiState
         }
     }
 
