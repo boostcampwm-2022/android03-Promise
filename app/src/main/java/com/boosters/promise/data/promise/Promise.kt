@@ -1,17 +1,35 @@
 package com.boosters.promise.data.promise
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.boosters.promise.data.user.User
+import com.boosters.promise.ui.promise.model.PromiseUiState
 
-@Entity(tableName = "promise")
 data class Promise(
-    @PrimaryKey val id: String,
+    val promiseId: String,
     val title: String,
-    val destination: String,
-    val destinationX: Int,
-    val destinationY: Int,
+    val destinationName: String,
+    val destinationLocation: Location?,
     val date: String,
     val time: String,
-    val members: List<User>
+    val members: List<String>
 )
+
+fun Promise.toPromiseUiState() =
+    PromiseUiState(
+        promiseId = promiseId,
+        title = title,
+        destinationName = destinationName,
+        destinationLocation = destinationLocation,
+        date = date,
+        time = time,
+        members = members
+    )
+
+fun Promise.toPromiseBody() =
+    PromiseBody(
+        promiseId = promiseId,
+        title = title,
+        destinationName = destinationName,
+        destinationLocation = destinationLocation,
+        date = date,
+        time = time,
+        members = members
+    )

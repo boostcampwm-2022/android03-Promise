@@ -1,7 +1,7 @@
 package com.boosters.promise.ui.invite
 
 import androidx.recyclerview.widget.DiffUtil
-import com.boosters.promise.ui.model.UserUiState
+import com.boosters.promise.ui.invite.model.UserUiState
 
 class InviteDiffItemCallback : DiffUtil.ItemCallback<UserUiState>() {
 

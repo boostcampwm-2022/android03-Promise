@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.invite.FriendRepository
-import com.boosters.promise.ui.model.UserState
+import com.boosters.promise.ui.invite.model.UserUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,8 +15,8 @@ class InviteViewModel @Inject constructor(
     private val friendRepository: FriendRepository
 ) : ViewModel() {
 
-    private var _friends = MutableLiveData<List<UserState>>()
-    val friends: LiveData<List<UserState>> = _friends
+    private var _friends = MutableLiveData<List<UserUiState>>()
+    val friends: LiveData<List<UserUiState>> = _friends
 
     init {
         getFriends()
@@ -26,7 +26,7 @@ class InviteViewModel @Inject constructor(
         viewModelScope.launch {
             val data = friendRepository.getFriends()
             _friends.value = data.map { user ->
-                UserState(
+                UserUiState(
                     userName = user.userName,
                     userCode = user.userCode
                 )

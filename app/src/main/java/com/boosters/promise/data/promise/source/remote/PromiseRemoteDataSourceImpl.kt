@@ -1,66 +1,40 @@
 package com.boosters.promise.data.promise.source.remote
 
-import android.util.Log
 import com.boosters.promise.data.promise.Promise
-import com.google.firebase.database.*
-import kotlinx.coroutines.Dispatchers
+import com.boosters.promise.data.promise.PromiseBody
+import com.boosters.promise.data.promise.source.PromiseRemoteDataSource
+import com.boosters.promise.data.promise.toPromise
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PromiseRemoteDataSourceImpl @Inject constructor(
-    private val database: FirebaseDatabase
+    private val database: FirebaseFirestore
 ) : PromiseRemoteDataSource {
 
-    private val promiseRef = database.getReference(DATABASE_PROMISE_REF_PATH)
+    private val promiseRef = database.collection(DATABASE_PROMISE_REF_PATH)
 
-    init {
-        promiseRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val value = (dataSnapshot.value ?: return) as HashMap<String, Promise>
-                value.keys.forEach { key ->
-                    Log.d("MainActivity", "${value[key]}")
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-            }
-        })
+    override fun addPromise(promise: Promise) {
+        var id = promise.promiseId
+        if (promise.promiseId == "") {
+            id = promiseRef.document().id
+        }
+        promiseRef.document(id).set(promise.copy(promiseId = id))
     }
 
-    override suspend fun addPromise(promise: Promise): Promise? {
-        var key: String? = promise.id
-        var result = promise
-        if (key == "") {
-            key = promiseRef.push().key ?: ""
-            result = promise.copy(id = key)
-        }
-        return withContext(Dispatchers.IO) {
-            key?.let {
-                try {
-                    val task = promiseRef.child(it).setValue(result)
-                    task.await()
-                    if (!task.isSuccessful) key = null
-                } catch (e: DatabaseException) {
-                    return@withContext null
-                }
-            }
-            result
-        }
+    override fun removePromise(promise: Promise) {
+        promiseRef.document(promise.promiseId).delete()
     }
 
-    override suspend fun removePromise(promise: Promise): Boolean {
-        return withContext(Dispatchers.IO) {
-            val isSuccessful = try {
-                val task = promise.id.let { promiseRef.child(it).removeValue() }
-                task.await()
-                Log.d("TAG","${task.result}")
-                task.isSuccessful
-            } catch (e: DatabaseException) {
-                false
-            }
-            isSuccessful
+    override suspend fun getPromiseList(date: String): MutableList<Promise> {
+        val promiseList = mutableListOf<Promise>()
+        val task = promiseRef.whereEqualTo("date", date).get()
+        task.await()
+        task.result.documents.forEach {
+            it.toObject(PromiseBody::class.java)
+                ?.let { promiseBody -> promiseList.add(promiseBody.toPromise()) }
         }
+        return promiseList
     }
 
     companion object {

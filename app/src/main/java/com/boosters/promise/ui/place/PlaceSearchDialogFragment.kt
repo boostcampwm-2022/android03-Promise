@@ -14,7 +14,7 @@ import com.boosters.promise.R
 import com.boosters.promise.data.place.Place
 import com.boosters.promise.databinding.DialogPlaceSearchBinding
 import com.boosters.promise.ui.place.adapter.PlaceSearchListAdapter
-import com.boosters.promise.ui.promise.model.toPlace
+import com.boosters.promise.ui.place.model.toPlace
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

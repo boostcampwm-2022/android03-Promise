@@ -1,4 +1,4 @@
-package com.boosters.promise.ui.model
+package com.boosters.promise.ui.invite.model
 
 data class UserUiState(
     val userName: String,

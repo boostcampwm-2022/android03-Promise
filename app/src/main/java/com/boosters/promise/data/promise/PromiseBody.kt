@@ -1,9 +1,6 @@
-package com.boosters.promise.ui.promise.model
+package com.boosters.promise.data.promise
 
-import com.boosters.promise.data.promise.Location
-import com.boosters.promise.data.promise.Promise
-
-data class PromiseUiState(
+data class PromiseBody(
     val promiseId: String = "",
     val title: String = "",
     val destinationName: String = "",
@@ -13,7 +10,7 @@ data class PromiseUiState(
     val members: List<String> = listOf()
 )
 
-fun PromiseUiState.toPromise() =
+fun PromiseBody.toPromise() =
     Promise(
         promiseId = promiseId,
         title = title,
@@ -23,4 +20,3 @@ fun PromiseUiState.toPromise() =
         time = time,
         members = members
     )
-
