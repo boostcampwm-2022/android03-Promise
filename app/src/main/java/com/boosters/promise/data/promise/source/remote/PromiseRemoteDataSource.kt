@@ -1,4 +1,4 @@
-package com.boosters.promise.data.promise.source
+package com.boosters.promise.data.promise.source.remote
 
 import com.boosters.promise.data.promise.Promise
 

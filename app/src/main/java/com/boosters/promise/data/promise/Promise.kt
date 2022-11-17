@@ -9,8 +9,8 @@ data class Promise(
     @PrimaryKey val id: String,
     val title: String,
     val destination: String,
-    val destinationX: Double,
-    val destinationY: Double,
+    val destinationX: Int,
+    val destinationY: Int,
     val date: String,
     val time: String,
     val members: List<User>

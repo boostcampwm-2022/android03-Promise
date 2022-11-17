@@ -2,54 +2,52 @@ package com.boosters.promise.ui.promise
 
 import android.os.Bundle
 import android.text.format.DateFormat
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
 import com.boosters.promise.R
-import com.boosters.promise.data.promise.Place
+import com.boosters.promise.data.place.Place
 import com.boosters.promise.databinding.ActivityPromiseSettingBinding
+import com.boosters.promise.ui.place.PlaceSearchDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.util.*
 
 @AndroidEntryPoint
 class PromiseSettingActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPromiseSettingBinding
-    private val viewModel: PromiseSettingViewModel by viewModels()
-
+    private val promiseSettingViewModel: PromiseSettingViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPromiseSettingBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
-        binding.promiseSettingViewModel = viewModel
+        binding.promiseSettingViewModel = promiseSettingViewModel
         setContentView(binding.root)
         setObserver()
 
-        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        binding.appCompatEditTextPromiseSettingPromiseDate.setOnClickListener(
-            selectDateListener(
-                calendar
-            )
-        )
-        binding.appCompatEditTextPromiseSettingPromiseTime.setOnClickListener(
-            selectTimeListener(
-                calendar
-            )
-        )
-        binding.appCompatEditTextPromiseSettingPromisePlace.setOnClickListener(searchAddressListener())
+        lifecycleScope.launch {
+            promiseSettingViewModel.dialogEventFlow.collectLatest { event ->
+                when (event) {
+                    Event.ShowDatePicker -> showDatePicker()
+                    Event.ShowTimePicker -> showTimePicker()
+                    Event.ShowPlaceSearchDialog -> showPlaceSearchDialog()
+                }
+            }
+        }
 
     }
 
     private fun setObserver() {
-        viewModel.promiseMemberList.observe(this) {
+        promiseSettingViewModel.promiseMemberList.observe(this) {
             val chipGroup = binding.chipGroupPromiseSetting
             val children = it?.mapIndexed { index, user ->
                 val chip = LayoutInflater.from(chipGroup.context)
@@ -57,7 +55,7 @@ class PromiseSettingActivity : AppCompatActivity() {
                 chip.isCheckable = false
                 chip.text = user.userName
                 chip.setOnCloseIconClickListener {
-                    viewModel.removeMember(index)
+                    promiseSettingViewModel.removeMember(index)
                 }
                 chip
             }
@@ -68,7 +66,8 @@ class PromiseSettingActivity : AppCompatActivity() {
         }
     }
 
-    private fun selectDateListener(cal: Calendar) = View.OnClickListener {
+    private fun showDatePicker() {
+        val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setSelection(cal.timeInMillis)
             .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
@@ -78,7 +77,7 @@ class PromiseSettingActivity : AppCompatActivity() {
         datePicker.show(supportFragmentManager, DATEPICKER_TAG)
         datePicker.addOnPositiveButtonClickListener {
             cal.timeInMillis = datePicker.selection ?: cal.timeInMillis
-            binding.appCompatEditTextPromiseSettingPromiseDate.setText(
+            promiseSettingViewModel.setPromiseDate(
                 getString(R.string.date_format).format(
                     cal.get(Calendar.YEAR),
                     cal.get(Calendar.MONTH),
@@ -88,7 +87,8 @@ class PromiseSettingActivity : AppCompatActivity() {
         }
     }
 
-    private fun selectTimeListener(cal: Calendar) = View.OnClickListener {
+    private fun showTimePicker() {
+        val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         val isSystem24Hour = DateFormat.is24HourFormat(this)
         val clockFormat = if (isSystem24Hour) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
         val timePicker = MaterialTimePicker.Builder()
@@ -103,7 +103,7 @@ class PromiseSettingActivity : AppCompatActivity() {
         timePicker.addOnPositiveButtonClickListener {
             cal.set(Calendar.HOUR, timePicker.hour)
             cal.set(Calendar.MINUTE, timePicker.minute)
-            binding.appCompatEditTextPromiseSettingPromiseTime.setText(
+            promiseSettingViewModel.setPromiseTime(
                 getString(R.string.time_format).format(
                     cal.get(Calendar.HOUR_OF_DAY),
                     cal.get(Calendar.MINUTE)
@@ -112,17 +112,12 @@ class PromiseSettingActivity : AppCompatActivity() {
         }
     }
 
-    private fun searchAddressListener() = View.OnClickListener {
-        SearchAddressDialogFragment()
-            .setOnSearchAddressDialogListener(object :
-                SearchAddressDialogFragment.SearchAddressDialogListener {
+    private fun showPlaceSearchDialog() {
+        PlaceSearchDialogFragment()
+            .setOnSearchPlaceDialogListener(object :
+                PlaceSearchDialogFragment.SearchAddressDialogListener {
                 override fun onDialogPositiveClick(dialog: DialogFragment, resultItem: Place?) {
-                    Log.d("test", resultItem.toString())
-                    resultItem?.run {
-                        binding.appCompatEditTextPromiseSettingPromisePlace.setText(
-                            getString(R.string.address_format).format(title, x, y)
-                        )
-                    }
+                    promiseSettingViewModel.setPromiseDestination(resultItem?.placeTitle.orEmpty())
                 }
 
                 override fun onDialogNegativeClick(dialog: DialogFragment) {}

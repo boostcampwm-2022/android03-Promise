@@ -5,9 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.promise.Promise
-import com.boosters.promise.data.promise.source.remote.PromiseRepository
+import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.user.User
+import com.boosters.promise.ui.promise.model.PromiseUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,6 +17,12 @@ import javax.inject.Inject
 class PromiseSettingViewModel @Inject constructor(
     private val promiseRepository: PromiseRepository
 ) : ViewModel() {
+
+    private val _dialogEventFlow = MutableSharedFlow<Event>()
+    val dialogEventFlow: SharedFlow<Event> = _dialogEventFlow.asSharedFlow()
+
+    private val _promiseUiState = MutableStateFlow(PromiseUiState())
+    val promiseUiState: StateFlow<PromiseUiState> = _promiseUiState.asStateFlow()
 
     private val _promiseMemberList = MutableLiveData<MutableList<User>?>()
     val promiseMemberList: LiveData<MutableList<User>?> get() = _promiseMemberList
@@ -40,8 +48,8 @@ class PromiseSettingViewModel @Inject constructor(
             "",
             "꽁치와의 데이트",
             "홍대",
-            1.0,
-            2.0,
+            1,
+            2,
             "2022/11/14",
             "12:00",
             listOf(user)
@@ -58,8 +66,8 @@ class PromiseSettingViewModel @Inject constructor(
             "-NGu0GJFZKmY4qHTirxB",
             "엄마와의 데이트",
             "영등포",
-            1.0,
-            2.0,
+            1,
+            2,
             "2022/11/13",
             "12:00",
             listOf(user)
@@ -76,8 +84,8 @@ class PromiseSettingViewModel @Inject constructor(
             "-NGu05_dzkrSv1IF75pM",
             "엄마와의 데이트",
             "영등포",
-            1.0,
-            2.0,
+            1,
+            2,
             "2022/11/13",
             "12:00",
             listOf(user)
@@ -87,4 +95,27 @@ class PromiseSettingViewModel @Inject constructor(
         }
     }
 
+    fun onClickPickerEditText(event: Event) {
+        viewModelScope.launch {
+            _dialogEventFlow.emit(event)
+        }
+    }
+
+    fun setPromiseDate(date: String) {
+        _promiseUiState.update {
+            it.copy(date = date)
+        }
+    }
+
+    fun setPromiseTime(time: String) {
+        _promiseUiState.update {
+            it.copy(time = time)
+        }
+    }
+
+    fun setPromiseDestination(destination: String) {
+        _promiseUiState.update {
+            it.copy(destination = destination)
+        }
+    }
 }
