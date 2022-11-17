@@ -1,7 +1,5 @@
 package com.boosters.promise.data.promise
 
-import com.boosters.promise.ui.model.PromiseState
-
 data class PromiseBody(
     val promiseId: String = "",
     val title: String = "",
@@ -9,11 +7,11 @@ data class PromiseBody(
     val destinationLocation: Location? = null,
     val date: String = "",
     val time: String = "",
-    val members: List<String>? = null
+    val members: List<String> = listOf()
 )
 
-fun PromiseBody.PromiseState() =
-    PromiseState(
+fun PromiseBody.toPromise() =
+    Promise(
         promiseId = promiseId,
         title = title,
         destinationName = destinationName,
