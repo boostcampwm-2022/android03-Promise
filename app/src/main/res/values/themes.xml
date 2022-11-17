@@ -1,13 +1,75 @@
 <resources>
+    <style name="LargeBold" parent="android:TextAppearance">
+        <item name = "android:textSize">@dimen/large</item>
+        <item name = "android:textColor">@color/black</item>
+        <item name = "android:textStyle">bold</item>
+    </style>
+
+    <style name="Large" parent="@android:style/Widget.TextView">
+        <item name = "android:textSize">@dimen/large</item>
+        <item name = "android:textColor">@color/black</item>
+    </style>
+
+    <style name="BigBold" parent="android:TextAppearance">
+        <item name = "android:textSize">@dimen/big</item>
+        <item name = "android:textColor">@color/black</item>
+        <item name = "android:textStyle">bold</item>
+    </style>
+
+    <style name="Big" parent="@android:style/Widget.TextView">
+        <item name = "android:textSize">@dimen/big</item>
+        <item name = "android:textColor">@color/black</item>
+    </style>
+
+    <style name="MiddleBold" parent="@android:style/Widget.TextView">
+        <item name = "android:textSize">@dimen/middle</item>
+        <item name = "android:textColor">@color/black</item>
+        <item name = "android:textStyle">bold</item>
+    </style>
+
+    <style name="Middle" parent="@android:style/Widget.TextView">
+        <item name = "android:textSize">@dimen/middle</item>
+        <item name = "android:textColor">@color/black</item>
+    </style>
+
+    <style name="MiddleGray" parent="@android:style/Widget.TextView">
+        <item name = "android:textSize">@dimen/middle</item>
+        <item name = "android:textColor">@color/silver_gray</item>
+    </style>
+
+    <style name="SmallBold" parent="@android:style/Widget.TextView">
+        <item name = "android:textSize">@dimen/small</item>
+        <item name = "android:textColor">@color/black</item>
+        <item name = "android:textStyle">bold</item>
+    </style>
+
+    <style name="Small" parent="@android:style/Widget.TextView">
+        <item name = "android:textSize">@dimen/small</item>
+        <item name = "android:textColor">@color/black</item>
+    </style>
+
+    <style name="SmallGray" parent="@android:style/Widget.TextView">
+        <item name = "android:textSize">@dimen/small</item>
+        <item name = "android:textColor">@color/silver_gray</item>
+    </style>
+
+    <style name="SquareButton">
+        <item name="android:background">@drawable/button_confirm</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/middle</item>
+        <item name="android:textStyle">bold</item>
+        <item name="backgroundTint">@null</item>
+    </style>
+
     <!-- Base application theme. -->
     <style name="Theme.Promise" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimary">@color/pure_blue</item>
+        <item name="colorPrimaryVariant">@color/pure_blue</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorSecondary">@color/azure_radiance</item>
+        <item name="colorSecondaryVariant">@color/azure_radiance</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>

@@ -12,18 +12,18 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/delete_member"
         android:src="@drawable/ic_member_delete"
+        app:layout_constraintBottom_toTopOf="@+id/textView_inviteMemberItem_memberName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView_inviteMemberItem_memberName"
+        style="@style/SmallBold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:textColor="@color/black"
-        android:textSize="11sp"
-        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/textView_inviteMemberItem_memberCode"
         app:layout_constraintEnd_toEndOf="@+id/imageView_inviteMemberItem_memberImage"
         app:layout_constraintStart_toStartOf="@+id/imageView_inviteMemberItem_memberImage"
         app:layout_constraintTop_toBottomOf="@+id/imageView_inviteMemberItem_memberImage"
@@ -31,10 +31,10 @@
 
     <TextView
         android:id="@+id/textView_inviteMemberItem_memberCode"
+        style="@style/Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textSize="11sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/imageView_inviteMemberItem_memberImage"
         app:layout_constraintStart_toStartOf="@+id/imageView_inviteMemberItem_memberImage"
         app:layout_constraintTop_toBottomOf="@+id/textView_inviteMemberItem_memberName"

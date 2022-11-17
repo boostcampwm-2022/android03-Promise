@@ -9,4 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="pure_blue">#FF005CFD</color>
     <color name="light_grayish_blue">#FFF0F4FA</color>
+    <color name="dusty_gray">#FF767676</color>
+    <color name="silver_gray">#FFCCCCCC</color>
+    <color name="azure_radiance">#FF009BFF</color>
 </resources>
