@@ -8,7 +8,6 @@ import androidx.databinding.DataBindingUtil
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ActivityInviteBinding
 import com.boosters.promise.ui.invite.model.UserUiState
-import com.boosters.promise.ui.promise.PromiseSettingActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,13 +24,24 @@ class InviteActivity : AppCompatActivity() {
         binding.viewModel = inviteViewModel
         binding.recyclerViewInviteFriendList.adapter = inviteAdapter
 
+        //test start
+        val inviteMemberAdapter = InviteAdapter()
+        binding.recyclerViewInviteInviteList.adapter = inviteMemberAdapter.apply {
+            val userUiStates = List(5) {
+                UserUiState("testName$it", "testCode$it")
+            }
+            submitList(userUiStates)
+        }
+
         binding.buttonInviteConfirm.setOnClickListener {
             val intent = Intent().apply {
-                putExtra("memberList", arrayOf<UserUiState>())
+                val inviteList = ArrayList(inviteMemberAdapter.currentList)
+                putParcelableArrayListExtra("memberList", inviteList)
             }
             setResult(RESULT_OK, intent)
             finish()
         }
+        //test end
     }
 
 }

@@ -8,6 +8,6 @@ interface UserRepository {
 
     fun getUser(userCode: String): Flow<User>
 
-    suspend fun getMyInfo(): Flow<Result<User>>
+    fun getMyInfo(): Flow<Result<User>>
 
 }

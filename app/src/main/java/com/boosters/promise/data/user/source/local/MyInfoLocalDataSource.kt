@@ -7,6 +7,6 @@ interface MyInfoLocalDataSource {
 
     suspend fun saveMyInfo(user: User)
 
-    suspend fun getMyInfo(): Flow<Result<User>>
+    fun getMyInfo(): Flow<Result<User>>
 
 }
