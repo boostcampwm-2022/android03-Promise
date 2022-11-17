@@ -1,20 +1,22 @@
 package com.boosters.promise.ui.promise
 
 import android.content.Intent
+import android.os.Build.VERSION
 import android.os.Bundle
 import android.text.format.DateFormat
-import android.view.LayoutInflater
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.boosters.promise.R
 import com.boosters.promise.data.place.Place
 import com.boosters.promise.databinding.ActivityPromiseSettingBinding
+import com.boosters.promise.databinding.ItemPromiseMemberBinding
 import com.boosters.promise.ui.invite.InviteActivity
+import com.boosters.promise.ui.invite.model.UserUiState
 import com.boosters.promise.ui.place.PlaceSearchDialogFragment
-import com.google.android.material.chip.Chip
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -22,6 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class PromiseSettingActivity : AppCompatActivity() {
@@ -31,7 +34,13 @@ class PromiseSettingActivity : AppCompatActivity() {
     private val getContent =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
-                val memberList = result.data?.getStringArrayExtra("memberList")
+                if (VERSION.SDK_INT < 33) {
+                    result.data?.extras?.getParcelableArrayList("memberList")
+                } else {
+                    result.data?.extras?.getParcelableArrayList("memberList", UserUiState::class.java)
+                }?.let {
+                    promiseSettingViewModel.updateMember(it.toList())
+                }
             }
         }
 
@@ -57,28 +66,21 @@ class PromiseSettingActivity : AppCompatActivity() {
     }
 
     private fun setObserver() {
-        promiseSettingViewModel.promiseMemberList.observe(this) {
-            val chipGroup = binding.chipGroupPromiseSetting
-            val children = it?.mapIndexed { index, user ->
-                val chip = LayoutInflater.from(chipGroup.context)
-                    .inflate(R.layout.item_promise_member, chipGroup, false) as Chip
-                chip.isCheckable = false
-                chip.text = user.userName
-                chip.setOnCloseIconClickListener {
-                    promiseSettingViewModel.removeMember(index)
+        lifecycleScope.launch {
+            promiseSettingViewModel.promiseUiState.collect { promiseUiState ->
+                val chipGroup = binding.chipGroupPromiseSetting
+                chipGroup.removeAllViews()
+                repeat(promiseUiState.members.size) { index ->
+                    val chipBinding = DataBindingUtil.inflate<ItemPromiseMemberBinding>(layoutInflater, R.layout.item_promise_member, chipGroup, true)
+                    chipBinding.apply {
+                        userUiState = promiseUiState.members[index]
+                        chipPromiseSettingPromiseMemberName.setOnCloseIconClickListener {
+                            promiseSettingViewModel.removeMember(index)
+                        }
+                    }
                 }
-                chip
-            }
-            chipGroup.removeAllViews()
-            children?.forEach { chip ->
-                chipGroup.addView(chip)
             }
         }
-    }
-
-    private fun showMember() {
-        val intent = Intent(this, InviteActivity::class.java)
-        getContent.launch(intent)
     }
 
     private fun showDatePicker() {
@@ -138,6 +140,12 @@ class PromiseSettingActivity : AppCompatActivity() {
                 override fun onDialogNegativeClick(dialog: DialogFragment) {}
             })
             .show(supportFragmentManager, SEARCH_DIALOG_TAG)
+    }
+
+    private fun showMember() {
+        val members = ArrayList(promiseSettingViewModel.promiseUiState.value.members)
+        val intent = Intent(this, InviteActivity::class.java).putParcelableArrayListExtra("member", members)
+        getContent.launch(intent)
     }
 
     companion object {

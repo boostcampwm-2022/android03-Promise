@@ -1,5 +1,7 @@
 package com.boosters.promise.data.promise
 
+import com.boosters.promise.data.user.User
+
 data class PromiseBody(
     val promiseId: String = "",
     val title: String = "",
@@ -7,7 +9,7 @@ data class PromiseBody(
     val destinationLocation: Location? = null,
     val date: String = "",
     val time: String = "",
-    val members: List<String> = listOf()
+    val members: List<User> = listOf()
 )
 
 fun PromiseBody.toPromise() =
