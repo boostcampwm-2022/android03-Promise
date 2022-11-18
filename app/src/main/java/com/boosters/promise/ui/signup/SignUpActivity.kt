@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ActivitySignUpBinding
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,11 +33,15 @@ class SignUpActivity : AppCompatActivity() {
             signUpViewModel.requestSignUp()
         }
 
-        signUpViewModel.isCompleteSignUp.observe(this) { isCompleteSignUp ->
-            if (isCompleteSignUp) {
+        signUpViewModel.signUpUiState.observe(this) { signUpUiState ->
+            if (signUpUiState.isCompleteSignUp) {
 //                startActivity(Intent(this, PromiseSettingActivity::class.java))
                 // TODO: Home 약속 리스트 화면으로 이동 구현
                 finish()
+            } else {
+                signUpUiState.signUpErrorMessageResId?.let {
+                    Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
+                }
             }
         }
     }

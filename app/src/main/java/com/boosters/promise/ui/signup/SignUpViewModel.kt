@@ -22,9 +22,6 @@ class SignUpViewModel @Inject constructor(
     private val _signUpUiState = MutableLiveData<SignUpUiState>()
     val signUpUiState: LiveData<SignUpUiState> = _signUpUiState
 
-    private val _isCompleteSignUp = MutableLiveData(false)
-    val isCompleteSignUp: LiveData<Boolean> = _isCompleteSignUp
-
     private val _nameInputUiState = MutableLiveData<NameInputUiState>()
     val nameInputUiState: LiveData<NameInputUiState> = _nameInputUiState
 
@@ -39,11 +36,13 @@ class SignUpViewModel @Inject constructor(
             } else {
                 _nameInputUiState.value = NameInputUiState()
             }
-            _signUpUiState.value = SignUpUiState(true)
+            _signUpUiState.value = SignUpUiState(isRegistering = true)
             viewModelScope.launch {
-                userRepository.requestSignUp(name)
-                _signUpUiState.value = SignUpUiState()
-                _isCompleteSignUp.value = true
+                userRepository.requestSignUp(name).onSuccess {
+                    _signUpUiState.value = SignUpUiState(isCompleteSignUp = true)
+                }.onFailure {
+                    _signUpUiState.value = SignUpUiState(isErrorSignUp = false, signUpErrorMessageResId = R.string.signUp_signUpError)
+                }
             }
         }
     }
