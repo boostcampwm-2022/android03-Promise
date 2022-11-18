@@ -131,7 +131,7 @@
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/appCompatEditText_promiseSetting_promisePlace"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="false"
                 android:onClick="@{() -> promiseSettingViewModel.onClickPickerEditText(EventType.SELECT_PLACE_SEARCH)}"
