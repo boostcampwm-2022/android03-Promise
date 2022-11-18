@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ActivitySignUpBinding
+import com.boosters.promise.ui.signup.model.SignUpUiState
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -55,17 +56,21 @@ class SignUpActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             signUpViewModel.signUpUiState.collect { signUpUiState ->
-                if (signUpUiState.isCompleteSignUp) {
-//                    startActivity(Intent(this@SignUpActivity, PromiseSettingActivity::class.java))
-                    // TODO: Home 약속 리스트 화면으로 이동 구현
-                    finish()
-                } else {
-                    signUpUiState.signUpErrorMessageResId?.let {
-                        Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
+                when (signUpUiState) {
+                    is SignUpUiState.Nothing -> binding.isLoading = false
+                    is SignUpUiState.Loading -> binding.isLoading = true
+                    is SignUpUiState.Success -> {
+                        // TODO: Home 약속 리스트 화면으로 이동 구현
+//                    startActivity(Intent(this@SignUpActivity, PromiseSettingActivity::class.java)).also { finish() }
+                        finish()
+                    }
+                    is SignUpUiState.Fail -> {
+                        signUpUiState.signUpErrorMessageResId?.let {
+                            Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
         }
     }
-
 }

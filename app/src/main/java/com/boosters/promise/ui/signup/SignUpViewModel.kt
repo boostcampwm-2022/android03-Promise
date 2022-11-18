@@ -21,7 +21,7 @@ class SignUpViewModel @Inject constructor(
 
     val enterName = MutableLiveData<String>()
 
-    private val _signUpUiState = MutableStateFlow(SignUpUiState())
+    private val _signUpUiState = MutableStateFlow<SignUpUiState>(SignUpUiState.Nothing)
     val signUpUiState = _signUpUiState.asStateFlow()
 
     private val _nameInputUiState = MutableStateFlow(NameInputUiState())
@@ -38,18 +38,16 @@ class SignUpViewModel @Inject constructor(
         }
         _nameInputUiState.value = NameInputUiState()
 
-        _signUpUiState.update { SignUpUiState(isRegistering = true) }
+        _signUpUiState.update { SignUpUiState.Loading }
         viewModelScope.launch {
             userRepository.requestSignUp(name).onSuccess {
-                _signUpUiState.update { SignUpUiState(isCompleteSignUp = true) }
+                _signUpUiState.update { SignUpUiState.Success }
             }.onFailure {
                 _signUpUiState.update {
-                    SignUpUiState(
-                        isErrorSignUp = false,
-                        signUpErrorMessageResId = R.string.signUp_signUpError
-                    )
+                    SignUpUiState.Fail(R.string.signUp_signUpError)
                 }
             }
+            _signUpUiState.update { SignUpUiState.Nothing }
         }
     }
 

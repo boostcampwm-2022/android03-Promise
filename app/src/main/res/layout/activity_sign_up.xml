@@ -18,8 +18,8 @@
             type="com.boosters.promise.ui.signup.model.NameInputUiState" />
 
         <variable
-            name="signUpUiState"
-            type="com.boosters.promise.ui.signup.model.SignUpUiState" />
+            name="isLoading"
+            type="Boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="@{signUpUiState.isRegistering ? View.VISIBLE : View.INVISIBLE}"
+            android:visibility="@{isLoading ? View.VISIBLE : View.INVISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -107,7 +107,7 @@
             style="@style/Promise.Button.SquareButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:enabled="@{!signUpUiState.isRegistering}"
+            android:enabled="@{!isLoading}"
             android:text="@string/signUp_signUpRequest"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
