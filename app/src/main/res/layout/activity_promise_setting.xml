@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="com.boosters.promise.ui.promise.EventType" />
+
+        <import type="com.boosters.promise.ui.promise.model.PromiseSettingUiState" />
+
         <variable
             name="promiseSettingViewModel"
             type="com.boosters.promise.ui.promise.PromiseSettingViewModel" />
@@ -22,15 +26,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="@string/promiseSetting_promiseTitle"
-            android:maxLines="1"
-            android:maxLength="10"
             android:inputType="text"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintVertical_bias="0.0"
+            android:maxLength="10"
+            android:maxLines="1"
             app:layout_constraintBottom_toTopOf="@+id/textView_promiseSetting_promiseDate"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/textView_promiseSetting_promiseDate"
@@ -38,11 +42,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/promiseSetting_promiseDate"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintBottom_toTopOf="@+id/textInputLayout_promiseSetting_promiseDate"
-            app:layout_constraintTop_toBottomOf="@+id/editText_promiseSetting_promiseTitle"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editText_promiseSetting_promiseTitle" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayout_promiseSetting_promiseDate"
@@ -52,10 +56,10 @@
             android:hint="@string/promiseSetting_promiseDate_placeholder"
             app:endIconDrawable="@drawable/ic_calendar"
             app:endIconMode="custom"
+            app:layout_constraintBottom_toTopOf="@+id/textView_promiseSetting_promiseTime"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_promiseSetting_promiseDate"
-            app:layout_constraintBottom_toTopOf="@+id/textView_promiseSetting_promiseTime">
+            app:layout_constraintTop_toBottomOf="@+id/textView_promiseSetting_promiseDate">
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/appCompatEditText_promiseSetting_promiseDate"
@@ -64,7 +68,7 @@
                 android:clickable="true"
                 android:focusable="false"
                 android:onClick="@{() -> promiseSettingViewModel.onClickPickerEditText(EventType.SELECT_DATE)}"
-                android:text="@{promiseSettingViewModel.promiseUiState.date}" />
+                android:text="@{promiseSettingViewModel.promiseSettingUiState.promise.date}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -73,11 +77,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/promiseSetting_promiseTime"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_promiseSetting_promiseDate"
             app:layout_constraintBottom_toTopOf="@+id/textInputLayout_promiseSetting_promiseTime"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_promiseSetting_promiseDate" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayout_promiseSetting_promiseTime"
@@ -89,9 +93,9 @@
             app:endIconDrawable="@drawable/ic_clock"
             app:endIconMode="custom"
             app:layout_constraintBottom_toTopOf="@+id/textView_promiseSetting_promisePlace"
-            app:layout_constraintTop_toBottomOf="@+id/textView_promiseSetting_promiseTime"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" >
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_promiseSetting_promiseTime">
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/appCompatEditText_promiseSetting_promiseTime"
@@ -100,7 +104,7 @@
                 android:clickable="true"
                 android:focusable="false"
                 android:onClick="@{() -> promiseSettingViewModel.onClickPickerEditText(EventType.SELECT_TIME)}"
-                android:text="@{promiseSettingViewModel.promiseUiState.time}" />
+                android:text="@{promiseSettingViewModel.promiseSettingUiState.promise.time}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -109,11 +113,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/promiseSetting_promisePlace"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintBottom_toTopOf="@+id/textInputLayout_promiseSetting_promisePlace"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_promiseSetting_promiseTime"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_promiseSetting_promiseTime" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayout_promiseSetting_promisePlace"
@@ -125,9 +129,9 @@
             app:endIconDrawable="@drawable/ic_marker"
             app:endIconMode="custom"
             app:layout_constraintBottom_toTopOf="@+id/textView_promiseSetting_promiseMember"
-            app:layout_constraintTop_toBottomOf="@+id/textView_promiseSetting_promisePlace"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_promiseSetting_promisePlace">
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/appCompatEditText_promiseSetting_promisePlace"
@@ -136,7 +140,7 @@
                 android:clickable="true"
                 android:focusable="false"
                 android:onClick="@{() -> promiseSettingViewModel.onClickPickerEditText(EventType.SELECT_PLACE_SEARCH)}"
-                android:text="@{promiseSettingViewModel.promiseUiState.destinationName}" />
+                android:text="@{promiseSettingViewModel.promiseSettingUiState.promise.destinationName}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -145,26 +149,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/promiseSetting_promiseMember"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintBottom_toTopOf="@+id/textInputLayout_promiseSetting_promiseMember"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_promiseSetting_promisePlace"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_promiseSetting_promisePlace" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayout_promiseSetting_promiseMember"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="150dp"
             android:hint="@string/promiseSetting_promiseMember_placeholder"
             android:inputType="textPersonName"
             app:endIconDrawable="@drawable/ic_add_member"
             app:endIconMode="custom"
-            android:layout_marginBottom="150dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_promiseSetting_promiseMember"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_promiseSetting_promiseMember">
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/appCompatEditText_promiseSetting_promiseMember"
@@ -181,12 +185,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintVertical_bias="0.05"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_promiseSetting_promiseMember"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_promiseSetting_promiseMember"
+            app:layout_constraintVertical_bias="0.05" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_promiseSetting_completion"
@@ -195,11 +199,11 @@
             android:layout_height="wrap_content"
             android:onClick="@{() -> promiseSettingViewModel.onClickCompletionButton()}"
             android:text="@string/promiseSetting_completion"
-            app:layout_constraintVertical_bias="0.6"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_promiseSetting_promiseMember" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_promiseSetting_promiseMember"
+            app:layout_constraintVertical_bias="0.6" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

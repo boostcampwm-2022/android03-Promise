@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.ui.invite.model.UserUiState
+import com.boosters.promise.ui.promise.model.PromiseSettingUiState
 import com.boosters.promise.ui.promise.model.PromiseUiState
+import com.boosters.promise.ui.promise.model.toPromise
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -18,32 +20,42 @@ class PromiseSettingViewModel @Inject constructor(
     private val _dialogEventFlow = MutableSharedFlow<EventType>()
     val dialogEventFlow: SharedFlow<EventType> = _dialogEventFlow.asSharedFlow()
 
-    private val _promiseUiState = MutableStateFlow(PromiseUiState())
-    val promiseUiState: StateFlow<PromiseUiState> = _promiseUiState.asStateFlow()
+    private val _promiseSettingUiState: MutableStateFlow<PromiseSettingUiState> =
+        MutableStateFlow(PromiseSettingUiState.Empty(PromiseUiState()))
+    val promiseSettingUiState: StateFlow<PromiseSettingUiState> =
+        _promiseSettingUiState.asStateFlow()
 
     fun updateMember(newMemberList: List<UserUiState>) {
-        _promiseUiState.update {
-            it.copy(members = newMemberList)
+        _promiseSettingUiState.update {
+            PromiseSettingUiState.Empty(it.promise.copy(members = newMemberList))
         }
     }
 
     fun removeMember(removeMember: UserUiState) {
-        _promiseUiState.update {
-            it.copy(members = it.members.filter { member -> member.userCode != removeMember.userCode })
+        _promiseSettingUiState.update {
+            val memberList =
+                it.promise.members.filter { member -> member.userCode != removeMember.userCode }
+            PromiseSettingUiState.Empty(it.promise.copy(members = memberList))
         }
     }
 
     fun onClickCompletionButton() {
         viewModelScope.launch {
-            // promise 객체 넣어주면 firestore에 저장 및 수정됨.
-            // promiseRepository.addPromise(promise)
-        }
-    }
-
-    fun onClickDeleteButton() {
-        viewModelScope.launch {
-            // promise 객체 넣어주면 firestore에 삭제됨.
-            //promiseRepository.removePromise(promise)
+            val promise =
+                _promiseSettingUiState.value.promise.copy(promiseId = "z59PQAn8w4CimSw0kdB1")
+                    .toPromise()
+            promiseRepository.addPromise(promise).collect {
+                when (it) {
+                    true -> _promiseSettingUiState.emit(
+                        PromiseSettingUiState.Success
+                    )
+                    false -> _promiseSettingUiState.emit(
+                        PromiseSettingUiState.Fail(
+                            _promiseSettingUiState.value.promise
+                        )
+                    )
+                }
+            }
         }
     }
 
@@ -54,20 +66,32 @@ class PromiseSettingViewModel @Inject constructor(
     }
 
     fun setPromiseDate(date: String) {
-        _promiseUiState.update {
-            it.copy(date = date)
+        _promiseSettingUiState.update {
+            PromiseSettingUiState.Empty(it.promise.copy(date = date))
         }
     }
 
     fun setPromiseTime(time: String) {
-        _promiseUiState.update {
-            it.copy(time = time)
+        _promiseSettingUiState.update {
+            PromiseSettingUiState.Empty(it.promise.copy(time = time))
         }
     }
 
     fun setPromiseDestination(destination: String) {
-        _promiseUiState.update {
-            it.copy(destinationName = destination)
+        _promiseSettingUiState.update {
+            PromiseSettingUiState.Empty(it.promise.copy(destinationName = destination))
+        }
+    }
+
+    fun setPromiseTitle(title: String) {
+        _promiseSettingUiState.update {
+            PromiseSettingUiState.Empty(it.promise.copy(title = title))
+        }
+    }
+
+    fun initPromiseSettingUiState() {
+        _promiseSettingUiState.update {
+            PromiseSettingUiState.Empty(it.promise)
         }
     }
 

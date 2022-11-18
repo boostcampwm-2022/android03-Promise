@@ -1,14 +1,15 @@
 package com.boosters.promise.data.promise
 
-import com.boosters.promise.data.promise.source.PromiseRemoteDataSource
+import com.boosters.promise.data.promise.source.remote.PromiseRemoteDataSource
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class PromiseRepositoryImpl @Inject constructor(
     private val promiseRemoteDataSource: PromiseRemoteDataSource,
 ) : PromiseRepository {
 
-    override fun addPromise(promise: Promise) {
-        promiseRemoteDataSource.addPromise(promise)
+    override fun addPromise(promise: Promise): Flow<Boolean> {
+        return promiseRemoteDataSource.addPromise(promise)
     }
 
     override fun removePromise(promise: Promise) {
@@ -16,11 +17,7 @@ class PromiseRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getPromiseList(date: String): MutableList<Promise> {
-        val promiseList = mutableListOf<Promise>()
-        promiseRemoteDataSource.getPromiseList(date).forEach {
-            promiseList.add(it)
-        }
-        return promiseList
+        return promiseRemoteDataSource.getPromiseList(date)
     }
 
 }

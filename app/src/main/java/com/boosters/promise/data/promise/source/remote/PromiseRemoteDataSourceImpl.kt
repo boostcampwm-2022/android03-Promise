@@ -1,10 +1,14 @@
 package com.boosters.promise.data.promise.source.remote
 
+import android.util.Log
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseBody
-import com.boosters.promise.data.promise.source.PromiseRemoteDataSource
 import com.boosters.promise.data.promise.toPromise
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -14,12 +18,24 @@ class PromiseRemoteDataSourceImpl @Inject constructor(
 
     private val promiseRef = database.collection(DATABASE_PROMISE_REF_PATH)
 
-    override fun addPromise(promise: Promise) {
+    override fun addPromise(promise: Promise): Flow<Boolean> {
         var id = promise.promiseId
         if (promise.promiseId == "") {
             id = promiseRef.document().id
         }
-        promiseRef.document(id).set(promise.copy(promiseId = id))
+        return callbackFlow {
+            promiseRef.document(id).set(promise.copy(promiseId = id))
+                .addOnSuccessListener {
+                    trySend(true)
+                }
+                .addOnFailureListener {
+                    trySend(false)
+                    close()
+                }
+            awaitClose {
+                cancel()
+            }
+        }
     }
 
     override fun removePromise(promise: Promise) {

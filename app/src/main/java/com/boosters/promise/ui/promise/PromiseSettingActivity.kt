@@ -4,12 +4,11 @@ import android.content.Intent
 import android.os.Build.VERSION
 import android.os.Bundle
 import android.text.format.DateFormat
-import android.view.KeyEvent
 import android.view.MotionEvent
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +19,7 @@ import com.boosters.promise.ui.invite.InviteActivity
 import com.boosters.promise.ui.invite.model.UserUiState
 import com.boosters.promise.ui.place.PlaceSearchDialogFragment
 import com.boosters.promise.ui.promise.adapter.PromiseMemberListAdapter
+import com.boosters.promise.ui.promise.model.PromiseSettingUiState
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -62,8 +62,14 @@ class PromiseSettingActivity : AppCompatActivity() {
             PromiseMemberListAdapter { promiseSettingViewModel.removeMember(it) }
         binding.recyclerViewPromiseSettingPromiseMembers.adapter = promiseMemberListAdapter
         lifecycleScope.launch {
-            promiseSettingViewModel.promiseUiState.collect { promiseUiState ->
-                promiseMemberListAdapter.submitList(promiseUiState.members)
+            promiseSettingViewModel.promiseSettingUiState.collect { promiseSettingUiState ->
+                when (promiseSettingUiState) {
+                    is PromiseSettingUiState.Empty -> promiseMemberListAdapter.submitList(
+                        promiseSettingUiState.promise.members
+                    )
+                    is PromiseSettingUiState.Success -> TODO("move to promise detail")
+                    is PromiseSettingUiState.Fail -> showFailDialog()
+                }
             }
         }
 
@@ -94,6 +100,8 @@ class PromiseSettingActivity : AppCompatActivity() {
             binding.editTextPromiseSettingPromiseTitle.windowToken,
             0
         )
+        val promiseTitle = binding.editTextPromiseSettingPromiseTitle.text.toString()
+        promiseSettingViewModel.setPromiseTitle(promiseTitle)
     }
 
     private fun showDatePicker() {
@@ -156,9 +164,24 @@ class PromiseSettingActivity : AppCompatActivity() {
     }
 
     private fun showMember() {
-        val members = ArrayList(promiseSettingViewModel.promiseUiState.value.members)
-        val intent = Intent(this, InviteActivity::class.java).putParcelableArrayListExtra("member", members)
+        if (promiseSettingViewModel.promiseSettingUiState.value !is PromiseSettingUiState.Empty) {
+            return
+        }
+        val promiseSettingUiState =
+            promiseSettingViewModel.promiseSettingUiState.value as PromiseSettingUiState.Empty
+        val members = ArrayList(promiseSettingUiState.promise.members)
+        val intent =
+            Intent(this, InviteActivity::class.java).putParcelableArrayListExtra("member", members)
         getContent.launch(intent)
+    }
+
+    private fun showFailDialog() {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.promiseSetting_fail)
+            .setPositiveButton(R.string.ok) { _, _ ->
+                promiseSettingViewModel.initPromiseSettingUiState()
+            }
+            .show()
     }
 
     companion object {
