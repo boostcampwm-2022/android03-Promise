@@ -19,13 +19,14 @@ class PlaceSearchListAdapter(
     }
 
     override fun onBindViewHolder(holder: SearchAddressViewHolder, position: Int) {
-        holder.bind(getItem(position) ?: return)
+        holder.bind(getItem(position))
     }
 
     inner class SearchAddressViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         LayoutInflater.from(parent.context)
             .inflate(R.layout.item_search_address_result, parent, false)
     ) {
+
         private val binding = ItemSearchAddressResultBinding.bind(itemView)
 
         fun bind(item: PlaceUiState) {

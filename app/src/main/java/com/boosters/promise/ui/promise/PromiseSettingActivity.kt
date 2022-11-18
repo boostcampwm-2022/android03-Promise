@@ -4,19 +4,22 @@ import android.content.Intent
 import android.os.Build.VERSION
 import android.os.Bundle
 import android.text.format.DateFormat
+import android.view.KeyEvent
+import android.view.MotionEvent
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.boosters.promise.R
 import com.boosters.promise.data.place.Place
 import com.boosters.promise.databinding.ActivityPromiseSettingBinding
-import com.boosters.promise.databinding.ItemPromiseMemberBinding
 import com.boosters.promise.ui.invite.InviteActivity
 import com.boosters.promise.ui.invite.model.UserUiState
 import com.boosters.promise.ui.place.PlaceSearchDialogFragment
+import com.boosters.promise.ui.promise.adapter.PromiseMemberListAdapter
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -30,6 +33,7 @@ import kotlin.collections.ArrayList
 class PromiseSettingActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPromiseSettingBinding
+    private lateinit var promiseMemberListAdapter: PromiseMemberListAdapter
     private val promiseSettingViewModel: PromiseSettingViewModel by viewModels()
     private val getContent =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -37,7 +41,10 @@ class PromiseSettingActivity : AppCompatActivity() {
                 if (VERSION.SDK_INT < 33) {
                     result.data?.extras?.getParcelableArrayList("memberList")
                 } else {
-                    result.data?.extras?.getParcelableArrayList("memberList", UserUiState::class.java)
+                    result.data?.extras?.getParcelableArrayList(
+                        "memberList",
+                        UserUiState::class.java
+                    )
                 }?.let {
                     promiseSettingViewModel.updateMember(it.toList())
                 }
@@ -50,7 +57,15 @@ class PromiseSettingActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.promiseSettingViewModel = promiseSettingViewModel
         setContentView(binding.root)
-        setObserver()
+
+        promiseMemberListAdapter =
+            PromiseMemberListAdapter { promiseSettingViewModel.removeMember(it) }
+        binding.recyclerViewPromiseSettingPromiseMembers.adapter = promiseMemberListAdapter
+        lifecycleScope.launch {
+            promiseSettingViewModel.promiseUiState.collect { promiseUiState ->
+                promiseMemberListAdapter.submitList(promiseUiState.members)
+            }
+        }
 
         lifecycleScope.launch {
             promiseSettingViewModel.dialogEventFlow.collectLatest { event ->
@@ -63,24 +78,32 @@ class PromiseSettingActivity : AppCompatActivity() {
             }
         }
 
+        binding.editTextPromiseSettingPromiseTitle.setOnEditorActionListener { _, actionId, keyEvent ->
+            if (actionId != EditorInfo.IME_ACTION_DONE
+                && keyEvent.keyCode != KeyEvent.KEYCODE_ENTER
+            ) {
+                return@setOnEditorActionListener false
+            }
+            hideKeyBoard()
+            true
+        }
+
     }
 
-    private fun setObserver() {
-        lifecycleScope.launch {
-            promiseSettingViewModel.promiseUiState.collect { promiseUiState ->
-                val chipGroup = binding.chipGroupPromiseSetting
-                chipGroup.removeAllViews()
-                repeat(promiseUiState.members.size) { index ->
-                    val chipBinding = DataBindingUtil.inflate<ItemPromiseMemberBinding>(layoutInflater, R.layout.item_promise_member, chipGroup, true)
-                    chipBinding.apply {
-                        userUiState = promiseUiState.members[index]
-                        chipPromiseSettingPromiseMemberName.setOnCloseIconClickListener {
-                            promiseSettingViewModel.removeMember(index)
-                        }
-                    }
-                }
-            }
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        if (event?.action == MotionEvent.ACTION_DOWN) {
+            currentFocus?.clearFocus()
+            hideKeyBoard()
         }
+        return super.dispatchTouchEvent(event)
+    }
+
+    private fun hideKeyBoard() {
+        val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(
+            binding.editTextPromiseSettingPromiseTitle.windowToken,
+            0
+        )
     }
 
     private fun showDatePicker() {
