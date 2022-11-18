@@ -6,10 +6,15 @@ import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ActivitySignUpBinding
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SignUpActivity : AppCompatActivity() {
@@ -19,12 +24,15 @@ class SignUpActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = DataBindingUtil.setContentView<ActivitySignUpBinding?>(this, R.layout.activity_sign_up).apply {
             lifecycleOwner = this@SignUpActivity
-            signUpViewModel = this@SignUpActivity.signUpViewModel
         }
 
+        initSignUpButton()
+        bindVariable()
+    }
+
+    private fun initSignUpButton() {
         binding.buttonSignUpSignUpRequest.setOnClickListener {
             binding.editTextSignUpName.clearFocus()
             getSystemService(Context.INPUT_METHOD_SERVICE).run {
@@ -32,15 +40,29 @@ class SignUpActivity : AppCompatActivity() {
             }
             signUpViewModel.requestSignUp()
         }
+    }
 
-        signUpViewModel.signUpUiState.observe(this) { signUpUiState ->
-            if (signUpUiState.isCompleteSignUp) {
-//                startActivity(Intent(this, PromiseSettingActivity::class.java))
-                // TODO: Home 약속 리스트 화면으로 이동 구현
-                finish()
-            } else {
-                signUpUiState.signUpErrorMessageResId?.let {
-                    Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
+    private fun bindVariable() {
+        binding.enterName = this@SignUpActivity.signUpViewModel.enterName
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                signUpViewModel.nameInputUiState.collectLatest {
+                    binding.nameInputUiState = it
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            signUpViewModel.signUpUiState.collect { signUpUiState ->
+                if (signUpUiState.isCompleteSignUp) {
+//                    startActivity(Intent(this@SignUpActivity, PromiseSettingActivity::class.java))
+                    // TODO: Home 약속 리스트 화면으로 이동 구현
+                    finish()
+                } else {
+                    signUpUiState.signUpErrorMessageResId?.let {
+                        Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
+                    }
                 }
             }
         }

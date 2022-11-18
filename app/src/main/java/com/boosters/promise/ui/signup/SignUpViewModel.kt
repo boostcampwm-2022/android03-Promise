@@ -1,6 +1,5 @@
 package com.boosters.promise.ui.signup
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,6 +8,9 @@ import com.boosters.promise.data.user.UserRepository
 import com.boosters.promise.ui.signup.model.NameInputUiState
 import com.boosters.promise.ui.signup.model.SignUpUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,29 +21,33 @@ class SignUpViewModel @Inject constructor(
 
     val enterName = MutableLiveData<String>()
 
-    private val _signUpUiState = MutableLiveData<SignUpUiState>()
-    val signUpUiState: LiveData<SignUpUiState> = _signUpUiState
+    private val _signUpUiState = MutableStateFlow(SignUpUiState())
+    val signUpUiState = _signUpUiState.asStateFlow()
 
-    private val _nameInputUiState = MutableLiveData<NameInputUiState>()
-    val nameInputUiState: LiveData<NameInputUiState> = _nameInputUiState
+    private val _nameInputUiState = MutableStateFlow(NameInputUiState())
+    val nameInputUiState = _nameInputUiState.asStateFlow()
 
     fun requestSignUp() {
-        enterName.value?.let { name ->
-            if (nameValidationRegex.matches(name).not()) {
-                _nameInputUiState.value = NameInputUiState(
-                    isNameValidationFail = true,
-                    nameValidationErrorTextResId = R.string.signUp_inputError
-                )
-                return
-            } else {
-                _nameInputUiState.value = NameInputUiState()
-            }
-            _signUpUiState.value = SignUpUiState(isRegistering = true)
-            viewModelScope.launch {
-                userRepository.requestSignUp(name).onSuccess {
-                    _signUpUiState.value = SignUpUiState(isCompleteSignUp = true)
-                }.onFailure {
-                    _signUpUiState.value = SignUpUiState(isErrorSignUp = false, signUpErrorMessageResId = R.string.signUp_signUpError)
+        val name = enterName.value ?: ""
+        if (name.matches(nameValidationRegex).not()) {
+            _nameInputUiState.value = NameInputUiState(
+                isNameValidationFail = true,
+                nameValidationErrorTextResId = R.string.signUp_inputError
+            )
+            return
+        }
+        _nameInputUiState.value = NameInputUiState()
+
+        _signUpUiState.update { SignUpUiState(isRegistering = true) }
+        viewModelScope.launch {
+            userRepository.requestSignUp(name).onSuccess {
+                _signUpUiState.update { SignUpUiState(isCompleteSignUp = true) }
+            }.onFailure {
+                _signUpUiState.update {
+                    SignUpUiState(
+                        isErrorSignUp = false,
+                        signUpErrorMessageResId = R.string.signUp_signUpError
+                    )
                 }
             }
         }
@@ -50,4 +56,5 @@ class SignUpViewModel @Inject constructor(
     companion object {
         private val nameValidationRegex = "[0-9a-zA-Z가-힣]{1,8}".toRegex()
     }
+
 }

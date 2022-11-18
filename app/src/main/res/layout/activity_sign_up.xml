@@ -7,9 +7,19 @@
 
         <import type="android.view.View" />
 
+        <import type="androidx.lifecycle.MutableLiveData" />
+
         <variable
-            name="signUpViewModel"
-            type="com.boosters.promise.ui.signup.SignUpViewModel" />
+            name="enterName"
+            type="MutableLiveData&lt;String&gt;" />
+
+        <variable
+            name="nameInputUiState"
+            type="com.boosters.promise.ui.signup.model.NameInputUiState" />
+
+        <variable
+            name="signUpUiState"
+            type="com.boosters.promise.ui.signup.model.SignUpUiState" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="@{signUpViewModel.signUpUiState.isRegistering ? View.VISIBLE : View.INVISIBLE}"
+            android:visibility="@{signUpUiState.isRegistering ? View.VISIBLE : View.INVISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -75,7 +85,7 @@
             android:layout_height="wrap_content"
             app:counterEnabled="true"
             app:counterMaxLength="6"
-            app:error='@{signUpViewModel.nameInputUiState.isNameValidationFail ? context.getString(signUpViewModel.nameInputUiState.nameValidationErrorTextResId) : ""}'
+            app:error='@{nameInputUiState.isNameValidationFail ? context.getString(nameInputUiState.nameValidationErrorTextResId) : ""}'
             app:layout_constraintBottom_toTopOf="@id/button_signUp_SignUpRequest"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -88,7 +98,7 @@
                 android:inputType="text"
                 android:maxLength="6"
                 android:maxLines="1"
-                android:text="@={signUpViewModel.enterName}" />
+                android:text="@={enterName}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -97,7 +107,7 @@
             style="@style/Promise.Button.SquareButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:enabled="@{!signUpViewModel.signUpUiState.isRegistering}"
+            android:enabled="@{!signUpUiState.isRegistering}"
             android:text="@string/signUp_signUpRequest"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
