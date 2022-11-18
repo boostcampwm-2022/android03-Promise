@@ -2,7 +2,6 @@ package com.boosters.promise.ui.place.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.text.parseAsHtml
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -20,9 +19,12 @@ class PlaceSearchListAdapter(
 
     override fun onBindViewHolder(holder: SearchAddressViewHolder, position: Int) {
         holder.bind(getItem(position))
+        holder.itemView.setOnClickListener {
+            onClickListener(getItem(position))
+        }
     }
 
-    inner class SearchAddressViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
+    class SearchAddressViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         LayoutInflater.from(parent.context)
             .inflate(R.layout.item_search_address_result, parent, false)
     ) {
@@ -30,10 +32,7 @@ class PlaceSearchListAdapter(
         private val binding = ItemSearchAddressResultBinding.bind(itemView)
 
         fun bind(item: PlaceUiState) {
-            binding.textViewItemSearchAddressResultTitle.text = item.title.parseAsHtml()
-            itemView.setOnClickListener {
-                onClickListener(item)
-            }
+            binding.textViewItemSearchAddressResultTitle.text = item.title
         }
     }
 
