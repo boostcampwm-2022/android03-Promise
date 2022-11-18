@@ -2,7 +2,6 @@ package com.boosters.promise.data.promise.source.remote
 
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseBody
-import com.boosters.promise.data.promise.source.PromiseRemoteDataSource
 import com.boosters.promise.data.promise.toPromise
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await

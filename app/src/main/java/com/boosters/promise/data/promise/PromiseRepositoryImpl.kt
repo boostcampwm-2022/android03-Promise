@@ -1,6 +1,6 @@
 package com.boosters.promise.data.promise
 
-import com.boosters.promise.data.promise.source.PromiseRemoteDataSource
+import com.boosters.promise.data.promise.source.remote.PromiseRemoteDataSource
 import javax.inject.Inject
 
 class PromiseRepositoryImpl @Inject constructor(
