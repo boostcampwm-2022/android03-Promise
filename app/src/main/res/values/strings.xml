@@ -16,7 +16,6 @@
     <string name="promiseSetting_promiseMember">멤버  ⃰</string>
     <string name="promiseSetting_promiseMember_placeholder">함께할 사람을 초대하세요.</string>
     <string name="promiseSetting_completion">완료</string>
-    <string name="promiseSetting_fail">저장에 실패했습니다.</string>
 
     <!-- 약속 추가 다이얼로그 -->
     <string name="date_format">%d/%02d/%02d</string>

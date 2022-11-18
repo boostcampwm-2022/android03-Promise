@@ -1,15 +1,13 @@
 package com.boosters.promise.data.promise.source.remote
 
-import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseBody
-import kotlinx.coroutines.flow.Flow
 
 interface PromiseRemoteDataSource {
 
-    fun addPromise(promise: Promise): Flow<Boolean>
+    fun addPromise(promise: PromiseBody)
 
-    fun removePromise(promise: Promise)
+    fun removePromise(promise: PromiseBody)
 
-    suspend fun getPromiseList(date: String): MutableList<Promise>
+    suspend fun getPromiseList(date: String): MutableList<PromiseBody>
 
 }

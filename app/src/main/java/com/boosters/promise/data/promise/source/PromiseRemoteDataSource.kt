@@ -1,6 +1,8 @@
-package com.boosters.promise.data.promise
+package com.boosters.promise.data.promise.source
 
-interface PromiseRepository {
+import com.boosters.promise.data.promise.Promise
+
+interface PromiseRemoteDataSource {
 
     fun addPromise(promise: Promise)
 

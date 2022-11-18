@@ -1,8 +1,9 @@
 package com.boosters.promise.data.promise.di
+
+import com.boosters.promise.data.promise.source.PromiseRemoteDataSource
 import com.boosters.promise.data.promise.source.remote.PromiseRemoteDataSourceImpl
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.promise.PromiseRepositoryImpl
-import com.boosters.promise.data.promise.source.remote.PromiseRemoteDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
