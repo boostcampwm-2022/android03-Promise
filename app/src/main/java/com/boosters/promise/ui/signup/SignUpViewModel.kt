@@ -27,13 +27,16 @@ class SignUpViewModel @Inject constructor(
     fun requestSignUp() {
         enterName.value?.let { name ->
             if (nameValidationRegex.matches(name).not()) {
-                _signUpUiState.value = SignUpUiState(false, R.string.signUp_inputError)
+                _signUpUiState.value = SignUpUiState(
+                    isNameValidationFail = true,
+                    errorText = R.string.signUp_inputError
+                )
                 return
             }
-            _signUpUiState.value = SignUpUiState(true, null)
+            _signUpUiState.value = SignUpUiState(true)
             viewModelScope.launch {
                 userRepository.requestSignUp(name)
-                _signUpUiState.value = SignUpUiState(false, null)
+                _signUpUiState.value = SignUpUiState()
                 _isCompleteSignUp.value = true
             }
         }
