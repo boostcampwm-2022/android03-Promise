@@ -78,16 +78,6 @@ class PromiseSettingActivity : AppCompatActivity() {
             }
         }
 
-        binding.editTextPromiseSettingPromiseTitle.setOnEditorActionListener { _, actionId, keyEvent ->
-            if (actionId != EditorInfo.IME_ACTION_DONE
-                && keyEvent.keyCode != KeyEvent.KEYCODE_ENTER
-            ) {
-                return@setOnEditorActionListener false
-            }
-            hideKeyBoard()
-            true
-        }
-
     }
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
