@@ -26,7 +26,6 @@ class StartActivity : AppCompatActivity() {
                     finish()
                 }
                 true
-                false
             }
         }
         super.onCreate(savedInstanceState)
