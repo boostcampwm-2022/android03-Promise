@@ -10,8 +10,8 @@ class UserRepositoryImpl(
 ) : UserRepository {
 
     override suspend fun requestSignUp(userName: String): Result<User> {
-        return userRemoteDataSource.requestSignUp(userName).also {
-            myInfoLocalDataSource.saveMyInfo(it.getOrThrow())
+        return userRemoteDataSource.requestSignUp(userName).onSuccess {
+            myInfoLocalDataSource.saveMyInfo(it)
         }
     }
 
