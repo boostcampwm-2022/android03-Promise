@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             app:counterEnabled="true"
             app:counterMaxLength="6"
-            app:error='@{signUpViewModel.signUpUiState.isNameValidationFail ? context.getString(signUpViewModel.signUpUiState.errorText) : ""}'
+            app:error='@{signUpViewModel.nameInputUiState.isNameValidationFail ? context.getString(signUpViewModel.nameInputUiState.nameValidationErrorTextResId) : ""}'
             app:layout_constraintBottom_toTopOf="@id/button_signUp_SignUpRequest"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
