@@ -2,6 +2,7 @@ package com.boosters.promise.ui.promise.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -14,26 +15,32 @@ class PromiseMemberListAdapter(
 ) : ListAdapter<UserUiState, PromiseMemberListAdapter.PromiseMemberListViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PromiseMemberListViewHolder {
-        return PromiseMemberListViewHolder(parent)
+        val binding: ItemPromiseMemberBinding = DataBindingUtil.inflate(
+            LayoutInflater.from(parent.context),
+            R.layout.item_promise_member,
+            parent,
+            false
+        )
+        val promiseMemberListViewHolder = PromiseMemberListViewHolder(binding)
+        binding.apply {
+            root.setOnClickListener {
+                onClickListener(getItem(promiseMemberListViewHolder.adapterPosition))
+            }
+        }
+        return promiseMemberListViewHolder
     }
 
     override fun onBindViewHolder(holder: PromiseMemberListViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    inner class PromiseMemberListViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
-        LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_promise_member, parent, false)
-    ) {
-
-        private val binding = ItemPromiseMemberBinding.bind(itemView)
+    class PromiseMemberListViewHolder(private val binding: ItemPromiseMemberBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: UserUiState) {
             binding.userUiState = item
-            itemView.setOnClickListener {
-                onClickListener(item)
-            }
         }
+
     }
 
     companion object {
