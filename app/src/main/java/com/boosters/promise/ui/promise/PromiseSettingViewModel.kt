@@ -27,9 +27,9 @@ class PromiseSettingViewModel @Inject constructor(
         }
     }
 
-    fun removeMember(removeIndex: Int) {
+    fun removeMember(removeMember: UserUiState) {
         _promiseUiState.update {
-            it.copy(members = it.members.filterIndexed { index, _ -> index != removeIndex })
+            it.copy(members = it.members.filter { member -> member.userCode != removeMember.userCode })
         }
     }
 
@@ -70,4 +70,5 @@ class PromiseSettingViewModel @Inject constructor(
             it.copy(destinationName = destination)
         }
     }
+
 }
