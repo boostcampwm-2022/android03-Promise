@@ -17,8 +17,7 @@
         tools:targetApi="33">
         <activity
             android:name=".ui.promise.PromiseSettingActivity"
-            android:windowSoftInputMode="adjustNothing"
-            android:exported="true" />
+            android:exported="false" />
 
         <activity
             android:name=".ui.start.StartActivity"
