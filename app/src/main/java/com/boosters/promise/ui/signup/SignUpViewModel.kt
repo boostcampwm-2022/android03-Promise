@@ -7,6 +7,7 @@ import com.boosters.promise.R
 import com.boosters.promise.data.user.UserRepository
 import com.boosters.promise.ui.signup.model.NameInputUiState
 import com.boosters.promise.ui.signup.model.SignUpUiState
+import com.boosters.promise.util.NetworkConnectUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val networkConnectUtil: NetworkConnectUtil
 ) : ViewModel() {
 
     val enterName = MutableLiveData<String>()
@@ -37,6 +39,11 @@ class SignUpViewModel @Inject constructor(
             return
         }
         _nameInputUiState.value = NameInputUiState()
+
+        if (networkConnectUtil.isOnline().not()) {
+            _signUpUiState.update { SignUpUiState.Fail(R.string.signUp_networkError) }
+            return
+        }
 
         _signUpUiState.update { SignUpUiState.Loading }
         viewModelScope.launch {
