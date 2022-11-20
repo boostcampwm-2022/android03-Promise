@@ -5,6 +5,7 @@ import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
+import com.boosters.promise.data.network.NetworkConnectUtil
 import com.boosters.promise.data.user.UserRepository
 import com.boosters.promise.data.user.UserRepositoryImpl
 import com.boosters.promise.data.user.source.local.MyInfoLocalDataSource
@@ -29,8 +30,8 @@ object UserModule {
 
     @Singleton
     @Provides
-    fun provideUserRemoteDataSource(): UserRemoteDataSource =
-        UserRemoteDataSourceImpl(Firebase.firestore.collection(USERS_PATH))
+    fun provideUserRemoteDataSource(networkConnectUtil: NetworkConnectUtil): UserRemoteDataSource =
+        UserRemoteDataSourceImpl(Firebase.firestore.collection(USERS_PATH), networkConnectUtil)
 
     @Singleton
     @Provides

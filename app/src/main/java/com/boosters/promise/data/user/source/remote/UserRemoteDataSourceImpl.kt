@@ -1,5 +1,6 @@
 package com.boosters.promise.data.user.source.remote
 
+import com.boosters.promise.data.network.NetworkConnectUtil
 import com.boosters.promise.data.user.User
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ktx.snapshots
@@ -8,10 +9,13 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.tasks.await
 
 class UserRemoteDataSourceImpl(
-    private val userCollectionReference: CollectionReference
+    private val userCollectionReference: CollectionReference,
+    private val networkConnectUtil: NetworkConnectUtil
 ) : UserRemoteDataSource {
 
     override suspend fun requestSignUp(userName: String): Result<User> = runCatching {
+        networkConnectUtil.checkNetworkOnline()
+
         val userCode = userCollectionReference.document().id.take(USER_CODE_LENGTH)
         val userBody = UserBody(
             userCode = userCode,
