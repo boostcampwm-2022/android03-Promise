@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import com.boosters.promise.R
 import com.boosters.promise.data.place.Place
 import com.boosters.promise.databinding.DialogPlaceSearchBinding
-import com.boosters.promise.ui.place.adapter.PlaceSearchListAdapter
+import com.boosters.promise.ui.place.adapter.PlaceSearchAdapter
 import com.boosters.promise.ui.place.model.toPlace
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,19 +36,18 @@ class PlaceSearchDialogFragment : DialogFragment() {
 
             _binding = DataBindingUtil.inflate(inflater, R.layout.dialog_place_search, null, false)
 
-            val placeSearchListAdapter = PlaceSearchListAdapter { item ->
-                binding.searchViewDialogSearchAddress.setQuery(item.title, false)
+            val placeSearchAdapter = PlaceSearchAdapter { item ->
                 listener(item.toPlace())
                 dismiss()
             }
-            binding.listViewDialogSearchAddressResult.adapter = placeSearchListAdapter
+            binding.listViewDialogSearchAddressResult.adapter = placeSearchAdapter
             val decoration = DividerItemDecoration(context, VERTICAL)
             binding.listViewDialogSearchAddressResult.addItemDecoration(decoration)
 
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
                     placeSearchViewModel.promiseUiState.collect { searchResult ->
-                        placeSearchListAdapter.submitList(searchResult)
+                        placeSearchAdapter.setDataSet(searchResult)
                     }
                 }
             }
