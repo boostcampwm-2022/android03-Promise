@@ -141,14 +141,16 @@ class PromiseSettingActivity : AppCompatActivity() {
     private fun showPlaceSearchDialog() {
         PlaceSearchDialogFragment()
             .setOnSelectPlaceSearchListener { searchedPlace ->
-                promiseSettingViewModel.setPromiseDestination(searchedPlace.placeTitle)
+                promiseSettingViewModel.setPromiseDestination(searchedPlace.placeTitle,
+                    searchedPlace.location)
             }
             .show(supportFragmentManager, SEARCH_DIALOG_TAG)
     }
 
     private fun showMember() {
         val members = ArrayList(promiseSettingViewModel.promiseUiState.value.members)
-        val intent = Intent(this, InviteActivity::class.java).putParcelableArrayListExtra("member", members)
+        val intent =
+            Intent(this, InviteActivity::class.java).putParcelableArrayListExtra("member", members)
         getContent.launch(intent)
     }
 

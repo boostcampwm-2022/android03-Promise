@@ -2,6 +2,7 @@ package com.boosters.promise.ui.promise
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boosters.promise.data.promise.Location
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.ui.invite.model.UserUiState
 import com.boosters.promise.ui.promise.model.PromiseSettingEvent
@@ -66,9 +67,9 @@ class PromiseSettingViewModel @Inject constructor(
         }
     }
 
-    fun setPromiseDestination(destination: String) {
+    fun setPromiseDestination(destinationName: String, destinationLocation: Location) {
         _promiseUiState.update {
-            it.copy(destinationName = destination)
+            it.copy(destinationName = destinationName, destinationLocation = destinationLocation)
         }
     }
 
