@@ -62,6 +62,7 @@ class SignUpViewModel @Inject constructor(
     private fun isOnline(): Boolean {
         return networkConnectUtil.isOnline().also { isOnline ->
             if (isOnline.not()) _signUpUiState.update { SignUpUiState.Fail(R.string.signUp_networkError) }
+            _signUpUiState.update { SignUpUiState.Nothing }
         }
     }
 
