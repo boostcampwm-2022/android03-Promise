@@ -2,17 +2,26 @@ package com.boosters.promise.ui.promise
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boosters.promise.R
 import com.boosters.promise.data.promise.PromiseRepository
+import com.boosters.promise.data.user.User
+import com.boosters.promise.data.user.UserRepository
+import com.boosters.promise.data.user.toUserUiState
 import com.boosters.promise.ui.invite.model.UserUiState
+import com.boosters.promise.ui.promise.model.PromiseSettingUiState
 import com.boosters.promise.ui.promise.model.PromiseUiState
+import com.boosters.promise.ui.promise.model.toPromise
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
 class PromiseSettingViewModel @Inject constructor(
-    private val promiseRepository: PromiseRepository
+    private val promiseRepository: PromiseRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _dialogEventFlow = MutableSharedFlow<EventType>()
@@ -20,6 +29,22 @@ class PromiseSettingViewModel @Inject constructor(
 
     private val _promiseUiState = MutableStateFlow(PromiseUiState())
     val promiseUiState: StateFlow<PromiseUiState> = _promiseUiState.asStateFlow()
+
+    private val _promiseSettingUiState: MutableStateFlow<PromiseSettingUiState> =
+        MutableStateFlow(PromiseSettingUiState.Loading)
+    val promiseSettingUiState: StateFlow<PromiseSettingUiState> =
+        _promiseSettingUiState.asStateFlow()
+
+    private val dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")
+    private lateinit var myInfo: User
+
+    init {
+        viewModelScope.launch {
+            userRepository.getMyInfo().first().onSuccess {
+                myInfo = it
+            }
+        }
+    }
 
     fun updateMember(newMemberList: List<UserUiState>) {
         _promiseUiState.update {
@@ -29,21 +54,32 @@ class PromiseSettingViewModel @Inject constructor(
 
     fun removeMember(removeMember: UserUiState) {
         _promiseUiState.update {
-            it.copy(members = it.members.filter { member -> member.userCode != removeMember.userCode })
+            val memberList =
+                it.members.filter { member -> member.userCode != removeMember.userCode }
+            it.copy(members = memberList)
         }
     }
 
     fun onClickCompletionButton() {
-        viewModelScope.launch {
-            // promise 객체 넣어주면 firestore에 저장 및 수정됨.
-            // promiseRepository.addPromise(promise)
+        val promise = _promiseUiState.value
+        if (promise.title.isEmpty() || promise.time.isEmpty() || promise.destinationName.isEmpty() || promise.date.isEmpty()) {
+            _promiseSettingUiState.update { PromiseSettingUiState.Fail(R.string.promiseSetting_empty) }
+            return
         }
-    }
-
-    fun onClickDeleteButton() {
+        val promiseTime = LocalDateTime.parse("${promise.date} ${promise.time}", dateFormatter)
+        if (promiseTime.isBefore(LocalDateTime.now())) {
+            _promiseSettingUiState.update { PromiseSettingUiState.Fail(R.string.promiseSetting_beforeTime) }
+            return
+        }
         viewModelScope.launch {
-            // promise 객체 넣어주면 firestore에 삭제됨.
-            //promiseRepository.removePromise(promise)
+            val members = promise.members.toMutableList()
+            members.add(myInfo.toUserUiState())
+            promiseRepository.addPromise(promise.copy(members = members).toPromise()).collect {
+                when (it) {
+                    true -> _promiseSettingUiState.update { PromiseSettingUiState.Success }
+                    false -> _promiseSettingUiState.update { PromiseSettingUiState.Fail(R.string.promiseSetting_fail) }
+                }
+            }
         }
     }
 
@@ -68,6 +104,18 @@ class PromiseSettingViewModel @Inject constructor(
     fun setPromiseDestination(destination: String) {
         _promiseUiState.update {
             it.copy(destinationName = destination)
+        }
+    }
+
+    fun setPromiseTitle(title: String) {
+        _promiseUiState.update {
+            it.copy(title = title)
+        }
+    }
+
+    fun initPromiseSettingUiState() {
+        _promiseSettingUiState.update {
+            PromiseSettingUiState.Loading
         }
     }
 
