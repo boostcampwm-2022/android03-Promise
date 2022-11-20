@@ -140,7 +140,7 @@ class PromiseSettingActivity : AppCompatActivity() {
 
     private fun showPlaceSearchDialog() {
         PlaceSearchDialogFragment()
-            .setOnSearchPlaceDialogListener { searchedPlace ->
+            .setOnSelectPlaceSearchListener { searchedPlace ->
                 promiseSettingViewModel.setPromiseDestination(searchedPlace.placeTitle)
             }
             .show(supportFragmentManager, SEARCH_DIALOG_TAG)

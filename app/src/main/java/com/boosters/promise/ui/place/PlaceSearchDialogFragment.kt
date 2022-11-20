@@ -27,7 +27,7 @@ class PlaceSearchDialogFragment : DialogFragment() {
     private val binding get() = _binding
     private val placeSearchViewModel: PlaceSearchViewModel by viewModels()
 
-    private lateinit var listener: (Place) -> Unit
+    private lateinit var onClickListener: (Place) -> Unit
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
@@ -37,12 +37,12 @@ class PlaceSearchDialogFragment : DialogFragment() {
             _binding = DataBindingUtil.inflate(inflater, R.layout.dialog_place_search, null, false)
 
             val placeSearchAdapter = PlaceSearchAdapter { item ->
-                listener(item.toPlace())
+                onClickListener(item.toPlace())
                 dismiss()
             }
-            binding.listViewDialogSearchAddressResult.adapter = placeSearchAdapter
+            binding.recyclerViewDialogPlaceSearchResult.adapter = placeSearchAdapter
             val decoration = DividerItemDecoration(context, VERTICAL)
-            binding.listViewDialogSearchAddressResult.addItemDecoration(decoration)
+            binding.recyclerViewDialogPlaceSearchResult.addItemDecoration(decoration)
 
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -52,7 +52,7 @@ class PlaceSearchDialogFragment : DialogFragment() {
                 }
             }
 
-            binding.searchViewDialogSearchAddress.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            binding.searchViewDialogPlaceSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     placeSearchViewModel.searchPlace(query.orEmpty())
                     return true
@@ -66,8 +66,8 @@ class PlaceSearchDialogFragment : DialogFragment() {
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
-    fun setOnSearchPlaceDialogListener(listener: (Place) -> Unit): DialogFragment {
-        this.listener = listener
+    fun setOnSelectPlaceSearchListener(onClickListener: (Place) -> Unit): DialogFragment {
+        this.onClickListener = onClickListener
         return this@PlaceSearchDialogFragment
     }
 
