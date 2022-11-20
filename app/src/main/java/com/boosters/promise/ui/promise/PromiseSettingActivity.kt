@@ -9,8 +9,6 @@ import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.DialogFragment
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ActivityPromiseSettingBinding
@@ -18,6 +16,7 @@ import com.boosters.promise.ui.invite.InviteActivity
 import com.boosters.promise.ui.invite.model.UserUiState
 import com.boosters.promise.ui.place.PlaceSearchDialogFragment
 import com.boosters.promise.ui.promise.adapter.PromiseMemberListAdapter
+import com.boosters.promise.ui.promise.model.PromiseSettingEvent
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -65,12 +64,12 @@ class PromiseSettingActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
-            promiseSettingViewModel.dialogEventFlow.collectLatest { event ->
+            promiseSettingViewModel.dialogEventFlow.collectLatest { event: PromiseSettingEvent ->
                 when (event) {
-                    EventType.SELECT_DATE -> showDatePicker()
-                    EventType.SELECT_TIME -> showTimePicker()
-                    EventType.SELECT_PLACE_SEARCH -> showPlaceSearchDialog()
-                    EventType.SELECT_MEMBER -> showMember()
+                    PromiseSettingEvent.SELECT_DATE -> showDatePicker()
+                    PromiseSettingEvent.SELECT_TIME -> showTimePicker()
+                    PromiseSettingEvent.SELECT_PLACE_SEARCH -> showPlaceSearchDialog()
+                    PromiseSettingEvent.SELECT_MEMBER -> showMember()
                 }
             }
         }

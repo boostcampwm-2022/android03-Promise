@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.ui.invite.model.UserUiState
+import com.boosters.promise.ui.promise.model.PromiseSettingEvent
 import com.boosters.promise.ui.promise.model.PromiseUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -15,8 +16,8 @@ class PromiseSettingViewModel @Inject constructor(
     private val promiseRepository: PromiseRepository
 ) : ViewModel() {
 
-    private val _dialogEventFlow = MutableSharedFlow<EventType>()
-    val dialogEventFlow: SharedFlow<EventType> = _dialogEventFlow.asSharedFlow()
+    private val _dialogEventFlow = MutableSharedFlow<PromiseSettingEvent>()
+    val dialogEventFlow: SharedFlow<PromiseSettingEvent> = _dialogEventFlow.asSharedFlow()
 
     private val _promiseUiState = MutableStateFlow(PromiseUiState())
     val promiseUiState: StateFlow<PromiseUiState> = _promiseUiState.asStateFlow()
@@ -47,7 +48,7 @@ class PromiseSettingViewModel @Inject constructor(
         }
     }
 
-    fun onClickPickerEditText(event: EventType) {
+    fun onClickPickerEditText(event: PromiseSettingEvent) {
         viewModelScope.launch {
             _dialogEventFlow.emit(event)
         }
