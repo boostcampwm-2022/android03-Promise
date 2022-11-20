@@ -18,6 +18,10 @@ import com.boosters.promise.ui.place.adapter.PlaceSearchAdapter
 import com.boosters.promise.ui.place.model.toPlace
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -52,14 +56,8 @@ class PlaceSearchDialogFragment : DialogFragment() {
                 }
             }
 
-            binding.searchViewDialogPlaceSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    placeSearchViewModel.searchPlace(query.orEmpty())
-                    return true
-                }
-
-                override fun onQueryTextChange(newText: String?): Boolean = false
-            })
+            val searchQueryFlow = binding.searchViewDialogPlaceSearch.textChangesToFlow()
+            placeSearchViewModel.searchPlace(searchQueryFlow)
 
             builder.setView(binding.root)
             builder.create()
@@ -69,6 +67,20 @@ class PlaceSearchDialogFragment : DialogFragment() {
     fun setOnSelectPlaceSearchListener(onClickListener: (Place) -> Unit): DialogFragment {
         this.onClickListener = onClickListener
         return this@PlaceSearchDialogFragment
+    }
+
+    private fun SearchView.textChangesToFlow(): Flow<String?> {
+        return callbackFlow {
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean = false
+
+                override fun onQueryTextChange(query: String?): Boolean {
+                    trySend(query)
+                    return false
+                }
+            })
+            awaitClose { setOnQueryTextListener(null) }
+        }.onStart { emit(query.toString()) }
     }
 
 }
