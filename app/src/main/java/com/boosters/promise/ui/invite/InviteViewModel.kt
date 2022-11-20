@@ -15,23 +15,40 @@ class InviteViewModel @Inject constructor(
     private val friendRepository: FriendRepository
 ) : ViewModel() {
 
-    private var _friends = MutableLiveData<List<UserUiState>>()
-    val friends: LiveData<List<UserUiState>> = _friends
+    private var _currentFriendItems = MutableLiveData<List<UserUiState>>()
+    val currentFriendItems: LiveData<List<UserUiState>> = _currentFriendItems
 
-    init {
-        getFriends()
-    }
+    private var _allFriendItems = MutableLiveData<List<UserUiState>>()
+    val allFriendItems: LiveData<List<UserUiState>> = _allFriendItems
 
-    private fun getFriends() {
+    fun loadAllFriendItems() {
         viewModelScope.launch {
             val data = friendRepository.getFriends()
-            _friends.value = data.map { user ->
+            _allFriendItems.value = data.map { user ->
                 UserUiState(
                     userName = user.userName,
                     userCode = user.userCode
                 )
             }
         }
+    }
+
+    fun setCurrentFriendItems(items: List<UserUiState>) {
+        _currentFriendItems.value = items
+    }
+
+    fun searchFriendItems(query: String) {
+        setCurrentFriendItems(allFriendItems.value?.filter { user ->
+            if (query.matches(userCodeRegex)) {
+                user.userCode.contains(query)
+            } else {
+                user.userName.contains(query)
+            }
+        } ?: emptyList())
+    }
+
+    companion object {
+        private val userCodeRegex = Regex("""#\d+""")
     }
 
 }
