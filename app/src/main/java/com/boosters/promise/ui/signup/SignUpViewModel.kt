@@ -31,19 +31,7 @@ class SignUpViewModel @Inject constructor(
 
     fun requestSignUp() {
         val name = enterName.value ?: ""
-        if (name.matches(nameValidationRegex).not()) {
-            _nameInputUiState.value = NameInputUiState(
-                isNameValidationFail = true,
-                nameValidationErrorTextResId = R.string.signUp_inputError
-            )
-            return
-        }
-        _nameInputUiState.value = NameInputUiState()
-
-        if (networkConnectUtil.isOnline().not()) {
-            _signUpUiState.update { SignUpUiState.Fail(R.string.signUp_networkError) }
-            return
-        }
+        if (isCorrectName(name).not() || isOnline().not()) return
 
         _signUpUiState.update { SignUpUiState.Loading }
         viewModelScope.launch {
@@ -55,6 +43,25 @@ class SignUpViewModel @Inject constructor(
                 }
             }
             _signUpUiState.update { SignUpUiState.Nothing }
+        }
+    }
+
+    private fun isCorrectName(name: String): Boolean {
+        return name.matches(nameValidationRegex).also { isCorrectName ->
+            _nameInputUiState.value = if (isCorrectName.not()) {
+                NameInputUiState(
+                    isNameValidationFail = true,
+                    nameValidationErrorTextResId = R.string.signUp_inputError
+                )
+            } else {
+                NameInputUiState()
+            }
+        }
+    }
+
+    private fun isOnline(): Boolean {
+        return networkConnectUtil.isOnline().also { isOnline ->
+            if (isOnline.not()) _signUpUiState.update { SignUpUiState.Fail(R.string.signUp_networkError) }
         }
     }
 
