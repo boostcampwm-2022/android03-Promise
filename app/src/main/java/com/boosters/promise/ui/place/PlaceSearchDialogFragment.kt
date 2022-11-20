@@ -66,8 +66,8 @@ class PlaceSearchDialogFragment : DialogFragment() {
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
-    fun setOnSearchPlaceDialogListener(listenerImpl: (Place) -> Unit): DialogFragment {
-        listener = listenerImpl
+    fun setOnSearchPlaceDialogListener(listener: (Place) -> Unit): DialogFragment {
+        this.listener = listener
         return this@PlaceSearchDialogFragment
     }
 

@@ -26,7 +26,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/searchView_dialogSearchAddress"
-            tools:listitem="@layout/item_search_address_result" />
+            tools:listitem="@layout/item_place_search_result" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
