@@ -3,13 +3,17 @@ package com.boosters.promise.data.user.source.local
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import com.boosters.promise.data.user.User
+import com.boosters.promise.data.user.di.UserModule
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class MyInfoLocalDataSourceImpl(
-    private val myInfoPreferencesDataStore: DataStore<Preferences>
+@Singleton
+class MyInfoLocalDataSourceImpl @Inject constructor(
+    @UserModule.MyInfoPreferencesDataStore private val myInfoPreferencesDataStore: DataStore<Preferences>
 ) : MyInfoLocalDataSource {
 
     override suspend fun saveMyInfo(user: User) {

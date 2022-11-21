@@ -1,9 +1,9 @@
 package com.boosters.promise.data.invite
 
-import com.boosters.promise.data.invite.source.local.UserEntity
+import com.boosters.promise.data.user.User
 
 interface FriendRepository {
 
-    suspend fun getFriends(): List<UserEntity>
+    suspend fun getFriends(): List<User>
 
 }

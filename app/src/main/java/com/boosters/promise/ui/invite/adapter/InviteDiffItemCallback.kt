@@ -1,4 +1,4 @@
-package com.boosters.promise.ui.invite
+package com.boosters.promise.ui.invite.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.boosters.promise.ui.invite.model.UserUiState

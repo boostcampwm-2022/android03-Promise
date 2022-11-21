@@ -1,4 +1,4 @@
-package com.boosters.promise.ui.invite
+package com.boosters.promise.ui.invite.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boosters.promise.ui.invite.model.UserUiState
 import com.boosters.promise.databinding.ItemInviteMemberInfoBinding
 
-class InviteAdapter : ListAdapter<UserUiState, InviteAdapter.InviteViewHolder>(InviteDiffItemCallback()) {
+class InviteAdapter : ListAdapter<UserUiState, InviteAdapter.InviteViewHolder>(
+    InviteDiffItemCallback()
+) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InviteViewHolder {
         return InviteViewHolder(

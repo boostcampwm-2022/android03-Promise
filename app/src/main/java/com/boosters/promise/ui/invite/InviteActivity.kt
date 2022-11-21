@@ -1,13 +1,11 @@
 package com.boosters.promise.ui.invite
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ActivityInviteBinding
-import com.boosters.promise.ui.invite.model.UserUiState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,28 +18,29 @@ class InviteActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_invite)
+        setBinding()
+        observeAllFriendItems()
+        observeCurrentFriendItems()
+
+        inviteViewModel.loadAllFriendItems()
+    }
+
+    private fun setBinding() {
         binding.lifecycleOwner = this
         binding.viewModel = inviteViewModel
         binding.recyclerViewInviteFriendList.adapter = inviteAdapter
+    }
 
-        //test start
-        val inviteMemberAdapter = InviteAdapter()
-        binding.recyclerViewInviteInviteList.adapter = inviteMemberAdapter.apply {
-            val userUiStates = List(5) {
-                UserUiState("testName$it", "testCode$it")
-            }
-            submitList(userUiStates)
+    private fun observeAllFriendItems() {
+        inviteViewModel.allFriendItems.observe(this) { friendItems ->
+            inviteViewModel.setCurrentFriendItems(friendItems)
         }
+    }
 
-        binding.buttonInviteConfirm.setOnClickListener {
-            val intent = Intent().apply {
-                val inviteList = ArrayList(inviteMemberAdapter.currentList)
-                putParcelableArrayListExtra("memberList", inviteList)
-            }
-            setResult(RESULT_OK, intent)
-            finish()
+    private fun observeCurrentFriendItems() {
+        inviteViewModel.currentFriendItems.observe(this) { friendItems ->
+            inviteAdapter.submitList(friendItems)
         }
-        //test end
     }
 
 }
