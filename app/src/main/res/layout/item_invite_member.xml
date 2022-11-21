@@ -1,42 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:padding="10dp">
+<layout>
 
-    <ImageView
-        android:id="@+id/imageView_inviteMemberItem_memberImage"
+    <data>
+
+        <variable
+            name="user"
+            type="com.boosters.promise.ui.invite.model.UserUiState" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/delete_member"
-        android:src="@drawable/ic_member_delete"
-        app:layout_constraintBottom_toTopOf="@+id/textView_inviteMemberItem_memberName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:padding="10dp">
 
-    <TextView
-        android:id="@+id/textView_inviteMemberItem_memberName"
-        style="@style/Promise.TextAppearance.SmallBold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView_inviteMemberItem_memberCode"
-        app:layout_constraintEnd_toEndOf="@+id/imageView_inviteMemberItem_memberImage"
-        app:layout_constraintStart_toStartOf="@+id/imageView_inviteMemberItem_memberImage"
-        app:layout_constraintTop_toBottomOf="@+id/imageView_inviteMemberItem_memberImage"
-        tools:text="홍길동" />
+        <ImageView
+            android:id="@+id/imageView_inviteMemberItem_memberImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/delete_member"
+            android:src="@drawable/ic_member_delete"
+            app:layout_constraintBottom_toTopOf="@+id/textView_inviteMemberItem_memberName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView_inviteMemberItem_memberCode"
-        style="@style/Promise.TextAppearance.SmallNormal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/imageView_inviteMemberItem_memberImage"
-        app:layout_constraintStart_toStartOf="@+id/imageView_inviteMemberItem_memberImage"
-        app:layout_constraintTop_toBottomOf="@+id/textView_inviteMemberItem_memberName"
-        tools:text="#0001" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/textView_inviteMemberItem_memberName"
+            style="@style/Promise.TextAppearance.SmallBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@{user.userName}"
+            app:layout_constraintBottom_toTopOf="@+id/textView_inviteMemberItem_memberCode"
+            app:layout_constraintEnd_toEndOf="@+id/imageView_inviteMemberItem_memberImage"
+            app:layout_constraintStart_toStartOf="@+id/imageView_inviteMemberItem_memberImage"
+            app:layout_constraintTop_toBottomOf="@+id/imageView_inviteMemberItem_memberImage"
+            tools:text="홍길동" />
+
+        <TextView
+            android:id="@+id/textView_inviteMemberItem_memberCode"
+            style="@style/Promise.TextAppearance.SmallNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{user.userCode}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/imageView_inviteMemberItem_memberImage"
+            app:layout_constraintStart_toStartOf="@+id/imageView_inviteMemberItem_memberImage"
+            app:layout_constraintTop_toBottomOf="@+id/textView_inviteMemberItem_memberName"
+            tools:text="#0001" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

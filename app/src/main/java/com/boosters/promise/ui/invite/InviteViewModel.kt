@@ -20,29 +20,26 @@ class InviteViewModel @Inject constructor(
     val currentFriendItems: LiveData<List<UserUiState>?> = _currentFriendItems
 
     private var _allFriendItems = MutableLiveData<List<UserUiState>>()
-    val allFriendItems: LiveData<List<UserUiState>> = _allFriendItems
+    private val allFriendItems: LiveData<List<UserUiState>> = _allFriendItems
 
-    fun loadAllFriendItems() {
+    fun initAllFriendItems() {
         viewModelScope.launch {
             val data = friendRepository.getFriends()
             _allFriendItems.value = data.map { user ->
                 user.toUserUiState()
             }
+            _currentFriendItems.value = _allFriendItems.value
         }
     }
 
-    fun setCurrentFriendItems(items: List<UserUiState>?) {
-        _currentFriendItems.value = items
-    }
-
     fun searchFriendItems(query: String) {
-        setCurrentFriendItems(allFriendItems.value?.filter { user ->
+        _currentFriendItems.value = allFriendItems.value?.filter { user ->
             if (query.matches(userCodeRegex)) {
                 user.userCode.contains(query)
             } else {
                 user.userName.contains(query)
             }
-        })
+        }
     }
 
     companion object {
