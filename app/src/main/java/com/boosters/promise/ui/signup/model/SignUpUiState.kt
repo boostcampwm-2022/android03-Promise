@@ -6,6 +6,6 @@ sealed interface SignUpUiState {
 
     object Loading : SignUpUiState
     object Success : SignUpUiState
-    class Fail(@StringRes val signUpErrorMessageResId: Int? = null) : SignUpUiState
+    data class Fail(@StringRes val signUpErrorMessageResId: Int? = null) : SignUpUiState
 
 }
