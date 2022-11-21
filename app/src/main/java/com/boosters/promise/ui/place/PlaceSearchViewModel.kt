@@ -6,8 +6,10 @@ import com.boosters.promise.data.place.PlaceRepository
 import com.boosters.promise.data.place.toPlaceUiState
 import com.boosters.promise.ui.place.model.PlaceUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,19 +20,14 @@ class PlaceSearchViewModel @Inject constructor(
     private val _placeUiState = MutableStateFlow<List<PlaceUiState>>(mutableListOf())
     val promiseUiState: StateFlow<List<PlaceUiState>> = _placeUiState.asStateFlow()
 
-    @OptIn(FlowPreview::class)
-    fun searchPlace(queryFlow: Flow<String?>) {
-        queryFlow.filterNot { it.isNullOrEmpty() }
-            .debounce(SEARCH_TERM)
-            .distinctUntilChanged()
-            .onEach { query ->
-                placeRepository.searchPlace(query.orEmpty()).onSuccess { searchResult ->
-                    _placeUiState.value = searchResult.map {
-                        it.toPlaceUiState()
-                    }
+    fun searchPlace(query: String) {
+        viewModelScope.launch {
+            placeRepository.searchPlace(query).onSuccess { searchResult ->
+                _placeUiState.value = searchResult.map {
+                    it.toPlaceUiState()
                 }
             }
-            .launchIn(viewModelScope)
+        }
     }
 
     companion object {

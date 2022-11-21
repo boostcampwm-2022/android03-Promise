@@ -2,6 +2,7 @@ package com.boosters.promise.ui.place
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
@@ -18,24 +19,24 @@ import com.boosters.promise.ui.place.adapter.PlaceSearchAdapter
 import com.boosters.promise.ui.place.model.toPlace
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PlaceSearchDialogFragment : DialogFragment() {
 
-    private lateinit var _binding: DialogPlaceSearchBinding
-    private val binding get() = _binding
+    private var _binding: DialogPlaceSearchBinding? = null
+    private val binding get() = checkNotNull(_binding)
     private val placeSearchViewModel: PlaceSearchViewModel by viewModels()
 
     private lateinit var onClickListener: (Place) -> Unit
 
+    @OptIn(FlowPreview::class)
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return activity?.let {
-            val builder = MaterialAlertDialogBuilder(it)
+        return activity?.let { activity ->
+            val builder = MaterialAlertDialogBuilder(activity)
             val inflater = requireActivity().layoutInflater
 
             _binding = DataBindingUtil.inflate(inflater, R.layout.dialog_place_search, null, false)
@@ -56,8 +57,15 @@ class PlaceSearchDialogFragment : DialogFragment() {
                 }
             }
 
-            val searchQueryFlow = binding.searchViewDialogPlaceSearch.textChangesToFlow()
-            placeSearchViewModel.searchPlace(searchQueryFlow)
+            binding.searchViewDialogPlaceSearch.textChangesToFlow()
+                .filterNot { it.isNullOrEmpty() }
+                .debounce(PlaceSearchViewModel.SEARCH_TERM)
+                .distinctUntilChanged()
+                .onEach { query ->
+                    placeSearchViewModel.searchPlace(checkNotNull(query))
+                }
+                .onCompletion { Log.d("test","test") }
+                .launchIn(lifecycleScope)
 
             builder.setView(binding.root)
             builder.create()
@@ -81,6 +89,11 @@ class PlaceSearchDialogFragment : DialogFragment() {
             })
             awaitClose { setOnQueryTextListener(null) }
         }.onStart { emit(query.toString()) }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }
