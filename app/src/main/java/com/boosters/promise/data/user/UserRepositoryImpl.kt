@@ -3,8 +3,11 @@ package com.boosters.promise.data.user
 import com.boosters.promise.data.user.source.local.MyInfoLocalDataSource
 import com.boosters.promise.data.user.source.remote.UserRemoteDataSource
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class UserRepositoryImpl(
+@Singleton
+class UserRepositoryImpl @Inject constructor(
     private val userRemoteDataSource: UserRemoteDataSource,
     private val myInfoLocalDataSource: MyInfoLocalDataSource
 ) : UserRepository {
