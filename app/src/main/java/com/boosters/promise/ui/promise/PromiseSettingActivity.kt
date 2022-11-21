@@ -1,14 +1,20 @@
 package com.boosters.promise.ui.promise
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Build.VERSION
 import android.os.Bundle
 import android.text.format.DateFormat
+import android.util.Log
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ActivityPromiseSettingBinding
@@ -48,6 +54,17 @@ class PromiseSettingActivity : AppCompatActivity() {
                 }
             }
         }
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            Toast.makeText(this, "Notifications permission granted", Toast.LENGTH_SHORT)
+                .show()
+        } else {
+            Toast.makeText(this, "FCM can't post notifications without POST_NOTIFICATIONS permission",
+                Toast.LENGTH_LONG).show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +72,8 @@ class PromiseSettingActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.promiseSettingViewModel = promiseSettingViewModel
         setContentView(binding.root)
+
+        askNotificationPermission()
 
         promiseMemberListAdapter =
             PromiseMemberListAdapter { promiseSettingViewModel.removeMember(it) }
@@ -173,6 +192,21 @@ class PromiseSettingActivity : AppCompatActivity() {
 
     private fun showStateSnackbar(message: Int) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun askNotificationPermission() {
+        // This is only necessary for API Level > 33 (TIRAMISU)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                PackageManager.PERMISSION_GRANTED
+            ) {
+                // FCM SDK (and your app) can post notifications.
+            } else {
+                // Directly ask for the permission
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+
     }
 
     companion object {

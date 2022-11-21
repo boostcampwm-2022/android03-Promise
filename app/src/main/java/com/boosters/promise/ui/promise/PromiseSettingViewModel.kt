@@ -4,6 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.model.Location
 import com.boosters.promise.R
+import com.boosters.promise.data.notification.NotificationRepository
+import com.boosters.promise.data.notification.source.remote.NotificationRequestBody
+import com.boosters.promise.data.notification.source.remote.NotificationRequestData
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.user.User
 import com.boosters.promise.data.user.UserRepository
@@ -13,17 +16,20 @@ import com.boosters.promise.ui.promise.model.PromiseSettingEvent
 import com.boosters.promise.ui.promise.model.PromiseSettingUiState
 import com.boosters.promise.ui.promise.model.PromiseUiState
 import com.boosters.promise.ui.promise.model.toPromise
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
 class PromiseSettingViewModel @Inject constructor(
+    private val notificationRepository: NotificationRepository,
     private val promiseRepository: PromiseRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
 ) : ViewModel() {
 
     private val _dialogEventFlow = MutableSharedFlow<PromiseSettingEvent>()
@@ -44,6 +50,7 @@ class PromiseSettingViewModel @Inject constructor(
                 myInfo = it
             }
         }
+        sendNotification()
     }
 
     fun updateMember(newMemberList: List<UserUiState>) {
@@ -114,6 +121,21 @@ class PromiseSettingViewModel @Inject constructor(
     private fun changeUiState(state: PromiseSettingUiState) {
         viewModelScope.launch {
             _promiseSettingUiState.emit(state)
+        }
+    }
+
+    fun cloudMessaging() {
+        viewModelScope.launch {
+            FirebaseMessaging.getInstance().token.await()
+        }
+    }
+
+    private fun sendNotification() {
+        val notificationRequestBody =
+            NotificationRequestBody("coJP1ozcQ26vxnBOE6t2vX:APA91bH_TMyoECawIWHJ3tctiT1FQP3SHKnIB_qYh5lJ7MQdMDaJwXT0P49OQrrLpmuBtDqP1a3Mw_FXwx6iA1fbSIRxFg8STPwJaInUU_MpwahDWmPJjREhKkR9hzINo2zfynMHaFoO"
+                , NotificationRequestData("Promise", "hello"))
+        viewModelScope.launch {
+            notificationRepository.sendNotification(notificationRequestBody)
         }
     }
 

@@ -1,0 +1,16 @@
+package com.boosters.promise.data.notification
+
+import android.util.Log
+import com.boosters.promise.data.notification.source.remote.NotificationRemoteDataSource
+import com.boosters.promise.data.notification.source.remote.NotificationRequestBody
+import javax.inject.Inject
+
+class NotificationRepositoryImpl @Inject constructor(
+    private val notificationRemoteDataSource: NotificationRemoteDataSource,
+) : NotificationRepository {
+
+    override suspend fun sendNotification(notificationRequestBody: NotificationRequestBody) {
+        notificationRemoteDataSource.sendNotification(notificationRequestBody)
+    }
+
+}
