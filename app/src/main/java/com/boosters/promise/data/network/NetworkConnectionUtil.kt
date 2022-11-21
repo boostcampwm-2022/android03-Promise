@@ -8,7 +8,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class NetworkConnectUtil @Inject constructor(
+class NetworkConnectionUtil @Inject constructor(
     @ApplicationContext applicationContext: Context
 ) {
 
@@ -19,7 +19,7 @@ class NetworkConnectUtil @Inject constructor(
         val activeNetwork = connectivityManager?.activeNetwork
         val capabilities = connectivityManager?.getNetworkCapabilities(activeNetwork)
         if ((capabilities != null && (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
-                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR))).not()
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR))).not()
         ) {
             throw NetworkNotOnlineException()
         }
