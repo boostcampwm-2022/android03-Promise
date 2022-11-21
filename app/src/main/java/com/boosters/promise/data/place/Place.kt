@@ -1,5 +1,6 @@
 package com.boosters.promise.data.place
 
+import com.boosters.promise.data.model.Location
 import com.boosters.promise.ui.place.model.PlaceUiState
 
 data class Place(
@@ -7,8 +8,7 @@ data class Place(
     val link: String,
     val address: String,
     val roadAddress: String,
-    val x: Int,
-    val y: Int
+    val location: Location
 )
 
 fun Place.toPlaceUiState(): PlaceUiState {
@@ -17,7 +17,6 @@ fun Place.toPlaceUiState(): PlaceUiState {
         link = link,
         address = address,
         roadAddress = roadAddress,
-        x = x,
-        y = y
+        location = location
     )
 }

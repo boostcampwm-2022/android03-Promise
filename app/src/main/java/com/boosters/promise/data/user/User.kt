@@ -1,5 +1,6 @@
 package com.boosters.promise.data.user
 
+import com.boosters.promise.data.model.Location
 import com.boosters.promise.ui.invite.model.UserUiState
 
 data class User(

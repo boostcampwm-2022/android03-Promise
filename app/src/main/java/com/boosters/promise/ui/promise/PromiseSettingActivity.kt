@@ -9,15 +9,14 @@ import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.boosters.promise.R
-import com.boosters.promise.data.place.Place
 import com.boosters.promise.databinding.ActivityPromiseSettingBinding
 import com.boosters.promise.ui.invite.InviteActivity
 import com.boosters.promise.ui.invite.model.UserUiState
 import com.boosters.promise.ui.place.PlaceSearchDialogFragment
 import com.boosters.promise.ui.promise.adapter.PromiseMemberListAdapter
+import com.boosters.promise.ui.promise.model.PromiseSettingEvent
 import com.boosters.promise.ui.promise.model.PromiseSettingUiState
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
@@ -27,7 +26,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class PromiseSettingActivity : AppCompatActivity() {
@@ -68,12 +66,12 @@ class PromiseSettingActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
-            promiseSettingViewModel.dialogEventFlow.collectLatest { event ->
+            promiseSettingViewModel.dialogEventFlow.collectLatest { event: PromiseSettingEvent ->
                 when (event) {
-                    EventType.SELECT_DATE -> showDatePicker()
-                    EventType.SELECT_TIME -> showTimePicker()
-                    EventType.SELECT_PLACE_SEARCH -> showPlaceSearchDialog()
-                    EventType.SELECT_MEMBER -> showMember()
+                    PromiseSettingEvent.SELECT_DATE -> showDatePicker()
+                    PromiseSettingEvent.SELECT_TIME -> showTimePicker()
+                    PromiseSettingEvent.SELECT_PLACE -> showPlaceSearchDialog()
+                    PromiseSettingEvent.SELECT_MEMBER -> showMember()
                 }
             }
         }
@@ -109,7 +107,7 @@ class PromiseSettingActivity : AppCompatActivity() {
     }
 
     private fun showDatePicker() {
-        val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        val cal = Calendar.getInstance()
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setSelection(cal.timeInMillis)
             .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
@@ -122,7 +120,7 @@ class PromiseSettingActivity : AppCompatActivity() {
             promiseSettingViewModel.setPromiseDate(
                 getString(R.string.date_format).format(
                     cal.get(Calendar.YEAR),
-                    cal.get(Calendar.MONTH),
+                    cal.get(Calendar.MONTH) + 1,
                     cal.get(Calendar.DAY_OF_MONTH)
                 )
             )
@@ -130,12 +128,12 @@ class PromiseSettingActivity : AppCompatActivity() {
     }
 
     private fun showTimePicker() {
-        val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        val cal = Calendar.getInstance()
         val isSystem24Hour = DateFormat.is24HourFormat(this)
         val clockFormat = if (isSystem24Hour) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
         val timePicker = MaterialTimePicker.Builder()
             .setTimeFormat(clockFormat)
-            .setHour(cal.get(Calendar.HOUR))
+            .setHour(cal.get(Calendar.HOUR_OF_DAY))
             .setMinute(cal.get(Calendar.MINUTE))
             .setInputMode(MaterialTimePicker.INPUT_MODE_CLOCK)
             .setTitleText(getString(R.string.title_timepicker))
@@ -143,7 +141,7 @@ class PromiseSettingActivity : AppCompatActivity() {
 
         timePicker.show(supportFragmentManager, TIMEPICKER_TAG)
         timePicker.addOnPositiveButtonClickListener {
-            cal.set(Calendar.HOUR, timePicker.hour)
+            cal.set(Calendar.HOUR_OF_DAY, timePicker.hour)
             cal.set(Calendar.MINUTE, timePicker.minute)
             promiseSettingViewModel.setPromiseTime(
                 getString(R.string.time_format).format(
@@ -156,23 +154,20 @@ class PromiseSettingActivity : AppCompatActivity() {
 
     private fun showPlaceSearchDialog() {
         PlaceSearchDialogFragment()
-            .setOnSearchPlaceDialogListener(object :
-                PlaceSearchDialogFragment.SearchAddressDialogListener {
-                override fun onDialogPositiveClick(dialog: DialogFragment, resultItem: Place?) {
-                    promiseSettingViewModel.setPromiseDestination(resultItem?.placeTitle.orEmpty())
-                }
-
-                override fun onDialogNegativeClick(dialog: DialogFragment) {}
-            })
+            .setOnSelectPlaceSearchListener { searchedPlace ->
+                promiseSettingViewModel.setPromiseDestination(searchedPlace.placeTitle,
+                    searchedPlace.location)
+            }
             .show(supportFragmentManager, SEARCH_DIALOG_TAG)
     }
 
     private fun showMember() {
         val members = ArrayList(promiseSettingViewModel.promiseUiState.value.members)
-        val intent = Intent(this, InviteActivity::class.java).putParcelableArrayListExtra(
-            "member",
-            members
-        )
+        val intent =
+            Intent(this, InviteActivity::class.java).putParcelableArrayListExtra(
+                MEMBER_LIST_KEY,
+                members
+            )
         getContent.launch(intent)
     }
 

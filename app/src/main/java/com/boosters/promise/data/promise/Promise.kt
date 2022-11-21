@@ -1,5 +1,6 @@
 package com.boosters.promise.data.promise
 
+import com.boosters.promise.data.model.Location
 import com.boosters.promise.data.user.User
 
 data class Promise(
