@@ -2,7 +2,6 @@ package com.boosters.promise.ui.place
 
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
@@ -64,7 +63,6 @@ class PlaceSearchDialogFragment : DialogFragment() {
                 .onEach { query ->
                     placeSearchViewModel.searchPlace(checkNotNull(query))
                 }
-                .onCompletion { Log.d("test","test") }
                 .launchIn(lifecycleScope)
 
             builder.setView(binding.root)
