@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="com.boosters.promise.ui.promise.EventType" />
+        <import type="com.boosters.promise.ui.promise.model.PromiseSettingEvent" />
         <variable
             name="promiseSettingViewModel"
             type="com.boosters.promise.ui.promise.PromiseSettingViewModel" />
@@ -63,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="false"
-                android:onClick="@{() -> promiseSettingViewModel.onClickPickerEditText(EventType.SELECT_DATE)}"
+                android:onClick="@{() -> promiseSettingViewModel.onClickPickerEditText(PromiseSettingEvent.SELECT_DATE)}"
                 android:text="@{promiseSettingViewModel.promiseUiState.date}" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -99,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="false"
-                android:onClick="@{() -> promiseSettingViewModel.onClickPickerEditText(EventType.SELECT_TIME)}"
+                android:onClick="@{() -> promiseSettingViewModel.onClickPickerEditText(PromiseSettingEvent.SELECT_TIME)}"
                 android:text="@{promiseSettingViewModel.promiseUiState.time}" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -135,7 +134,7 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="false"
-                android:onClick="@{() -> promiseSettingViewModel.onClickPickerEditText(EventType.SELECT_PLACE_SEARCH)}"
+                android:onClick="@{() -> promiseSettingViewModel.onClickPickerEditText(PromiseSettingEvent.SELECT_PLACE)}"
                 android:text="@{promiseSettingViewModel.promiseUiState.destinationName}" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -172,7 +171,7 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="false"
-                android:onClick="@{() -> promiseSettingViewModel.onClickPickerEditText(EventType.SELECT_MEMBER)}" />
+                android:onClick="@{() -> promiseSettingViewModel.onClickPickerEditText(PromiseSettingEvent.SELECT_MEMBER)}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
