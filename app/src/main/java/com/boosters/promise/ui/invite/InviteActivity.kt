@@ -47,8 +47,10 @@ class InviteActivity : AppCompatActivity() {
 
     private fun setFriendItemClickListener() {
         friendAdapter.setOnItemClickListener(object : FriendAdapter.OnItemClickListener {
-            override fun onItemClick(user: UserUiState) {
+            override fun onItemClick(user: UserUiState, pos: Int) {
                 if (user !in memberAdapter.currentList) {
+                    user.isSelected = true
+                    friendAdapter.notifyItemChanged(pos)
                     memberAdapter.submitList(memberAdapter.currentList.plus(user))
                 }
             }
@@ -58,6 +60,10 @@ class InviteActivity : AppCompatActivity() {
     private fun setMemberItemClickListener() {
         memberAdapter.setOnItemClickListener(object : MemberAdapter.OnItemClickListener {
             override fun onItemClick(user: UserUiState) {
+                friendAdapter.currentList.find {
+                    it.userCode == user.userCode
+                }?.isSelected = false
+                friendAdapter.notifyItemChanged(friendAdapter.currentList.indexOf(user))
                 memberAdapter.submitList(memberAdapter.currentList.minus(user))
             }
         })

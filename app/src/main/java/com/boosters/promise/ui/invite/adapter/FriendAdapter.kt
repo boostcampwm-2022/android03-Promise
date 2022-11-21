@@ -1,9 +1,11 @@
 package com.boosters.promise.ui.invite.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.boosters.promise.R
 import com.boosters.promise.databinding.ItemInviteFriendBinding
 import com.boosters.promise.ui.invite.model.UserUiState
 
@@ -21,7 +23,7 @@ class FriendAdapter : ListAdapter<UserUiState, FriendAdapter.FriendViewHolder>(
         binding.root.setOnClickListener {
             val position = holder.adapterPosition
             if (position != RecyclerView.NO_POSITION) {
-                onItemClickListener?.onItemClick(getItem(position))
+                onItemClickListener?.onItemClick(getItem(position), position)
             }
         }
         return holder
@@ -40,11 +42,19 @@ class FriendAdapter : ListAdapter<UserUiState, FriendAdapter.FriendViewHolder>(
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(userUiState: UserUiState) {
             binding.user = userUiState
+
+            if (userUiState.isSelected) {
+                binding.textViewInviteUserName.setTextAppearance(R.style.Promise_TextAppearance_MiddleGray)
+                binding.textViewInviteUserCode.setTextAppearance(R.style.Promise_TextAppearance_MiddleGray)
+            } else {
+                binding.textViewInviteUserName.setTextAppearance(R.style.Promise_TextAppearance_MiddleBold)
+                binding.textViewInviteUserCode.setTextAppearance(R.style.Promise_TextAppearance_MiddleNormal)
+            }
         }
     }
 
     interface OnItemClickListener {
-        fun onItemClick(user: UserUiState)
+        fun onItemClick(user: UserUiState, pos: Int)
     }
 
 }

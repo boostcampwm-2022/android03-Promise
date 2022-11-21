@@ -7,7 +7,8 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class UserUiState(
     val userName: String,
-    val userCode: String
+    val userCode: String,
+    var isSelected: Boolean = false
 ) : Parcelable
 
 fun UserUiState.toUser() =
