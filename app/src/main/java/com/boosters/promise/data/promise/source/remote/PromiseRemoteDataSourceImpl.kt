@@ -3,7 +3,6 @@ package com.boosters.promise.data.promise.source.remote
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.user.User
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -30,9 +29,7 @@ class PromiseRemoteDataSourceImpl @Inject constructor(
                     trySend(false)
                     close()
                 }
-            awaitClose {
-                cancel()
-            }
+            awaitClose()
         }
     }
 
