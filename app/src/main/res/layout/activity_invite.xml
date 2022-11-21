@@ -101,7 +101,6 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView_invite_friendList"
-            bind_items="@{viewModel.currentFriendItems}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:paddingTop="10dp"
