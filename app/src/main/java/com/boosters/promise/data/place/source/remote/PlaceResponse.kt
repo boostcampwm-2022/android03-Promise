@@ -1,8 +1,8 @@
 package com.boosters.promise.data.place.source.remote
 
 import androidx.core.text.parseAsHtml
+import com.boosters.promise.data.model.Location
 import com.boosters.promise.data.place.Place
-import com.boosters.promise.data.promise.Location
 import com.google.gson.annotations.SerializedName
 
 data class PlaceResponseBody(

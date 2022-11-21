@@ -1,4 +1,4 @@
-package com.boosters.promise.data.promise
+package com.boosters.promise.data.model
 
 data class Location(
     val x: Int = 0,

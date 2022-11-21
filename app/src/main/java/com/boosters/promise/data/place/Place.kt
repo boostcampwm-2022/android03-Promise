@@ -1,6 +1,6 @@
 package com.boosters.promise.data.place
 
-import com.boosters.promise.data.promise.Location
+import com.boosters.promise.data.model.Location
 import com.boosters.promise.ui.place.model.PlaceUiState
 
 data class Place(

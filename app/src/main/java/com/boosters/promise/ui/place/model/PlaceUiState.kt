@@ -1,7 +1,7 @@
 package com.boosters.promise.ui.place.model
 
+import com.boosters.promise.data.model.Location
 import com.boosters.promise.data.place.Place
-import com.boosters.promise.data.promise.Location
 
 data class PlaceUiState(
     val title: String = "",

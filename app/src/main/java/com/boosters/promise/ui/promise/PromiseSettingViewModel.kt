@@ -2,7 +2,7 @@ package com.boosters.promise.ui.promise
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boosters.promise.data.promise.Location
+import com.boosters.promise.data.model.Location
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.ui.invite.model.UserUiState
 import com.boosters.promise.ui.promise.model.PromiseSettingEvent
