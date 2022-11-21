@@ -68,7 +68,7 @@ class PromiseSettingActivity : AppCompatActivity() {
                 when (event) {
                     PromiseSettingEvent.SELECT_DATE -> showDatePicker()
                     PromiseSettingEvent.SELECT_TIME -> showTimePicker()
-                    PromiseSettingEvent.SELECT_PLACE_SEARCH -> showPlaceSearchDialog()
+                    PromiseSettingEvent.SELECT_PLACE -> showPlaceSearchDialog()
                     PromiseSettingEvent.SELECT_MEMBER -> showMember()
                 }
             }
@@ -150,7 +150,10 @@ class PromiseSettingActivity : AppCompatActivity() {
     private fun showMember() {
         val members = ArrayList(promiseSettingViewModel.promiseUiState.value.members)
         val intent =
-            Intent(this, InviteActivity::class.java).putParcelableArrayListExtra("member", members)
+            Intent(this, InviteActivity::class.java).putParcelableArrayListExtra(
+                MEMBER_LIST_KEY,
+                members
+            )
         getContent.launch(intent)
     }
 

@@ -134,7 +134,7 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="false"
-                android:onClick="@{() -> promiseSettingViewModel.onClickPickerEditText(PromiseSettingEvent.SELECT_PLACE_SEARCH)}"
+                android:onClick="@{() -> promiseSettingViewModel.onClickPickerEditText(PromiseSettingEvent.SELECT_PLACE)}"
                 android:text="@{promiseSettingViewModel.promiseUiState.destinationName}" />
         </com.google.android.material.textfield.TextInputLayout>
 

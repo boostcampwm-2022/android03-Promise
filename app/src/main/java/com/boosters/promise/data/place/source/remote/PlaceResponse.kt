@@ -20,8 +20,8 @@ data class PlaceItemResponseBody(
     @SerializedName("telephone") val telephone: String,
     @SerializedName("address") val address: String,
     @SerializedName("roadAddress") val roadAddress: String,
-    @SerializedName("mapx") val mapx: Int,
-    @SerializedName("mapy") val mapy: Int
+    @SerializedName("mapx") val mapX: Int,
+    @SerializedName("mapy") val mapY: Int
 )
 
 fun PlaceItemResponseBody.toPlace(): Place {
@@ -31,6 +31,6 @@ fun PlaceItemResponseBody.toPlace(): Place {
         link = link,
         address = address,
         roadAddress = roadAddress,
-        location = Location(mapx, mapy)
+        location = Location(mapX, mapY)
     )
 }
