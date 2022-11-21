@@ -24,6 +24,7 @@ class PromiseRemoteDataSourceImpl @Inject constructor(
             promiseRef.document(id).set(promise.copy(promiseId = id))
                 .addOnSuccessListener {
                     trySend(true)
+                    close()
                 }
                 .addOnFailureListener {
                     trySend(false)
