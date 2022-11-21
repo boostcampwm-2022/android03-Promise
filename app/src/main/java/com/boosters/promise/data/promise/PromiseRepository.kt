@@ -9,6 +9,6 @@ interface PromiseRepository {
 
     fun removePromise(promise: Promise)
 
-    suspend fun getPromiseList(myInfo: User, date: String): MutableList<Promise>
+    suspend fun getPromiseList(myInfo: User, date: String): List<Promise>
 
 }

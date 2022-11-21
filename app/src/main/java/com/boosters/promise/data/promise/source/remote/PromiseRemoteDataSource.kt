@@ -10,6 +10,6 @@ interface PromiseRemoteDataSource {
 
     fun removePromise(promise: Promise)
 
-    suspend fun getPromiseList(user: User, date: String): MutableList<Promise>
+    suspend fun getPromiseList(user: User, date: String): List<Promise>
 
 }

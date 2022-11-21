@@ -17,7 +17,7 @@ class PromiseRepositoryImpl @Inject constructor(
         promiseRemoteDataSource.removePromise(promise)
     }
 
-    override suspend fun getPromiseList(myInfo: User, date: String): MutableList<Promise> {
+    override suspend fun getPromiseList(myInfo: User, date: String): List<Promise> {
         return promiseRemoteDataSource.getPromiseList(myInfo, date)
     }
 
