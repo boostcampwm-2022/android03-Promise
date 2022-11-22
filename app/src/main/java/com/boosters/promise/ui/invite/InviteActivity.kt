@@ -90,13 +90,13 @@ class InviteActivity : AppCompatActivity() {
     }
 
     private fun initMemberItems() {
-        val members = if (Build.VERSION.SDK_INT < 33) {
+        val memberItems = if (Build.VERSION.SDK_INT < 33) {
             intent.getParcelableArrayListExtra(MEMBER_LIST_KEY)
         } else {
             intent.getParcelableArrayListExtra(MEMBER_LIST_KEY, UserUiState::class.java)
         }
 
-        inviteViewModel.initMemberItems(members)
+        inviteViewModel.initMemberItems(memberItems)
     }
 
     companion object {

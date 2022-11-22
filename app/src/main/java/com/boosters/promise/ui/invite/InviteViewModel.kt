@@ -31,7 +31,13 @@ class InviteViewModel @Inject constructor(
             _allFriendItems.value = data.map { user ->
                 user.toUserUiState()
             }
-            _currentFriendItems.value = _allFriendItems.value
+            val inviteCheckedItems = allFriendItems.value?.map { user ->
+                if (currentMemberItems.value?.contains(user) == true) {
+                    user.isSelected = true
+                }
+                user
+            }
+            _currentFriendItems.value = inviteCheckedItems
         }
     }
 
