@@ -61,4 +61,12 @@
         <item name="android:textStyle">bold</item>
         <item name="backgroundTint">@null</item>
     </style>
+
+    <style name="Promise.Button.FilledSquareButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/button_confirm</item>
+        <item name="android:textColor">@color/pure_blue</item>
+        <item name="android:textSize">@dimen/middle</item>
+        <item name="android:textStyle">bold</item>
+        <item name="backgroundTint">@color/pure_blue</item>
+    </style>
 </resources>

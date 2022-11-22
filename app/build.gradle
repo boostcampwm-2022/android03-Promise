@@ -90,7 +90,7 @@ dependencies {
     implementation 'androidx.datastore:datastore-preferences:1.0.0'
 
     //material calendarview
-    implementation 'com.github.prolificinteractive:material-calendarview:2.0.1'
+    implementation 'com.github.prolificinteractive:material-calendarview:1.6.0'
 }
 
 kapt {
