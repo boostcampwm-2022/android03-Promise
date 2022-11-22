@@ -1,6 +1,8 @@
 package com.boosters.promise.ui.promisecalendar
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -10,6 +12,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ActivityPromiseCalendarBinding
 import com.boosters.promise.ui.promisecalendar.adapter.PromiseDailyListAdapter
+import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -33,7 +36,9 @@ class PromiseCalendarActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 promiseCalendarViewModel.promiseDailyList.collect {
+                    Log.d("submitList", it.toString())
                     promiseDailyListAdapter.submitList(it)
+                    Log.d("currentList", promiseDailyListAdapter.currentList.toString())
                 }
             }
         }
@@ -43,6 +48,10 @@ class PromiseCalendarActivity : AppCompatActivity() {
                 getString(R.string.date_format).format(year, month + 1, day)
             }
             promiseCalendarViewModel.getPromiseList(selectedDate)
+        }
+
+        binding.buttonPromiseCalendarCreatePromise.setOnClickListener {
+            startActivity(Intent(this, PromiseSettingActivity::class.java))
         }
     }
 }
