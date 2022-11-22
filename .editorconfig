@@ -1,0 +1,11 @@
+root = true
+
+[*]
+charset=utf-8
+end_of_line=lf
+indent_style=space
+indent_size=4
+insert_final_newline=false
+
+[*.{kt,kts}]
+disabled_rules=no-wildcard-imports,import-ordering,comment-spacing,no-blank-line-before-rbrace
