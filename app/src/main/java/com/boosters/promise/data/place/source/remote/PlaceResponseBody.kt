@@ -27,7 +27,7 @@ data class PlaceItemResponseBody(
 fun PlaceItemResponseBody.toPlace(): Place {
     val title = this.title.parseAsHtml().toString()
     return Place(
-        placeTitle = title,
+        title = title,
         link = link,
         address = address,
         roadAddress = roadAddress,

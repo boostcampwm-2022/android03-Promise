@@ -156,7 +156,7 @@ class PromiseSettingActivity : AppCompatActivity() {
         PlaceSearchDialogFragment()
             .setOnSelectPlaceSearchListener { searchedPlace ->
                 promiseSettingViewModel.setPromiseDestination(
-                    searchedPlace.placeTitle,
+                    searchedPlace.title,
                     searchedPlace.location
                 )
             }
