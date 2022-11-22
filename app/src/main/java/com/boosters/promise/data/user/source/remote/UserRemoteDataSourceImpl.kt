@@ -34,11 +34,7 @@ class UserRemoteDataSourceImpl @Inject constructor(
 
     override fun getUser(userCode: String): Flow<UserBody> =
         userCollectionReference.document(userCode).snapshots().mapNotNull {
-            try {
-                it.toObject(UserBody::class.java)
-            } catch (e: NullPointerException) {
-                null
-            }
+            it.toObject(UserBody::class.java)
         }
 
     companion object {

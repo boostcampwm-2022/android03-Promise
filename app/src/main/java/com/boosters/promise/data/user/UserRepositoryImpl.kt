@@ -25,7 +25,11 @@ class UserRepositoryImpl @Inject constructor(
 
     override fun getUser(userCode: String): Flow<User> =
         userRemoteDataSource.getUser(userCode).mapNotNull { userBody ->
-            userBody.toUser()
+            try {
+                userBody.toUser()
+            } catch (e: NullPointerException) {
+                null
+            }
         }
 
     override fun getMyInfo(): Flow<Result<User>> =
