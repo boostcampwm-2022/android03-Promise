@@ -1,7 +1,6 @@
 package com.boosters.promise.data.user.source.remote
 
 import com.boosters.promise.data.network.NetworkConnectionUtil
-import com.boosters.promise.data.user.User
 import com.boosters.promise.data.user.di.UserModule
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ktx.snapshots
@@ -17,7 +16,7 @@ class UserRemoteDataSourceImpl @Inject constructor(
     private val networkConnectionUtil: NetworkConnectionUtil
 ) : UserRemoteDataSource {
 
-    override suspend fun requestSignUp(userName: String): Result<User> = runCatching {
+    override suspend fun requestSignUp(userName: String): Result<UserBody> = runCatching {
         networkConnectionUtil.checkNetworkOnline()
 
         val userCode = userCollectionReference.document().id.take(USER_CODE_LENGTH)
@@ -30,16 +29,12 @@ class UserRemoteDataSourceImpl @Inject constructor(
             userBody
         ).await()
 
-        userBody.toUser()
+        userBody
     }
 
-    override fun getUser(userCode: String): Flow<User> =
+    override fun getUser(userCode: String): Flow<UserBody> =
         userCollectionReference.document(userCode).snapshots().mapNotNull {
-            try {
-                it.toObject(UserBody::class.java)?.toUser()
-            } catch (e: NullPointerException) {
-                null
-            }
+            it.toObject(UserBody::class.java)
         }
 
     companion object {
