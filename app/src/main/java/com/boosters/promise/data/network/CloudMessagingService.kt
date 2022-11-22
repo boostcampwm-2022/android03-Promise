@@ -11,7 +11,7 @@ interface CloudMessagingService {
 
     @Headers(
         "Content-Type: application/json",
-        "Authorization: key="
+        "Authorization: key=AAAAp3dHyfU:APA91bEOp3rEcmyHyhCvOtdZd3p-Rl6EJqqiNJCLKmscovQThchZwjJ6ksEt_nVHvKjOgQpcSv10dZvmQr1x_-VTKADav2Fub5l6KcqQDUc7lMsX9Q42y_KRuIm2pcL0xA7Ike0C4dBr"
     )
     @POST("fcm/send")
     suspend fun sendNotification(@Body notification: NotificationRequestBody)
