@@ -96,6 +96,9 @@ dependencies {
 
     //Naver Maps API
     implementation 'com.naver.maps:map-sdk:3.16.0'
+
+    //fused location provider
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
 }
 
 kapt {
