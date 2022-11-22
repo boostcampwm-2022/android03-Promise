@@ -10,9 +10,7 @@ import com.boosters.promise.R
 import com.boosters.promise.databinding.ItemPromiseCardBinding
 import com.boosters.promise.ui.promisesetting.model.PromiseUiState
 
-class PromiseDayListAdapter(
-    private val onClickListener: (item: PromiseUiState) -> Unit
-) : ListAdapter<PromiseUiState, PromiseDayListAdapter.PlaceSearchViewHolder>(diffUtil) {
+class PromiseDailyListAdapter : ListAdapter<PromiseUiState, PromiseDailyListAdapter.PlaceSearchViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaceSearchViewHolder {
         val binding: ItemPromiseCardBinding = DataBindingUtil.inflate(
@@ -22,11 +20,7 @@ class PromiseDayListAdapter(
             false
         )
 
-        return PlaceSearchViewHolder(binding).apply {
-            itemView.setOnClickListener {
-                onClickListener(getItem(adapterPosition))
-            }
-        }
+        return PlaceSearchViewHolder(binding)
     }
 
     override fun onBindViewHolder(viewHolder: PlaceSearchViewHolder, position: Int) {
