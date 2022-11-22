@@ -164,12 +164,11 @@ class PromiseSettingActivity : AppCompatActivity() {
     }
 
     private fun showMember() {
-        val members = ArrayList(promiseSettingViewModel.promiseUiState.value.members)
-        val intent =
-            Intent(this, InviteActivity::class.java).putParcelableArrayListExtra(
-                MEMBER_LIST_KEY,
-                members
-            )
+        val memberList = ArrayList(promiseSettingViewModel.promiseUiState.value.members)
+        val intent = Intent(this, InviteActivity::class.java).putParcelableArrayListExtra(
+            MEMBER_LIST_KEY,
+            memberList
+        )
         getContent.launch(intent)
     }
 
