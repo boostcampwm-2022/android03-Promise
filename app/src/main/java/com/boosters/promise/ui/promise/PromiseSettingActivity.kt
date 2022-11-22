@@ -173,7 +173,6 @@ class PromiseSettingActivity : AppCompatActivity() {
 
     private fun showStateSnackbar(message: Int) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
-        promiseSettingViewModel.initPromiseSettingUiState()
     }
 
     companion object {

@@ -32,10 +32,8 @@ class PromiseSettingViewModel @Inject constructor(
     private val _promiseUiState = MutableStateFlow(PromiseUiState())
     val promiseUiState: StateFlow<PromiseUiState> = _promiseUiState.asStateFlow()
 
-    private val _promiseSettingUiState: MutableStateFlow<PromiseSettingUiState> =
-        MutableStateFlow(PromiseSettingUiState.Loading)
-    val promiseSettingUiState: StateFlow<PromiseSettingUiState> =
-        _promiseSettingUiState.asStateFlow()
+    private val _promiseSettingUiState = MutableSharedFlow<PromiseSettingUiState>()
+    val promiseSettingUiState: SharedFlow<PromiseSettingUiState> = _promiseSettingUiState.asSharedFlow()
 
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")
     private lateinit var myInfo: User
@@ -63,12 +61,12 @@ class PromiseSettingViewModel @Inject constructor(
     fun onClickCompletionButton() {
         val promise = _promiseUiState.value
         if (promise.title.isEmpty() || promise.time.isEmpty() || promise.destinationName.isEmpty() || promise.date.isEmpty()) {
-            _promiseSettingUiState.update { PromiseSettingUiState.Fail(R.string.promiseSetting_empty) }
+            changeUiState(PromiseSettingUiState.Fail(R.string.promiseSetting_empty))
             return
         }
         val promiseTime = LocalDateTime.parse("${promise.date} ${promise.time}", dateFormatter)
         if (promiseTime.isBefore(LocalDateTime.now())) {
-            _promiseSettingUiState.update { PromiseSettingUiState.Fail(R.string.promiseSetting_beforeTime) }
+            changeUiState(PromiseSettingUiState.Fail(R.string.promiseSetting_beforeTime))
             return
         }
         viewModelScope.launch {
@@ -76,8 +74,8 @@ class PromiseSettingViewModel @Inject constructor(
             members.add(myInfo.toUserUiState())
             promiseRepository.addPromise(promise.copy(members = members).toPromise()).collect {
                 when (it) {
-                    true -> _promiseSettingUiState.update { PromiseSettingUiState.Success }
-                    false -> _promiseSettingUiState.update { PromiseSettingUiState.Fail(R.string.promiseSetting_fail) }
+                    true -> changeUiState(PromiseSettingUiState.Success)
+                    false -> changeUiState(PromiseSettingUiState.Fail(R.string.promiseSetting_fail))
                 }
             }
         }
@@ -113,9 +111,9 @@ class PromiseSettingViewModel @Inject constructor(
         }
     }
 
-    fun initPromiseSettingUiState() {
-        _promiseSettingUiState.update {
-            PromiseSettingUiState.Loading
+    private fun changeUiState(state: PromiseSettingUiState) {
+        viewModelScope.launch {
+            _promiseSettingUiState.emit(state)
         }
     }
 
