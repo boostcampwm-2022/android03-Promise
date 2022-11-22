@@ -19,7 +19,7 @@ class InviteViewModel @Inject constructor(
     private var _currentFriendItems = MutableLiveData<List<UserUiState>?>()
     val currentFriendItems: LiveData<List<UserUiState>?> = _currentFriendItems
 
-    private lateinit var allFriendItems: List<UserUiState>
+    private var allFriendItems: List<UserUiState>? = null
 
     private var _currentMemberItems = MutableLiveData<List<UserUiState>?>()
     val currentMemberItems: LiveData<List<UserUiState>?> = _currentMemberItems
@@ -30,7 +30,7 @@ class InviteViewModel @Inject constructor(
             allFriendItems = data.map { user ->
                 user.toUserUiState()
             }
-            val inviteCheckedItems = allFriendItems.map { user ->
+            val inviteCheckedItems = allFriendItems?.map { user ->
                 if (currentMemberItems.value?.contains(user) == true) {
                     user.copy(isSelected = true)
                 } else {
@@ -60,7 +60,7 @@ class InviteViewModel @Inject constructor(
     }
 
     fun searchFriendItems(query: String) {
-        _currentFriendItems.value = allFriendItems.filter { user ->
+        _currentFriendItems.value = allFriendItems?.filter { user ->
             if (query.matches(userCodeRegex)) {
                 user.userCode.contains(query)
             } else {
