@@ -1,6 +1,6 @@
 package com.boosters.promise.ui.promise.model
 
-import com.boosters.promise.data.promise.Location
+import com.boosters.promise.data.model.Location
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.ui.invite.model.UserUiState
 import com.boosters.promise.ui.invite.model.toUser
@@ -27,4 +27,3 @@ fun PromiseUiState.toPromise() =
             it.toUser()
         }
     )
-

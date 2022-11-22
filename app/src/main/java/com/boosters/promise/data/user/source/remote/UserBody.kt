@@ -1,6 +1,6 @@
 package com.boosters.promise.data.user.source.remote
 
-import com.boosters.promise.data.user.Location
+import com.boosters.promise.data.model.Location
 import com.boosters.promise.data.user.User
 
 data class UserBody(

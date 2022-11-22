@@ -5,9 +5,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="8dp"
-        app:cardCornerRadius="8dp">
+        android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -15,7 +13,7 @@
 
             <TextView
                 android:id="@+id/textView_itemSearchAddressResult_title"
-                style="@style/Promise.TextAppearance.SmallNormal"
+                style="@style/Promise.TextAppearance.MiddleNormal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
