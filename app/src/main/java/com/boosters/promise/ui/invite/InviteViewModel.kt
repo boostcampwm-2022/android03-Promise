@@ -19,8 +19,7 @@ class InviteViewModel @Inject constructor(
     private var _currentFriendItems = MutableLiveData<List<UserUiState>?>()
     val currentFriendItems: LiveData<List<UserUiState>?> = _currentFriendItems
 
-    private var _allFriendItems = MutableLiveData<List<UserUiState>>()
-    private val allFriendItems: LiveData<List<UserUiState>> = _allFriendItems
+    private lateinit var allFriendItems: List<UserUiState>
 
     private var _currentMemberItems = MutableLiveData<List<UserUiState>?>()
     val currentMemberItems: LiveData<List<UserUiState>?> = _currentMemberItems
@@ -28,14 +27,15 @@ class InviteViewModel @Inject constructor(
     fun initAllFriendItems() {
         viewModelScope.launch {
             val data = friendRepository.getFriends()
-            _allFriendItems.value = data.map { user ->
+            allFriendItems = data.map { user ->
                 user.toUserUiState()
             }
-            val inviteCheckedItems = allFriendItems.value?.map { user ->
+            val inviteCheckedItems = allFriendItems.map { user ->
                 if (currentMemberItems.value?.contains(user) == true) {
-                    user.isSelected = true
+                    user.copy(isSelected = true)
+                } else {
+                    user
                 }
-                user
             }
             _currentFriendItems.value = inviteCheckedItems
         }
@@ -45,8 +45,22 @@ class InviteViewModel @Inject constructor(
         _currentMemberItems.value = memberItems
     }
 
+    fun addMemberItems(user: UserUiState) {
+        _currentMemberItems.value = currentMemberItems.value?.plusElement(user)
+        _currentFriendItems.value = currentFriendItems.value?.map {
+            if (it.userCode == user.userCode) it.copy(isSelected = true) else it
+        }
+    }
+
+    fun removeMemberItems(user: UserUiState) {
+        _currentMemberItems.value = _currentMemberItems.value?.minusElement(user)
+        _currentFriendItems.value = currentFriendItems.value?.map {
+            if (it.userCode == user.userCode) it.copy(isSelected = false) else it
+        }
+    }
+
     fun searchFriendItems(query: String) {
-        _currentFriendItems.value = allFriendItems.value?.filter { user ->
+        _currentFriendItems.value = allFriendItems.filter { user ->
             if (query.matches(userCodeRegex)) {
                 user.userCode.contains(query)
             } else {

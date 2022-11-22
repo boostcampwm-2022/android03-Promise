@@ -1,6 +1,5 @@
 package com.boosters.promise.ui.invite.adapter
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
@@ -10,7 +9,7 @@ import com.boosters.promise.databinding.ItemInviteFriendBinding
 import com.boosters.promise.ui.invite.model.UserUiState
 
 class FriendAdapter : ListAdapter<UserUiState, FriendAdapter.FriendViewHolder>(
-    UserDiffItemCallback()
+    UserDiffItemCallback
 ) {
 
     private var onItemClickListener: OnItemClickListener? = null
@@ -40,6 +39,7 @@ class FriendAdapter : ListAdapter<UserUiState, FriendAdapter.FriendViewHolder>(
     class FriendViewHolder(
         private val binding: ItemInviteFriendBinding
     ) : RecyclerView.ViewHolder(binding.root) {
+
         fun bind(userUiState: UserUiState) {
             binding.user = userUiState
 

@@ -8,7 +8,7 @@ import com.boosters.promise.databinding.ItemInviteMemberBinding
 import com.boosters.promise.ui.invite.model.UserUiState
 
 class MemberAdapter : ListAdapter<UserUiState, MemberAdapter.MemberViewHolder>(
-    UserDiffItemCallback()
+    UserDiffItemCallback
 ) {
 
     private var onItemClickListener: OnItemClickListener? = null
@@ -38,6 +38,7 @@ class MemberAdapter : ListAdapter<UserUiState, MemberAdapter.MemberViewHolder>(
     class MemberViewHolder(
         private val binding: ItemInviteMemberBinding
     ) : RecyclerView.ViewHolder(binding.root) {
+
         fun bind(userUiState: UserUiState) {
             binding.user = userUiState
         }
