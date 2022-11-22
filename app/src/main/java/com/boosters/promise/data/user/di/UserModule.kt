@@ -14,6 +14,7 @@ import com.boosters.promise.data.user.source.local.MyInfoLocalDataSourceImpl
 import com.boosters.promise.data.user.source.remote.UserRemoteDataSource
 import com.boosters.promise.data.user.source.remote.UserRemoteDataSourceImpl
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import dagger.Module

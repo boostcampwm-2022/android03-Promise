@@ -9,4 +9,6 @@ interface UserRemoteDataSource {
 
     fun getUser(userCode: String): Flow<User>
 
+    suspend fun getUserList(userCodeList: List<String>): List<User>
+
 }

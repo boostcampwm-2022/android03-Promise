@@ -1,9 +1,7 @@
 package com.boosters.promise.data.notification
 
-import com.boosters.promise.data.notification.source.remote.NotificationRequestBody
-
 interface NotificationRepository {
 
-    suspend fun sendNotification(notificationRequestBody: NotificationRequestBody)
+    suspend fun sendNotification(title: String, message: String, token: String)
 
 }

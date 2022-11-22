@@ -98,8 +98,8 @@ class PromiseSettingActivity : AppCompatActivity() {
         lifecycleScope.launch {
             promiseSettingViewModel.promiseSettingUiState.collectLatest { promiseSettingUiState ->
                 when (promiseSettingUiState) {
-                    PromiseSettingUiState.Loading -> return@collectLatest
-                    PromiseSettingUiState.Success -> return@collectLatest // "move to detail promise view"
+                    PromiseSettingUiState.Edit -> return@collectLatest
+                    PromiseSettingUiState.Success -> return@collectLatest
                     is PromiseSettingUiState.Fail -> showStateSnackbar(promiseSettingUiState.message)
                 }
             }

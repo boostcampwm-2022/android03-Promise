@@ -5,8 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.model.Location
 import com.boosters.promise.R
 import com.boosters.promise.data.notification.NotificationRepository
-import com.boosters.promise.data.notification.source.remote.NotificationRequestBody
-import com.boosters.promise.data.notification.source.remote.NotificationRequestData
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.user.User
 import com.boosters.promise.data.user.UserRepository
@@ -50,7 +48,6 @@ class PromiseSettingViewModel @Inject constructor(
                 myInfo = it
             }
         }
-        sendNotification()
     }
 
     fun updateMember(newMemberList: List<UserUiState>) {
@@ -81,7 +78,7 @@ class PromiseSettingViewModel @Inject constructor(
             members.add(myInfo.toUserUiState())
             promiseRepository.addPromise(promise.copy(members = members).toPromise()).collect {
                 when (it) {
-                    true -> changeUiState(PromiseSettingUiState.Success)
+                    true -> sendNotification()
                     false -> changeUiState(PromiseSettingUiState.Fail(R.string.promiseSetting_fail))
                 }
             }
@@ -131,11 +128,23 @@ class PromiseSettingViewModel @Inject constructor(
     }
 
     private fun sendNotification() {
-        val notificationRequestBody =
-            NotificationRequestBody("coJP1ozcQ26vxnBOE6t2vX:APA91bH_TMyoECawIWHJ3tctiT1FQP3SHKnIB_qYh5lJ7MQdMDaJwXT0P49OQrrLpmuBtDqP1a3Mw_FXwx6iA1fbSIRxFg8STPwJaInUU_MpwahDWmPJjREhKkR9hzINo2zfynMHaFoO"
-                , NotificationRequestData("Promise", "hello"))
+        val members = listOf(
+            User(
+            "TWPRDv",
+            "name2",
+            userToken = "fL1BdTxZQY6jk0C-JuvjZT:APA91bEVbE7avFbgSYhSL5HsEe3n84BWZM9LRXSBAmtiAkurGqLs2LMdX4Q_f25MQ3PqeBFgkJcn9KRKnDYsFKqr_Sw3q-VwFHjTv-Ec8ippW0_kihHRw7-GQSARC6dNfVOIm1cX_ufT"
+        ),
+            User(
+                "uGilLB",
+                "name",
+                userToken = "dprqlWu4SkuyNRMcP_qMn3:APA91bFfVGPbbRGgjbtO0eZ7wRD2ERdc59KyrK6oUed7U5ctEaQuozjlZswBhvtPYMr_lomrbp7fdrjfFnDK6I2D0Hs8yMW0q2t_SabozMo1Kks_FsHkUe2BKbher9FarPgt2G4rHDen"
+            ))
         viewModelScope.launch {
-            notificationRepository.sendNotification(notificationRequestBody)
+            val userCodeList = members.filter { it.userCode != myInfo.userCode }.map { it.userCode }
+            userRepository.getUserList(userCodeList).forEach { user ->
+                notificationRepository.sendNotification("Promise", "hello", user.userToken)
+            }
+            changeUiState(PromiseSettingUiState.Success)
         }
     }
 

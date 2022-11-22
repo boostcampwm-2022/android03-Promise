@@ -24,4 +24,8 @@ class UserRepositoryImpl @Inject constructor(
     override fun getMyInfo(): Flow<Result<User>> =
         myInfoLocalDataSource.getMyInfo()
 
+    override suspend fun getUserList(userCodeList: List<String>): List<User> {
+        return userRemoteDataSource.getUserList(userCodeList)
+    }
+
 }

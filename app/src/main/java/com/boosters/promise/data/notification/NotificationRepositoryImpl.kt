@@ -9,8 +9,8 @@ class NotificationRepositoryImpl @Inject constructor(
     private val notificationRemoteDataSource: NotificationRemoteDataSource,
 ) : NotificationRepository {
 
-    override suspend fun sendNotification(notificationRequestBody: NotificationRequestBody) {
-        notificationRemoteDataSource.sendNotification(notificationRequestBody)
+    override suspend fun sendNotification(title: String, message: String, token: String) {
+        notificationRemoteDataSource.sendNotification(title, message, token)
     }
 
 }

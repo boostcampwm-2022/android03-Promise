@@ -20,6 +20,7 @@ class MyInfoLocalDataSourceImpl @Inject constructor(
         myInfoPreferencesDataStore.edit { preferences ->
             preferences[USER_CODE_KEY] = user.userCode
             preferences[USER_NAME_KEY] = user.userName
+            preferences[USER_TOKEN_KEY] = user.userToken
         }
     }
 
@@ -30,13 +31,15 @@ class MyInfoLocalDataSourceImpl @Inject constructor(
             runCatching {
                 val userCode = preferences[USER_CODE_KEY] ?: throw NullPointerException()
                 val userName = preferences[USER_NAME_KEY] ?: throw NullPointerException()
-                User(userCode, userName)
+                val userToken = preferences[USER_TOKEN_KEY] ?: throw NullPointerException()
+                User(userCode, userName, userToken = userToken)
             }
         }
 
     companion object {
         private val USER_CODE_KEY = stringPreferencesKey("userCode")
         private val USER_NAME_KEY = stringPreferencesKey("userName")
+        private val USER_TOKEN_KEY = stringPreferencesKey("userToken")
     }
 
 }
