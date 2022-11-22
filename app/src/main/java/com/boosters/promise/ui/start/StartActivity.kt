@@ -1,11 +1,11 @@
 package com.boosters.promise.ui.start
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.boosters.promise.ui.promise.PromiseSettingActivity
+import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
 import com.boosters.promise.ui.signup.SignUpActivity
 import dagger.hilt.android.AndroidEntryPoint
 

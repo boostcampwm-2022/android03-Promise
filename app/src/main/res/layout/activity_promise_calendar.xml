@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:padding="@dimen/default_horizontal_padding"
+            tools:context=".ui.promisecalendar.PromiseCalendarActivity">
+
+            <TextView
+                android:id="@+id/textView_promiseCalendar_header"
+                style="@style/Promise.TextAppearance.LargeBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/promiseCalendar_header"
+                app:layout_constraintBottom_toTopOf="@+id/materialCalendarView_promiseCalendar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/promiseCalendar_myInfo"
+                app:layout_constraintBottom_toBottomOf="@+id/textView_promiseCalendar_header"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@+id/textView_promiseCalendar_header"
+                app:layout_constraintTop_toTopOf="@+id/textView_promiseCalendar_header"
+                app:srcCompat="@drawable/ic_profile_image" />
+
+            <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                android:id="@+id/materialCalendarView_promiseCalendar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView_promiseCalendar_header"
+                app:layout_constraintBottom_toTopOf="@+id/textView_promiseCalendar_dayListLabel"
+                app:mcv_calendarMode="month"
+                app:mcv_showOtherDates="all" />
+
+            <TextView
+                android:id="@+id/textView_promiseCalendar_dayListLabel"
+                style="@style/Promise.TextAppearance.BigNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/promiseCalendar_list"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/materialCalendarView_promiseCalendar"
+                app:layout_constraintBottom_toTopOf="@id/recyclerView_promiseCalendar_dayList"/>
+
+            <ImageButton
+                style="@style/Promise.Button.FilledSquareButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_add"
+                app:layout_constraintBottom_toBottomOf="@+id/textView_promiseCalendar_dayListLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/textView_promiseCalendar_dayListLabel"
+                app:layout_constraintTop_toTopOf="@+id/textView_promiseCalendar_dayListLabel"
+                android:contentDescription="@string/promiseCalendar_addPromise" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView_promiseCalendar_dayList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView_promiseCalendar_dayListLabel" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</layout>
