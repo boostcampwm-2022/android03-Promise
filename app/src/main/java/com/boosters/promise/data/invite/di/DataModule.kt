@@ -39,7 +39,7 @@ object DataModule {
 
     @Singleton
     @Provides
-    fun provideFriendLocalDataSource(userDao: UserDao): FriendLocalDataSource{
+    fun provideFriendLocalDataSource(userDao: UserDao): FriendLocalDataSource {
         return FriendLocalDataSourceImpl(userDao)
     }
 
