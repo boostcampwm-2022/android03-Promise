@@ -57,14 +57,15 @@ class SignUpActivity : AppCompatActivity() {
         lifecycleScope.launch {
             signUpViewModel.signUpUiState.collect { signUpUiState ->
                 when (signUpUiState) {
-                    is SignUpUiState.Nothing -> binding.isLoading = false
                     is SignUpUiState.Loading -> binding.isLoading = true
                     is SignUpUiState.Success -> {
+                        binding.isLoading = false
                         // TODO: Home 약속 리스트 화면으로 이동 구현
 //                    startActivity(Intent(this@SignUpActivity, PromiseSettingActivity::class.java)).also { finish() }
                         finish()
                     }
                     is SignUpUiState.Fail -> {
+                        binding.isLoading = false
                         signUpUiState.signUpErrorMessageResId?.let {
                             Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
                         }

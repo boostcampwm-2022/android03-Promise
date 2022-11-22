@@ -45,4 +45,5 @@
     <string name="signUp_nameDescription">이름을 입력해주세요.</string>
     <string name="signUp_signUpRequest">시작하기</string>
     <string name="signUp_signUpError">회원가입을 실패했습니다.</string>
+    <string name="signUp_networkError">네트워크 연결을 확인해주세요.</string>
 </resources>
