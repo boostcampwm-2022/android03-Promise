@@ -38,14 +38,14 @@ class PromiseRemoteDataSourceImpl @Inject constructor(
         promiseRef.document(promise.promiseId).delete()
     }
 
-    override suspend fun getPromiseList(user: User, date: String): List<Promise> {
+    override suspend fun getPromiseList(user: User, date: String): List<PromiseBody> {
         val task = promiseRef
             .whereEqualTo(DATABASE_PROMISE_DATE_KEY, date)
             .whereArrayContainsAny(DATABASE_PROMISE_MEMBERS_KEY, listOf(user))
             .get()
         task.await()
         return task.result.documents.mapNotNull {
-            it.toObject(PromiseBody::class.java)?.toPromise()
+            it.toObject(PromiseBody::class.java)
         }
     }
 
