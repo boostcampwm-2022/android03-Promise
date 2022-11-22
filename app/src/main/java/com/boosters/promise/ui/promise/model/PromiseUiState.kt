@@ -27,4 +27,3 @@ fun PromiseUiState.toPromise() =
             it.toUser()
         }
     )
-

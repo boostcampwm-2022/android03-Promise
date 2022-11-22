@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.invite.FriendRepository
+import com.boosters.promise.data.user.UserRepository
 import com.boosters.promise.data.user.toUserUiState
 import com.boosters.promise.ui.invite.model.UserUiState
 import dagger.hilt.android.lifecycle.HiltViewModel

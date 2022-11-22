@@ -17,7 +17,9 @@ import com.boosters.promise.ui.invite.model.UserUiState
 import com.boosters.promise.ui.place.PlaceSearchDialogFragment
 import com.boosters.promise.ui.promise.adapter.PromiseMemberListAdapter
 import com.boosters.promise.ui.promise.model.PromiseSettingEvent
+import com.boosters.promise.ui.promise.model.PromiseSettingUiState
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,6 +76,16 @@ class PromiseSettingActivity : AppCompatActivity() {
             }
         }
 
+        lifecycleScope.launch {
+            promiseSettingViewModel.promiseSettingUiState.collectLatest { promiseSettingUiState ->
+                when (promiseSettingUiState) {
+                    PromiseSettingUiState.Loading -> return@collectLatest
+                    PromiseSettingUiState.Success -> return@collectLatest // "move to detail promise view"
+                    is PromiseSettingUiState.Fail -> showStateSnackbar(promiseSettingUiState.message)
+                }
+            }
+        }
+
     }
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
@@ -90,6 +102,8 @@ class PromiseSettingActivity : AppCompatActivity() {
             binding.editTextPromiseSettingPromiseTitle.windowToken,
             0
         )
+        val promiseTitle = binding.editTextPromiseSettingPromiseTitle.text.toString()
+        promiseSettingViewModel.setPromiseTitle(promiseTitle)
     }
 
     private fun showDatePicker() {
@@ -155,6 +169,10 @@ class PromiseSettingActivity : AppCompatActivity() {
                 members
             )
         getContent.launch(intent)
+    }
+
+    private fun showStateSnackbar(message: Int) {
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
 
     companion object {
