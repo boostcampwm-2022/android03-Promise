@@ -1,18 +1,18 @@
-package com.boosters.promise.ui.promise
+package com.boosters.promise.ui.promisesetting
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boosters.promise.data.model.Location
 import com.boosters.promise.R
+import com.boosters.promise.data.model.Location
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.user.User
 import com.boosters.promise.data.user.UserRepository
 import com.boosters.promise.data.user.toUserUiState
 import com.boosters.promise.ui.invite.model.UserUiState
-import com.boosters.promise.ui.promise.model.PromiseSettingEvent
-import com.boosters.promise.ui.promise.model.PromiseSettingUiState
-import com.boosters.promise.ui.promise.model.PromiseUiState
-import com.boosters.promise.ui.promise.model.toPromise
+import com.boosters.promise.ui.promisesetting.model.PromiseSettingEvent
+import com.boosters.promise.ui.promisesetting.model.PromiseSettingUiState
+import com.boosters.promise.ui.promisesetting.model.PromiseUiState
+import com.boosters.promise.ui.promisesetting.model.toPromise
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

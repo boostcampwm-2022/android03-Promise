@@ -1,4 +1,4 @@
-package com.boosters.promise.ui.promise.adapter
+package com.boosters.promise.ui.promisesetting.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

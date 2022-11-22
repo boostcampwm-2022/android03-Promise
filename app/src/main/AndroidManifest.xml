@@ -16,9 +16,9 @@
         android:theme="@style/Theme.Promise"
         tools:targetApi="33">
         <activity
-            android:name=".ui.promise.PromiseSettingActivity"
+            android:name=".ui.promisesetting.PromiseSettingActivity"
             android:windowSoftInputMode="adjustNothing"
-            android:exported="false" />
+            android:exported="true" />
 
         <activity
             android:name=".ui.start.StartActivity"
