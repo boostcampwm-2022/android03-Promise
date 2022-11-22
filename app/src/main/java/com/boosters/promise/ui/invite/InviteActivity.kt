@@ -1,11 +1,12 @@
 package com.boosters.promise.ui.invite
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ActivityInviteBinding
+import com.boosters.promise.ui.invite.adapter.InviteAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

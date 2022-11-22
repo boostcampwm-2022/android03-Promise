@@ -30,4 +30,8 @@ class PlaceSearchViewModel @Inject constructor(
         }
     }
 
+    companion object {
+        const val SEARCH_TERM = 500L
+    }
+
 }
