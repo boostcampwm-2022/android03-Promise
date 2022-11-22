@@ -22,6 +22,9 @@ class InviteViewModel @Inject constructor(
     private var _allFriendItems = MutableLiveData<List<UserUiState>>()
     private val allFriendItems: LiveData<List<UserUiState>> = _allFriendItems
 
+    private var _currentMemberItems = MutableLiveData<List<UserUiState>?>()
+    val currentMemberItems: LiveData<List<UserUiState>?> = _currentMemberItems
+
     fun initAllFriendItems() {
         viewModelScope.launch {
             val data = friendRepository.getFriends()
@@ -30,6 +33,10 @@ class InviteViewModel @Inject constructor(
             }
             _currentFriendItems.value = _allFriendItems.value
         }
+    }
+
+    fun initMemberItems(memberItems: List<UserUiState>?) {
+        _currentMemberItems.value = memberItems
     }
 
     fun searchFriendItems(query: String) {

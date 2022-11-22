@@ -1,6 +1,7 @@
 package com.boosters.promise.ui.invite
 
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -25,11 +26,13 @@ class InviteActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_invite)
         setBinding()
         observeCurrentFriendItems()
+        observeCurrentMemberItems()
         setFriendItemClickListener()
         setMemberItemClickListener()
         setConfirmButtonClickListener()
 
         inviteViewModel.initAllFriendItems()
+        initMemberItems()
     }
 
     private fun setBinding() {
@@ -42,6 +45,12 @@ class InviteActivity : AppCompatActivity() {
     private fun observeCurrentFriendItems() {
         inviteViewModel.currentFriendItems.observe(this) { friendItems ->
             friendAdapter.submitList(friendItems)
+        }
+    }
+
+    private fun observeCurrentMemberItems() {
+        inviteViewModel.currentMemberItems.observe(this) { memberItems ->
+            memberAdapter.submitList(memberItems)
         }
     }
 
@@ -73,11 +82,25 @@ class InviteActivity : AppCompatActivity() {
         binding.buttonInviteConfirm.setOnClickListener {
             val intent = Intent().apply {
                 val memberList = ArrayList(memberAdapter.currentList)
-                putParcelableArrayListExtra("memberList", memberList)
+                putParcelableArrayListExtra(MEMBER_LIST_KEY, memberList)
             }
             setResult(RESULT_OK, intent)
             finish()
         }
+    }
+
+    private fun initMemberItems() {
+        val members = if (Build.VERSION.SDK_INT < 33) {
+            intent.getParcelableArrayListExtra(MEMBER_LIST_KEY)
+        } else {
+            intent.getParcelableArrayListExtra(MEMBER_LIST_KEY, UserUiState::class.java)
+        }
+
+        inviteViewModel.initMemberItems(members)
+    }
+
+    companion object {
+        const val MEMBER_LIST_KEY = "memberList"
     }
 
 }
