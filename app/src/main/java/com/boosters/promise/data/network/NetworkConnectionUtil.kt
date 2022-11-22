@@ -18,8 +18,12 @@ class NetworkConnectionUtil @Inject constructor(
     fun checkNetworkOnline() {
         val activeNetwork = connectivityManager?.activeNetwork
         val capabilities = connectivityManager?.getNetworkCapabilities(activeNetwork)
-        if ((capabilities != null && (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR))).not()
+        if ((
+            capabilities != null && (
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+                )
+            ).not()
         ) {
             throw NetworkNotOnlineException()
         }

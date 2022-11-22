@@ -13,5 +13,4 @@ class PlaceRemoteDateSourceImpl @Inject constructor(
         }
     }
 
-
 }

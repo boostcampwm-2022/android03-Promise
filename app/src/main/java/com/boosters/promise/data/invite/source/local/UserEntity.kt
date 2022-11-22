@@ -15,4 +15,4 @@ fun UserEntity.toUser() = User(
     userCode = userCode,
     userName = userName,
     location = null
-    )
+)
