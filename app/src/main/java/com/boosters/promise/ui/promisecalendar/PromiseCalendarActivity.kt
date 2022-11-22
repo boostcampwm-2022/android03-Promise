@@ -2,7 +2,6 @@ package com.boosters.promise.ui.promisecalendar
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -13,6 +12,7 @@ import com.boosters.promise.R
 import com.boosters.promise.databinding.ActivityPromiseCalendarBinding
 import com.boosters.promise.ui.promisecalendar.adapter.PromiseDailyListAdapter
 import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
+import com.prolificinteractive.materialcalendarview.CalendarDay
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -30,28 +30,35 @@ class PromiseCalendarActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         setContentView(binding.root)
 
+        CalendarDay.today().run {
+            getString(R.string.date_format).format(year, month + 1, day)
+        }.let { today ->
+            promiseCalendarViewModel.start(today)
+        }
+
         val promiseDailyListAdapter = PromiseDailyListAdapter()
         binding.recyclerViewPromiseCalendarDailyList.adapter = promiseDailyListAdapter
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 promiseCalendarViewModel.promiseDailyList.collect {
-                    Log.d("submitList", it.toString())
                     promiseDailyListAdapter.submitList(it)
-                    Log.d("currentList", promiseDailyListAdapter.currentList.toString())
                 }
             }
         }
 
-        binding.materialCalendarViewPromiseCalendar.setOnDateChangedListener { widget, date, selected ->
-            val selectedDate = date.run {
+        binding.materialCalendarViewPromiseCalendar.selectedDate = CalendarDay.today()
+        binding.materialCalendarViewPromiseCalendar.setOnDateChangedListener { _, date, _ ->
+            date.run {
                 getString(R.string.date_format).format(year, month + 1, day)
+            }.let { selectedDate ->
+                promiseCalendarViewModel.getPromiseList(selectedDate)
             }
-            promiseCalendarViewModel.getPromiseList(selectedDate)
         }
 
         binding.buttonPromiseCalendarCreatePromise.setOnClickListener {
             startActivity(Intent(this, PromiseSettingActivity::class.java))
         }
     }
+
 }

@@ -20,8 +20,10 @@ class PromiseCalendarViewModel @Inject constructor(
     private val promiseRepository: PromiseRepository
 ) : ViewModel() {
 
-    private val _promiseDailyList = MutableStateFlow(listOf(PromiseUiState()))
+    private val _promiseDailyList = MutableStateFlow<List<PromiseUiState>>(emptyList())
     val promiseDailyList: StateFlow<List<PromiseUiState>> get() = _promiseDailyList.asStateFlow()
+
+    fun start(today: String) = getPromiseList(today)
 
     fun getPromiseList(date: String) {
         viewModelScope.launch {
