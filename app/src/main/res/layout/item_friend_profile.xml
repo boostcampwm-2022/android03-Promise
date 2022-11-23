@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="user"
             type="com.boosters.promise.data.user.User" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp">
 
@@ -22,6 +23,8 @@
             android:src="@drawable/ic_profile_image"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/textView_friend_userName"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -46,9 +49,26 @@
             android:layout_marginStart="10dp"
             android:text="@{@string/friend_userCodeFormat(user.userCode)}"
             app:layout_constraintBottom_toBottomOf="@+id/imageView_friend_userImage"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button_friend_add"
             app:layout_constraintStart_toEndOf="@+id/textView_friend_userName"
             app:layout_constraintTop_toTopOf="@+id/imageView_friend_userImage"
             tools:text="#0001" />
+
+        <ImageButton
+            android:id="@+id/button_friend_add"
+            style="@style/Promise.Button.FilledSquareButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/promiseCalendar_createPromise"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_add"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView_friend_userImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/imageView_friend_userImage" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
