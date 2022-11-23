@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="user"
+            type="com.boosters.promise.data.user.User" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/imageView_friend_userImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/user_profile_image"
+            android:src="@drawable/ic_profile_image"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/textView_friend_userName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView_friend_userName"
+            style="@style/Promise.TextAppearance.MiddleBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="@{user.userName}"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView_friend_userImage"
+            app:layout_constraintEnd_toStartOf="@+id/textView_friend_userCode"
+            app:layout_constraintStart_toEndOf="@+id/imageView_friend_userImage"
+            app:layout_constraintTop_toTopOf="@+id/imageView_friend_userImage"
+            tools:text="홍길동" />
+
+        <TextView
+            android:id="@+id/textView_friend_userCode"
+            style="@style/Promise.TextAppearance.MiddleNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@{@string/friend_userCodeFormat(user.userCode)}"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView_friend_userImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView_friend_userName"
+            app:layout_constraintTop_toTopOf="@+id/imageView_friend_userImage"
+            tools:text="#0001" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

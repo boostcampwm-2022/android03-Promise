@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="myInfo"
+            type="com.boosters.promise.data.user.User" />
+        <variable
+            name="friendViewModel"
+            type="com.boosters.promise.ui.friend.FriendViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -44,9 +50,10 @@
 
         <include
             android:id="@+id/item_friend_myInfo"
-            layout="@layout/item_invite_friend"
+            layout="@layout/item_friend_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            bind:user="@{myInfo}"
             app:layout_constraintBottom_toTopOf="@id/divider_friend"
             app:layout_constraintEnd_toEndOf="@+id/guideline_friend_end"
             app:layout_constraintHorizontal_bias="0.0"
@@ -107,7 +114,7 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline_friend_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_friend_start"
             app:layout_constraintTop_toBottomOf="@+id/searchView_friend"
-            tools:listitem="@layout/item_invite_friend" />
+            tools:listitem="@layout/item_friend_profile" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
