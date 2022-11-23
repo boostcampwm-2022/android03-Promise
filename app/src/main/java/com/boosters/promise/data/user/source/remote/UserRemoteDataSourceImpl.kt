@@ -42,13 +42,13 @@ class UserRemoteDataSourceImpl @Inject constructor(
             it.toObject(UserBody::class.java)
         }
 
-    override suspend fun getUserList(userCode: List<String>): List<User> {
+    override suspend fun getUserList(userCode: List<String>): List<UserBody> {
         val task = userCollectionReference
             .whereIn(USER_CODE_KEY, userCode)
             .get()
         task.await()
         return task.result.documents.mapNotNull {
-            it.toObject(UserBody::class.java)?.toUser()
+            it.toObject(UserBody::class.java)
         }
     }
 

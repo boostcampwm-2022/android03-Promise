@@ -7,14 +7,13 @@ import android.os.Build
 import android.os.Build.VERSION
 import android.os.Bundle
 import android.text.format.DateFormat
-import android.util.Log
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ActivityPromiseSettingBinding
@@ -54,17 +53,6 @@ class PromiseSettingActivity : AppCompatActivity() {
                 }
             }
         }
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            Toast.makeText(this, "Notifications permission granted", Toast.LENGTH_SHORT)
-                .show()
-        } else {
-            Toast.makeText(this, "FCM can't post notifications without POST_NOTIFICATIONS permission",
-                Toast.LENGTH_LONG).show()
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,7 +61,7 @@ class PromiseSettingActivity : AppCompatActivity() {
         binding.promiseSettingViewModel = promiseSettingViewModel
         setContentView(binding.root)
 
-        askNotificationPermission()
+        checkPermissions()
 
         promiseMemberListAdapter =
             PromiseMemberListAdapter { promiseSettingViewModel.removeMember(it) }
@@ -113,6 +101,21 @@ class PromiseSettingActivity : AppCompatActivity() {
             hideKeyBoard()
         }
         return super.dispatchTouchEvent(event)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PERMISSIONS_REQUEST -> {
+                if (grantResults.isNotEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, R.string.start_item_notification_permission, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     private fun hideKeyBoard() {
@@ -195,19 +198,12 @@ class PromiseSettingActivity : AppCompatActivity() {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
 
-    private fun askNotificationPermission() {
-        // This is only necessary for API Level > 33 (TIRAMISU)
+    private fun checkPermissions(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
-                PackageManager.PERMISSION_GRANTED
-            ) {
-                // FCM SDK (and your app) can post notifications.
-            } else {
-                // Directly ask for the permission
-                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), PERMISSIONS_REQUEST)
             }
         }
-
     }
 
     companion object {
@@ -215,6 +211,7 @@ class PromiseSettingActivity : AppCompatActivity() {
         const val TIMEPICKER_TAG = "New Selected Time"
         const val SEARCH_DIALOG_TAG = "New Search Address Dialog"
         const val MEMBER_LIST_KEY = "memberList"
+        const val PERMISSIONS_REQUEST = 0x0000001
     }
 
 }

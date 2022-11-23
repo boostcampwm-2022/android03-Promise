@@ -36,7 +36,7 @@ class UserRepositoryImpl @Inject constructor(
         myInfoLocalDataSource.getMyInfo()
 
     override suspend fun getUserList(userCodeList: List<String>): List<User> {
-        return userRemoteDataSource.getUserList(userCodeList)
+        return userRemoteDataSource.getUserList(userCodeList).map { it.toUser() }
     }
 
 }

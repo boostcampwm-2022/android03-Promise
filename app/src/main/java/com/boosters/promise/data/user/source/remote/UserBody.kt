@@ -15,5 +15,5 @@ fun UserBody.toUser() =
         userCode = userCode ?: throw NullPointerException(),
         userName = userName ?: "",
         location = location,
-        token = token ?: ""
+        userToken = token ?: ""
     )

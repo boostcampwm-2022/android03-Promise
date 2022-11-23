@@ -14,5 +14,4 @@ fun User.toUserUiState() =
     UserUiState(
         userName = userName,
         userCode = userCode,
-        userToken = userToken
     )

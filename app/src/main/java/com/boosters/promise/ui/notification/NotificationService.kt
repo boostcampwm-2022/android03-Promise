@@ -44,8 +44,8 @@ class NotificationService : FirebaseMessagingService() {
         val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(remoteMessage.data["title"].toString())
-                .setContentText(remoteMessage.data["body"].toString())
+                .setContentTitle(remoteMessage.data[MESSAGE_TITLE].toString())
+                .setContentText(remoteMessage.data[MESSAGE_BODY].toString())
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent)
                 .setCategory(Notification.CATEGORY_MESSAGE)
@@ -54,10 +54,10 @@ class NotificationService : FirebaseMessagingService() {
         } else {
             val notificationBuilder = NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(remoteMessage.data["title"].toString())
-                .setContentText(remoteMessage.data["body"].toString())
-                .setAutoCancel(true) // 알람클릭시 삭제여부
-                .setContentIntent(pendingIntent) // 알림 실행 시 Intent
+                .setContentTitle(remoteMessage.data[MESSAGE_TITLE].toString())
+                .setContentText(remoteMessage.data[MESSAGE_BODY].toString())
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
                 .setCategory(Notification.CATEGORY_MESSAGE)
             notificationBuilder
         }
@@ -68,6 +68,8 @@ class NotificationService : FirebaseMessagingService() {
     companion object {
         const val CHANNEL_ID = "my_channel"
         const val CHANNEL_NAME = "Notice"
+        const val MESSAGE_TITLE = "title"
+        const val MESSAGE_BODY = "body"
     }
 
 }

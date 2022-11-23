@@ -42,7 +42,7 @@ class PromiseSettingViewModel @Inject constructor(
     private val _promiseSettingUiState = MutableSharedFlow<PromiseSettingUiState>()
     val promiseSettingUiState: SharedFlow<PromiseSettingUiState> = _promiseSettingUiState.asSharedFlow()
 
-    private val dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")
+    private val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT)
     private lateinit var myInfo: User
 
     init {
@@ -124,30 +124,9 @@ class PromiseSettingViewModel @Inject constructor(
         }
     }
 
-    fun cloudMessaging() {
-        viewModelScope.launch {
-            FirebaseMessaging.getInstance().token.await()
-        }
-    }
-
     private fun sendNotification() {
-        val members = listOf(
-            User(
-            "8WC1UT",
-            "name2",
-            userToken = "fL1BdTxZQY6jk0C-JuvjZT:APA91bEVbE7avFbgSYhSL5HsEe3n84BWZM9LRXSBAmtiAkurGqLs2LMdX4Q_f25MQ3PqeBFgkJcn9KRKnDYsFKqr_Sw3q-VwFHjTv-Ec8ippW0_kihHRw7-GQSARC6dNfVOIm1cX_ufT"
-        ),
-            User(
-                "uGilLB",
-                "name",
-                userToken = "drlAv3AsSCCKx7DVionZ6t:APA91bGIACuNXBdWXvbRVIjXJTJ8lOBUQnj1iU_OSm5I7q2GcRkOJLzwcK7Yyli0fRKzT9NoXIkjNecsSfFIxV8vq2vxH_MBezOBfVpZaJ4prbtN1N3qETgN0ztHx5jvzNJ-bRHE1_Yj"),
-            User(
-                "zOH89U",
-                "name",
-                userToken = "fbu_E84FSJqgBG0c0N2UKf:APA91bEm_kDXB1QkGpIJwPUbLjy--WQajclBzoczVMfSGUFQrL0Zt0Ec4gutel56rM2JefRV4A9"))
-        Log.d("MainActivity", "$myInfo")
         viewModelScope.launch {
-            val userCodeList = members.filter { it.userCode != myInfo.userCode }.map { it.userCode }
+            val userCodeList = _promiseUiState.value.members.filter { it.userCode != myInfo.userCode }.map { it.userCode }
             if (userCodeList.isEmpty()) return@launch
             val key = serverKeyRepository.getServerKey()
             userRepository.getUserList(userCodeList).forEach { user ->
@@ -155,6 +134,10 @@ class PromiseSettingViewModel @Inject constructor(
             }
             changeUiState(PromiseSettingUiState.Success)
         }
+    }
+
+    companion object {
+        private const val DATE_FORMAT = "yyyy/MM/dd HH:mm"
     }
 
 }

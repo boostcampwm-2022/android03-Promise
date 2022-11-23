@@ -8,6 +8,6 @@ interface UserRemoteDataSource {
 
     fun getUser(userCode: String): Flow<UserBody>
 
-    suspend fun getUserList(userCodeList: List<String>): List<User>
+    suspend fun getUserList(userCodeList: List<String>): List<UserBody>
 
 }
