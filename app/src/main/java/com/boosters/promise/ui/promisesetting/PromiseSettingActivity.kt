@@ -61,8 +61,6 @@ class PromiseSettingActivity : AppCompatActivity() {
         binding.promiseSettingViewModel = promiseSettingViewModel
         setContentView(binding.root)
 
-        checkPermissions()
-
         promiseMemberListAdapter =
             PromiseMemberListAdapter { promiseSettingViewModel.removeMember(it) }
         binding.recyclerViewPromiseSettingPromiseMembers.adapter = promiseMemberListAdapter
@@ -105,21 +103,6 @@ class PromiseSettingActivity : AppCompatActivity() {
             hideKeyBoard()
         }
         return super.dispatchTouchEvent(event)
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            PERMISSIONS_REQUEST -> {
-                if (grantResults.isNotEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, R.string.start_item_notification_permission, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
     }
 
     private fun hideKeyBoard() {
@@ -200,14 +183,6 @@ class PromiseSettingActivity : AppCompatActivity() {
 
     private fun showStateSnackbar(message: Int) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
-    }
-
-    private fun checkPermissions(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), PERMISSIONS_REQUEST)
-            }
-        }
     }
 
     companion object {
