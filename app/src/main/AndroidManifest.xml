@@ -15,10 +15,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Promise"
         tools:targetApi="33">
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="${MAP_API_ID}" />
+
+        <activity
+            android:name=".ui.detail.PromiseDetailActivity"
+            android:exported="false" />
+
         <activity
             android:name=".ui.promisesetting.PromiseSettingActivity"
-            android:windowSoftInputMode="adjustNothing"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustNothing" />
 
         <activity
             android:name=".ui.start.StartActivity"
@@ -34,8 +42,7 @@
         <activity
             android:name=".ui.invite.InviteActivity"
             android:exported="false"
-            android:theme="@style/Theme.Promise"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustNothing" />
 
         <activity
             android:name=".ui.signup.SignUpActivity"
@@ -43,7 +50,7 @@
 
         <activity
             android:name=".ui.promisecalendar.PromiseCalendarActivity"
-            android:exported="true" />
+            android:exported="false" />
     </application>
 
 </manifest>
