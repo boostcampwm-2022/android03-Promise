@@ -1,7 +1,6 @@
 package com.boosters.promise.data.promise
 
-import com.boosters.promise.data.model.Location
-import com.boosters.promise.data.promise.source.remote.PromiseBody
+import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.data.user.User
 import com.boosters.promise.data.user.toUserUiState
 import com.boosters.promise.ui.promisesetting.model.PromiseUiState
@@ -10,7 +9,7 @@ data class Promise(
     val promiseId: String,
     val title: String,
     val destinationName: String,
-    val destinationLocation: Location,
+    val destinationGeoLocation: GeoLocation?,
     val date: String,
     val time: String,
     val members: List<User>
@@ -32,7 +31,7 @@ fun Promise.toPromiseUiState() =
         promiseId = promiseId,
         title = title,
         destinationName = destinationName,
-        destinationLocation = destinationLocation,
+        destinationGeoLocation = destinationGeoLocation,
         date = date,
         time = time,
         members = members.map {

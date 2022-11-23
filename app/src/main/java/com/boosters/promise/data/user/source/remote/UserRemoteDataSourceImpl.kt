@@ -25,7 +25,7 @@ class UserRemoteDataSourceImpl @Inject constructor(
         val userBody = UserBody(
             userCode = userCode,
             userName = userName,
-            location = null,
+            geoLocation = null,
             token = token
         )
         userCollectionReference.document(userCode).set(

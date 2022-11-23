@@ -2,6 +2,7 @@ package com.boosters.promise.ui.promisesetting
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.R
 import com.boosters.promise.data.model.Location
 import com.boosters.promise.data.notification.NotificationRepository
@@ -104,9 +105,9 @@ class PromiseSettingViewModel @Inject constructor(
         }
     }
 
-    fun setPromiseDestination(destinationName: String, destinationLocation: Location) {
+    fun setPromiseDestination(destinationName: String, destinationGeoLocation: GeoLocation) {
         _promiseUiState.update {
-            it.copy(destinationName = destinationName, destinationLocation = destinationLocation)
+            it.copy(destinationName = destinationName, destinationGeoLocation = destinationGeoLocation)
         }
     }
 
