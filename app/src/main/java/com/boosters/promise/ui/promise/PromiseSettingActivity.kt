@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Build.VERSION
 import android.os.Bundle
 import android.text.format.DateFormat
+import android.util.Log
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -23,6 +24,7 @@ import com.boosters.promise.ui.place.PlaceSearchDialogFragment
 import com.boosters.promise.ui.promise.adapter.PromiseMemberListAdapter
 import com.boosters.promise.ui.promise.model.PromiseSettingEvent
 import com.boosters.promise.ui.promise.model.PromiseSettingUiState
+import com.boosters.promise.ui.promise.model.PromiseUiState
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -61,8 +63,7 @@ class PromiseSettingActivity : AppCompatActivity() {
         binding.promiseSettingViewModel = promiseSettingViewModel
         setContentView(binding.root)
 
-        checkPermissions()
-
+        //checkPermissions()
         promiseMemberListAdapter =
             PromiseMemberListAdapter { promiseSettingViewModel.removeMember(it) }
         binding.recyclerViewPromiseSettingPromiseMembers.adapter = promiseMemberListAdapter
@@ -93,6 +94,8 @@ class PromiseSettingActivity : AppCompatActivity() {
             }
         }
 
+        initPromise()
+
     }
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
@@ -112,7 +115,7 @@ class PromiseSettingActivity : AppCompatActivity() {
         when (requestCode) {
             PERMISSIONS_REQUEST -> {
                 if (grantResults.isNotEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, R.string.start_item_notification_permission, Toast.LENGTH_SHORT).show()
+                    showStateSnackbar(R.string.start_item_notification_permission)
                 }
             }
         }
@@ -206,11 +209,22 @@ class PromiseSettingActivity : AppCompatActivity() {
         }
     }
 
+    private fun initPromise() {
+        if (Build.VERSION.SDK_INT < 33) {
+            intent.getParcelableExtra(PROMISE_KEY)
+        } else {
+            intent.getParcelableExtra(PROMISE_KEY, PromiseUiState::class.java)
+        }?.let {
+            promiseSettingViewModel.initPromise(it)
+        }
+    }
+
     companion object {
         const val DATEPICKER_TAG = "New Selected Date"
         const val TIMEPICKER_TAG = "New Selected Time"
         const val SEARCH_DIALOG_TAG = "New Search Address Dialog"
         const val MEMBER_LIST_KEY = "memberList"
+        private const val PROMISE_KEY = "promise"
         const val PERMISSIONS_REQUEST = 0x0000001
     }
 

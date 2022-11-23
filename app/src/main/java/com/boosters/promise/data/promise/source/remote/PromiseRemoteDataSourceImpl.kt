@@ -1,5 +1,6 @@
 package com.boosters.promise.data.promise.source.remote
 
+import android.util.Log
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.user.User
 import com.google.firebase.firestore.FirebaseFirestore
@@ -15,7 +16,7 @@ class PromiseRemoteDataSourceImpl @Inject constructor(
 
     private val promiseRef = database.collection(DATABASE_PROMISE_REF_PATH)
 
-    override fun addPromise(promise: Promise): Flow<Boolean> {
+    override fun addPromise(promise: PromiseBody): Flow<Boolean> {
         var id = promise.promiseId
         if (promise.promiseId == "") {
             id = promiseRef.document().id
@@ -34,8 +35,19 @@ class PromiseRemoteDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun removePromise(promise: Promise) {
-        promiseRef.document(promise.promiseId).delete()
+    override fun removePromise(promiseId: String): Flow<Boolean> {
+        return callbackFlow {
+            promiseRef.document(promiseId).delete()
+                .addOnSuccessListener {
+                    trySend(true)
+                    close()
+                }
+                .addOnFailureListener {
+                    trySend(false)
+                    close()
+                }
+            awaitClose()
+        }
     }
 
     override suspend fun getPromiseList(user: User, date: String): List<PromiseBody> {

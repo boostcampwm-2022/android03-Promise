@@ -11,11 +11,11 @@ class PromiseRepositoryImpl @Inject constructor(
 ) : PromiseRepository {
 
     override fun addPromise(promise: Promise): Flow<Boolean> {
-        return promiseRemoteDataSource.addPromise(promise)
+        return promiseRemoteDataSource.addPromise(promise.toPromiseBody())
     }
 
-    override fun removePromise(promise: Promise) {
-        promiseRemoteDataSource.removePromise(promise)
+    override fun removePromise(promiseId: String): Flow<Boolean> {
+        return promiseRemoteDataSource.removePromise(promiseId)
     }
 
     override suspend fun getPromiseList(myInfo: User, date: String): List<Promise> {

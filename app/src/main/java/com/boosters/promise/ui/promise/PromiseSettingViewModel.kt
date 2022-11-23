@@ -118,6 +118,14 @@ class PromiseSettingViewModel @Inject constructor(
         }
     }
 
+    fun initPromise(promise: PromiseUiState) {
+        _promiseUiState.update {
+            Log.d("MainActivity", "$promise")
+            promise
+        }
+        Log.d("MainActivity", "${promiseUiState.value}")
+    }
+
     private fun changeUiState(state: PromiseSettingUiState) {
         viewModelScope.launch {
             _promiseSettingUiState.emit(state)
