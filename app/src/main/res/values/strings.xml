@@ -55,4 +55,10 @@
     <string name="promiseCalendar_promiseCard_sampleTitle">부스터즈 모각코</string>
     <string name="promiseCalendar_promiseCard_sampleDestination">투썸플레이스 영등포역점</string>
     <string name="promiseCalendar_promiseCard_sampleTime">17:00</string>
+
+    <!-- 약속 상세 화면 -->
+    <string name="promiseDetail_location">장소</string>
+    <string name="promiseDetail_date">일시</string>
+    <string name="promiseDetail_edit">수정하기</string>
+    <string name="promiseDetail_delete">삭제</string>
 </resources>
