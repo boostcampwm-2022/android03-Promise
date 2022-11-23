@@ -1,4 +1,4 @@
-package com.boosters.promise.ui.promise
+package com.boosters.promise.ui.promisesetting
 
 import android.content.Intent
 import android.os.Build.VERSION
@@ -15,9 +15,10 @@ import com.boosters.promise.databinding.ActivityPromiseSettingBinding
 import com.boosters.promise.ui.invite.InviteActivity
 import com.boosters.promise.ui.invite.model.UserUiState
 import com.boosters.promise.ui.place.PlaceSearchDialogFragment
-import com.boosters.promise.ui.promise.adapter.PromiseMemberListAdapter
-import com.boosters.promise.ui.promise.model.PromiseSettingEvent
-import com.boosters.promise.ui.promise.model.PromiseSettingUiState
+import com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity
+import com.boosters.promise.ui.promisesetting.adapter.PromiseMemberListAdapter
+import com.boosters.promise.ui.promisesetting.model.PromiseSettingEvent
+import com.boosters.promise.ui.promisesetting.model.PromiseSettingUiState
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -80,7 +81,11 @@ class PromiseSettingActivity : AppCompatActivity() {
             promiseSettingViewModel.promiseSettingUiState.collectLatest { promiseSettingUiState ->
                 when (promiseSettingUiState) {
                     PromiseSettingUiState.Loading -> return@collectLatest
-                    PromiseSettingUiState.Success -> return@collectLatest // "move to detail promise view"
+                    PromiseSettingUiState.Success -> {
+                        startActivity(
+                            Intent(this@PromiseSettingActivity, PromiseCalendarActivity::class.java)
+                        ).also { finish() }
+                    }
                     is PromiseSettingUiState.Fail -> showStateSnackbar(promiseSettingUiState.message)
                 }
             }

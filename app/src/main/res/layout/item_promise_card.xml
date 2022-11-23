@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="promiseUiState"
+            type="com.boosters.promise.ui.promisesetting.model.PromiseUiState" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardView_itemPromiseCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="10dp"
+        app:strokeColor="@color/dusty_gray"
+        app:strokeWidth="1dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/textView_itemPromiseCard_title"
+                style="@style/Promise.TextAppearance.MiddleBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{promiseUiState.title}"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toTopOf="@+id/textView_itemPromiseCard_destinationLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/promiseCalendar_promiseCard_sampleTitle" />
+
+            <TextView
+                android:id="@+id/textView_itemPromiseCard_destinationLabel"
+                style="@style/Promise.TextAppearance.MiddleBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/start_item_promisePlace"
+                app:layout_constraintBottom_toTopOf="@id/textView_itemPromiseCard_timeLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.02"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView_itemPromiseCard_title" />
+
+            <TextView
+                android:id="@+id/textView_itemPromiseCard_destination"
+                style="@style/Promise.TextAppearance.MiddleNormal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="@{promiseUiState.destinationName}"
+                app:layout_constraintBottom_toBottomOf="@+id/textView_itemPromiseCard_destinationLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.05"
+                app:layout_constraintStart_toEndOf="@+id/textView_itemPromiseCard_destinationLabel"
+                app:layout_constraintTop_toTopOf="@+id/textView_itemPromiseCard_destinationLabel"
+                tools:text="@string/promiseCalendar_promiseCard_sampleDestination" />
+
+            <TextView
+                android:id="@+id/textView_itemPromiseCard_timeLabel"
+                style="@style/Promise.TextAppearance.MiddleBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/start_item_promiseTime"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.02"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView_itemPromiseCard_destinationLabel" />
+
+            <TextView
+                android:id="@+id/textView_itemPromiseCard_time"
+                style="@style/Promise.TextAppearance.MiddleNormal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="@{promiseUiState.title}"
+                app:layout_constraintBottom_toBottomOf="@+id/textView_itemPromiseCard_timeLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.05"
+                app:layout_constraintStart_toEndOf="@+id/textView_itemPromiseCard_timeLabel"
+                app:layout_constraintTop_toTopOf="@+id/textView_itemPromiseCard_timeLabel"
+                tools:text="@string/promiseCalendar_promiseCard_sampleTime" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>

@@ -1,4 +1,4 @@
-package com.boosters.promise.ui.promise.model
+package com.boosters.promise.ui.promisesetting.model
 
 import com.boosters.promise.data.model.Location
 import com.boosters.promise.data.promise.Promise
