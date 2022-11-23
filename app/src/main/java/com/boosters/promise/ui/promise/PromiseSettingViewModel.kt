@@ -1,11 +1,13 @@
 package com.boosters.promise.ui.promise
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.model.Location
 import com.boosters.promise.R
 import com.boosters.promise.data.notification.NotificationRepository
 import com.boosters.promise.data.promise.PromiseRepository
+import com.boosters.promise.data.promise.ServerKeyRepository
 import com.boosters.promise.data.user.User
 import com.boosters.promise.data.user.UserRepository
 import com.boosters.promise.data.user.toUserUiState
@@ -28,6 +30,7 @@ class PromiseSettingViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository,
     private val promiseRepository: PromiseRepository,
     private val userRepository: UserRepository,
+    private val serverKeyRepository: ServerKeyRepository,
 ) : ViewModel() {
 
     private val _dialogEventFlow = MutableSharedFlow<PromiseSettingEvent>()
@@ -130,19 +133,25 @@ class PromiseSettingViewModel @Inject constructor(
     private fun sendNotification() {
         val members = listOf(
             User(
-            "TWPRDv",
+            "8WC1UT",
             "name2",
             userToken = "fL1BdTxZQY6jk0C-JuvjZT:APA91bEVbE7avFbgSYhSL5HsEe3n84BWZM9LRXSBAmtiAkurGqLs2LMdX4Q_f25MQ3PqeBFgkJcn9KRKnDYsFKqr_Sw3q-VwFHjTv-Ec8ippW0_kihHRw7-GQSARC6dNfVOIm1cX_ufT"
         ),
             User(
                 "uGilLB",
                 "name",
-                userToken = "dprqlWu4SkuyNRMcP_qMn3:APA91bFfVGPbbRGgjbtO0eZ7wRD2ERdc59KyrK6oUed7U5ctEaQuozjlZswBhvtPYMr_lomrbp7fdrjfFnDK6I2D0Hs8yMW0q2t_SabozMo1Kks_FsHkUe2BKbher9FarPgt2G4rHDen"
-            ))
+                userToken = "drlAv3AsSCCKx7DVionZ6t:APA91bGIACuNXBdWXvbRVIjXJTJ8lOBUQnj1iU_OSm5I7q2GcRkOJLzwcK7Yyli0fRKzT9NoXIkjNecsSfFIxV8vq2vxH_MBezOBfVpZaJ4prbtN1N3qETgN0ztHx5jvzNJ-bRHE1_Yj"),
+            User(
+                "zOH89U",
+                "name",
+                userToken = "fbu_E84FSJqgBG0c0N2UKf:APA91bEm_kDXB1QkGpIJwPUbLjy--WQajclBzoczVMfSGUFQrL0Zt0Ec4gutel56rM2JefRV4A9"))
+        Log.d("MainActivity", "$myInfo")
         viewModelScope.launch {
             val userCodeList = members.filter { it.userCode != myInfo.userCode }.map { it.userCode }
+            if (userCodeList.isEmpty()) return@launch
+            val key = serverKeyRepository.getServerKey()
             userRepository.getUserList(userCodeList).forEach { user ->
-                notificationRepository.sendNotification("Promise", "hello", user.userToken)
+                notificationRepository.sendNotification(_promiseUiState.value.title, "[${_promiseUiState.value.date}] 새로운 약속이 추가 되었습니다.", user.userToken, key)
             }
             changeUiState(PromiseSettingUiState.Success)
         }

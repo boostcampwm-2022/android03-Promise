@@ -99,7 +99,7 @@ class PromiseSettingActivity : AppCompatActivity() {
             promiseSettingViewModel.promiseSettingUiState.collectLatest { promiseSettingUiState ->
                 when (promiseSettingUiState) {
                     PromiseSettingUiState.Edit -> return@collectLatest
-                    PromiseSettingUiState.Success -> return@collectLatest
+                    PromiseSettingUiState.Success -> return@collectLatest // move to detail promise view
                     is PromiseSettingUiState.Fail -> showStateSnackbar(promiseSettingUiState.message)
                 }
             }
