@@ -55,4 +55,9 @@
     <string name="promiseCalendar_promiseCard_sampleTitle">부스터즈 모각코</string>
     <string name="promiseCalendar_promiseCard_sampleDestination">투썸플레이스 영등포역점</string>
     <string name="promiseCalendar_promiseCard_sampleTime">17:00</string>
+
+    <!-- 친구 리스트 화면 -->
+    <string name="friend_tabFriend">친구</string>
+    <string name="friend_tabSearch">검색</string>
+    <string name="friend_searchQueryHint">멤버 이름 / 멤버 아이디(#0000)</string>
 </resources>
