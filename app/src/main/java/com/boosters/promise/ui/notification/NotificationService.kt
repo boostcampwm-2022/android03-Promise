@@ -9,7 +9,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.boosters.promise.R
-import com.boosters.promise.ui.promise.PromiseSettingActivity
+import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
@@ -20,22 +20,28 @@ class NotificationService : FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        if(remoteMessage.data.isNotEmpty()){
+        if (remoteMessage.data.isNotEmpty()) {
             sendNotification(remoteMessage)
         }
     }
 
     private fun sendNotification(remoteMessage: RemoteMessage) {
-        val uniId = (System.currentTimeMillis() / 7).toInt()
+        val uniId = System.currentTimeMillis().toInt()
 
         val intent = Intent(this, PromiseSettingActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(this, uniId, intent, PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent =
+            PendingIntent.getActivity(this, uniId, intent, PendingIntent.FLAG_IMMUTABLE)
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH).apply {
+            val channel = NotificationChannel(
+                CHANNEL_ID,
+                CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
                 description = CHANNEL_NAME
             }
             notificationManager.createNotificationChannel(channel)

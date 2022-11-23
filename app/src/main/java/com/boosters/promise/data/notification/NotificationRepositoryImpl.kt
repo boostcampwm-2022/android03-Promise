@@ -7,7 +7,12 @@ class NotificationRepositoryImpl @Inject constructor(
     private val notificationRemoteDataSource: NotificationRemoteDataSource,
 ) : NotificationRepository {
 
-    override suspend fun sendNotification(title: String, message: String, token: String, key: String) {
+    override suspend fun sendNotification(
+        title: String,
+        message: String,
+        token: String,
+        key: String
+    ) {
         notificationRemoteDataSource.sendNotification(title, message, token, key)
     }
 

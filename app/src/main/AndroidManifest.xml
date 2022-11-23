@@ -28,10 +28,9 @@
         </activity>
 
         <activity
-            android:name=".ui.promise.PromiseSettingActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustNothing">
-        </activity>
+            android:name=".ui.promisesetting.PromiseSettingActivity"
+            android:windowSoftInputMode="adjustNothing"
+            android:exported="false" />
 
         <activity
             android:name=".ui.start.StartActivity"
@@ -46,6 +45,10 @@
         <activity
             android:name=".ui.signup.SignUpActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".ui.promisecalendar.PromiseCalendarActivity"
+            android:exported="true" />
 
         <service
             android:name=".ui.notification.NotificationService"

@@ -1,4 +1,4 @@
-package com.boosters.promise.ui.promise
+package com.boosters.promise.ui.promisesetting
 
 import android.Manifest
 import android.content.Intent
@@ -10,7 +10,6 @@ import android.text.format.DateFormat
 import android.util.Log
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -21,10 +20,10 @@ import com.boosters.promise.databinding.ActivityPromiseSettingBinding
 import com.boosters.promise.ui.invite.InviteActivity
 import com.boosters.promise.ui.invite.model.UserUiState
 import com.boosters.promise.ui.place.PlaceSearchDialogFragment
-import com.boosters.promise.ui.promise.adapter.PromiseMemberListAdapter
-import com.boosters.promise.ui.promise.model.PromiseSettingEvent
-import com.boosters.promise.ui.promise.model.PromiseSettingUiState
-import com.boosters.promise.ui.promise.model.PromiseUiState
+import com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity
+import com.boosters.promise.ui.promisesetting.adapter.PromiseMemberListAdapter
+import com.boosters.promise.ui.promisesetting.model.PromiseSettingEvent
+import com.boosters.promise.ui.promisesetting.model.PromiseSettingUiState
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -63,7 +62,6 @@ class PromiseSettingActivity : AppCompatActivity() {
         binding.promiseSettingViewModel = promiseSettingViewModel
         setContentView(binding.root)
 
-        //checkPermissions()
         promiseMemberListAdapter =
             PromiseMemberListAdapter { promiseSettingViewModel.removeMember(it) }
         binding.recyclerViewPromiseSettingPromiseMembers.adapter = promiseMemberListAdapter
@@ -88,7 +86,11 @@ class PromiseSettingActivity : AppCompatActivity() {
             promiseSettingViewModel.promiseSettingUiState.collectLatest { promiseSettingUiState ->
                 when (promiseSettingUiState) {
                     PromiseSettingUiState.Edit -> return@collectLatest
-                    PromiseSettingUiState.Success -> return@collectLatest // move to detail promise view
+                    PromiseSettingUiState.Success -> {
+                        startActivity(
+                            Intent(this@PromiseSettingActivity, PromiseCalendarActivity::class.java)
+                        ).also { finish() }
+                    }
                     is PromiseSettingUiState.Fail -> showStateSnackbar(promiseSettingUiState.message)
                 }
             }
@@ -104,21 +106,6 @@ class PromiseSettingActivity : AppCompatActivity() {
             hideKeyBoard()
         }
         return super.dispatchTouchEvent(event)
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            PERMISSIONS_REQUEST -> {
-                if (grantResults.isNotEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    showStateSnackbar(R.string.start_item_notification_permission)
-                }
-            }
-        }
     }
 
     private fun hideKeyBoard() {
@@ -199,14 +186,6 @@ class PromiseSettingActivity : AppCompatActivity() {
 
     private fun showStateSnackbar(message: Int) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
-    }
-
-    private fun checkPermissions(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), PERMISSIONS_REQUEST)
-            }
-        }
     }
 
     private fun initPromise() {
