@@ -1,10 +1,8 @@
 package com.boosters.promise.data.promise
 
-import android.os.Parcelable
 import com.boosters.promise.data.model.Location
 import com.boosters.promise.data.promise.source.remote.PromiseBody
 import com.boosters.promise.data.user.User
-import kotlinx.parcelize.Parcelize
 import com.boosters.promise.data.user.toUserUiState
 import com.boosters.promise.ui.promisesetting.model.PromiseUiState
 

@@ -1,13 +1,11 @@
-package com.boosters.promise.ui.promise
+package com.boosters.promise.ui.promisesetting
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.promise.PromiseRepository
-import com.boosters.promise.ui.invite.model.UserUiState
-import com.boosters.promise.ui.promise.model.PromiseUiState
+import com.boosters.promise.ui.promisesetting.model.PromiseUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -18,11 +16,13 @@ class PromiseDetailViewModel @Inject constructor(
     private val promiseRepository: PromiseRepository,
 ) : ViewModel() {
 
-    private val _promiseUiState = MutableStateFlow(PromiseUiState(
-        promiseId = "0fw9AjLvoKLBZWrNdsrK",
+    private val _promiseUiState = MutableStateFlow(
+        PromiseUiState(
+        promiseId = "0zsFeTftSqdmNCgMIwJr",
         title = "데이트",
         date = "2022/11/13"
-    ))
+    )
+    )
 
     val promiseUiState: StateFlow<PromiseUiState> = _promiseUiState.asStateFlow()
 

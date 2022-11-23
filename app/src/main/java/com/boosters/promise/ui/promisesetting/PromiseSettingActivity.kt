@@ -1,8 +1,6 @@
 package com.boosters.promise.ui.promisesetting
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Build.VERSION
 import android.os.Bundle
@@ -13,7 +11,6 @@ import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ActivityPromiseSettingBinding
@@ -24,6 +21,7 @@ import com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity
 import com.boosters.promise.ui.promisesetting.adapter.PromiseMemberListAdapter
 import com.boosters.promise.ui.promisesetting.model.PromiseSettingEvent
 import com.boosters.promise.ui.promisesetting.model.PromiseSettingUiState
+import com.boosters.promise.ui.promisesetting.model.PromiseUiState
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -89,7 +87,9 @@ class PromiseSettingActivity : AppCompatActivity() {
                     PromiseSettingUiState.Success -> {
                         startActivity(
                             Intent(this@PromiseSettingActivity, PromiseCalendarActivity::class.java)
-                        ).also { finish() }
+                        ).also {
+                            finish()
+                        }
                     }
                     is PromiseSettingUiState.Fail -> showStateSnackbar(promiseSettingUiState.message)
                 }

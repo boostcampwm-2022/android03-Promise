@@ -1,5 +1,6 @@
 package com.boosters.promise.ui.promisesetting
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.R
@@ -78,6 +79,7 @@ class PromiseSettingViewModel @Inject constructor(
             val members = promise.members.toMutableList()
             members.add(myInfo.copy(userToken = "").toUserUiState())
             promiseRepository.addPromise(promise.copy(members = members).toPromise()).collect {
+                Log.d("MainActivity", "${it}")
                 when (it) {
                     true -> sendNotification()
                     false -> changeUiState(PromiseSettingUiState.Fail(R.string.promiseSetting_fail))
@@ -118,10 +120,8 @@ class PromiseSettingViewModel @Inject constructor(
 
     fun initPromise(promise: PromiseUiState) {
         _promiseUiState.update {
-            Log.d("MainActivity", "$promise")
             promise
         }
-        Log.d("MainActivity", "${promiseUiState.value}")
     }
 
     private fun changeUiState(state: PromiseSettingUiState) {
@@ -135,7 +135,10 @@ class PromiseSettingViewModel @Inject constructor(
             val userCodeList =
                 _promiseUiState.value.members.filter { it.userCode != myInfo.userCode }
                     .map { it.userCode }
-            if (userCodeList.isEmpty()) return@launch
+            if (userCodeList.isEmpty()) {
+                changeUiState(PromiseSettingUiState.Success)
+                return@launch
+            }
             val key = serverKeyRepository.getServerKey()
             userRepository.getUserList(userCodeList).forEach { user ->
                 notificationRepository.sendNotification(
