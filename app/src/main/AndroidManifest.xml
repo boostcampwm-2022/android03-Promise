@@ -18,7 +18,7 @@
         <activity
             android:name=".ui.promisesetting.PromiseSettingActivity"
             android:windowSoftInputMode="adjustNothing"
-            android:exported="true" />
+            android:exported="false" />
 
         <activity
             android:name=".ui.start.StartActivity"

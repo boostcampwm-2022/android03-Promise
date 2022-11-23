@@ -53,7 +53,7 @@ class PromiseCalendarActivity : AppCompatActivity() {
             .debounce(PlaceSearchViewModel.SEARCH_TERM)
             .distinctUntilChanged()
             .onEach { date ->
-                promiseCalendarViewModel.getPromiseList(checkNotNull(date))
+                promiseCalendarViewModel.updatePromiseList(checkNotNull(date))
             }
             .launchIn(lifecycleScope)
 
