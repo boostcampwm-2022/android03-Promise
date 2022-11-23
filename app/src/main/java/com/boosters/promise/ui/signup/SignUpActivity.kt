@@ -1,16 +1,18 @@
 package com.boosters.promise.ui.signup
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ActivitySignUpBinding
+import com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity
 import com.boosters.promise.ui.signup.model.SignUpUiState
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,9 +27,11 @@ class SignUpActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView<ActivitySignUpBinding?>(this, R.layout.activity_sign_up).apply {
-            lifecycleOwner = this@SignUpActivity
-        }
+        binding =
+            DataBindingUtil.setContentView<ActivitySignUpBinding?>(this, R.layout.activity_sign_up)
+                .apply {
+                    lifecycleOwner = this@SignUpActivity
+                }
 
         initSignUpButton()
         bindVariable()
@@ -37,7 +41,10 @@ class SignUpActivity : AppCompatActivity() {
         binding.buttonSignUpSignUpRequest.setOnClickListener {
             binding.editTextSignUpName.clearFocus()
             getSystemService(Context.INPUT_METHOD_SERVICE).run {
-                if (this is InputMethodManager) hideSoftInputFromWindow(binding.editTextSignUpName.windowToken, 0)
+                if (this is InputMethodManager) hideSoftInputFromWindow(
+                    binding.editTextSignUpName.windowToken,
+                    0
+                )
             }
             signUpViewModel.requestSignUp()
         }
@@ -60,9 +67,12 @@ class SignUpActivity : AppCompatActivity() {
                     is SignUpUiState.Loading -> binding.isLoading = true
                     is SignUpUiState.Success -> {
                         binding.isLoading = false
-                        // TODO: Home 약속 리스트 화면으로 이동 구현
-//                    startActivity(Intent(this@SignUpActivity, PromiseSettingActivity::class.java)).also { finish() }
-                        finish()
+                        startActivity(
+                            Intent(
+                                this@SignUpActivity,
+                                PromiseCalendarActivity::class.java
+                            )
+                        ).also { finish() }
                     }
                     is SignUpUiState.Fail -> {
                         binding.isLoading = false

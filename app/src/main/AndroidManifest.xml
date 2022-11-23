@@ -17,7 +17,7 @@
         android:theme="@style/Theme.Promise"
         tools:targetApi="33">
         <activity
-            android:name=".ui.promise.PromiseSettingActivity"
+            android:name=".ui.promisesetting.PromiseSettingActivity"
             android:windowSoftInputMode="adjustNothing"
             android:exported="false" />
 
@@ -41,6 +41,10 @@
         <activity
             android:name=".ui.signup.SignUpActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".ui.promisecalendar.PromiseCalendarActivity"
+            android:exported="true" />
 
         <service
             android:name=".ui.notification.NotificationService"
