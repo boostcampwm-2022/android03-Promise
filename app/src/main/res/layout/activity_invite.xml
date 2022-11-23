@@ -49,14 +49,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/invite_member"
-            app:layout_constraintBottom_toTopOf="@id/recyclerView_invite_inviteList"
+            app:layout_constraintBottom_toTopOf="@id/recyclerView_invite_memberList"
             app:layout_constraintEnd_toStartOf="@+id/guideline_invite_right"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="@+id/guideline_invite_left"
             app:layout_constraintTop_toTopOf="@+id/guideline_invite_top" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_invite_inviteList"
+            android:id="@+id/recyclerView_invite_memberList"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:orientation="horizontal"
@@ -101,7 +101,6 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView_invite_friendList"
-            bind_items="@{viewModel.currentFriendItems}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:paddingTop="10dp"
@@ -112,7 +111,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline_invite_left"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout_invite_searchMember"
-            tools:listitem="@layout/item_invite_member_info" />
+            tools:listitem="@layout/item_invite_friend" />
 
         <Button
             android:id="@+id/button_invite_confirm"

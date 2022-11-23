@@ -34,7 +34,8 @@
         <activity
             android:name=".ui.invite.InviteActivity"
             android:exported="false"
-            android:theme="@style/Theme.Promise" />
+            android:theme="@style/Theme.Promise"
+            android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".ui.signup.SignUpActivity"

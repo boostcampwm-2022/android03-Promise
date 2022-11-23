@@ -8,10 +8,7 @@ class PlaceRemoteDateSourceImpl @Inject constructor(
 ) : PlaceRemoteDataSource {
 
     override suspend fun searchPlace(query: String, display: Int) = runCatching {
-        naverSearchService.searchPlace(query, display).items.map {
-            it?.toPlace()
-        }
+        naverSearchService.searchPlace(query, display)
     }
-
 
 }

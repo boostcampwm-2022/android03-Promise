@@ -15,7 +15,6 @@ import com.boosters.promise.R
 import com.boosters.promise.data.place.Place
 import com.boosters.promise.databinding.DialogPlaceSearchBinding
 import com.boosters.promise.ui.place.adapter.PlaceSearchAdapter
-import com.boosters.promise.ui.place.model.toPlace
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.FlowPreview
@@ -41,7 +40,7 @@ class PlaceSearchDialogFragment : DialogFragment() {
             _binding = DataBindingUtil.inflate(inflater, R.layout.dialog_place_search, null, false)
 
             val placeSearchAdapter = PlaceSearchAdapter { item ->
-                onClickListener(item.toPlace())
+                onClickListener(item)
                 dismiss()
             }
             binding.recyclerViewDialogPlaceSearchResult.adapter = placeSearchAdapter

@@ -1,22 +1,11 @@
 package com.boosters.promise.data.place
 
 import com.boosters.promise.data.model.Location
-import com.boosters.promise.ui.place.model.PlaceUiState
 
 data class Place(
-    val placeTitle: String,
-    val link: String,
-    val address: String,
-    val roadAddress: String,
-    val location: Location
+    val title: String = "",
+    val link: String = "",
+    val address: String = "",
+    val roadAddress: String = "",
+    val location: Location = Location()
 )
-
-fun Place.toPlaceUiState(): PlaceUiState {
-    return PlaceUiState(
-        title = placeTitle,
-        link = link,
-        address = address,
-        roadAddress = roadAddress,
-        location = location
-    )
-}
