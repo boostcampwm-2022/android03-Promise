@@ -1,7 +1,6 @@
 package com.boosters.promise.ui.friend
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -36,7 +35,14 @@ class FriendActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val userListAdapter = UserListAdapter()
+        val userListAdapter = UserListAdapter().apply {
+            setOnAddButtonClickListener(object : UserListAdapter.OnClickListener {
+                override fun onClick(user: User) {
+                    friendViewModel.addFriend(user)
+                    friendViewModel.loadAllUsersList()
+                }
+            })
+        }
         binding.recyclerViewFriend.adapter = userListAdapter
 
         lifecycleScope.launch {
@@ -53,15 +59,11 @@ class FriendActivity : AppCompatActivity() {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 when (tab?.position) {
                     FRIEND_TAB_INDEX -> {
-                        userListAdapter.setOnAddButtonClickListener(null)
+                        userListAdapter.setAddButtonVisible(false)
                         friendViewModel.loadFriendsList()
                     }
                     ALLUSER_TAB_INDEX -> {
-                        userListAdapter.setOnAddButtonClickListener(object : UserListAdapter.OnClickListener {
-                            override fun onClick(user: User) {
-                                Log.d("OnClick", "Add $user")
-                            }
-                        })
+                        userListAdapter.setAddButtonVisible(true)
                         friendViewModel.loadAllUsersList()
                     }
                 }

@@ -40,8 +40,20 @@ class FriendViewModel @Inject constructor(
     fun loadAllUsersList() {
         viewModelScope.launch {
             userRepository.getAllUsers().collectLatest { userList ->
-                _usersList.value = userList
+                val friendsCodeList = friendRepository.getFriends().map { friend ->
+                    friend.userCode
+                } + myInfo.userCode
+
+                _usersList.value = userList.filterNot { stranger ->
+                    stranger.userCode in friendsCodeList
+                }
             }
+        }
+    }
+
+    fun addFriend(user: User) {
+        viewModelScope.launch {
+            friendRepository.addFriend(user)
         }
     }
 

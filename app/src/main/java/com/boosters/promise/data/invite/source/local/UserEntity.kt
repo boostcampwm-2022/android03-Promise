@@ -13,6 +13,5 @@ data class UserEntity(
 
 fun UserEntity.toUser() = User(
     userCode = userCode,
-    userName = userName,
-    location = null
+    userName = userName
 )

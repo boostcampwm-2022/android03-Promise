@@ -14,6 +14,7 @@ import com.boosters.promise.databinding.ItemFriendProfileBinding
 class UserListAdapter : ListAdapter<User, UserListAdapter.FriendViewHolder>(diffUtil) {
 
     private var onItemClickListener: OnClickListener? = null
+    private var isAddButtonVisible: Boolean = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendViewHolder {
         val binding: ItemFriendProfileBinding = DataBindingUtil.inflate(
@@ -22,10 +23,12 @@ class UserListAdapter : ListAdapter<User, UserListAdapter.FriendViewHolder>(diff
             parent,
             false
         )
+
         val friendViewHolder = FriendViewHolder(binding)
         if (onItemClickListener != null) {
             binding.buttonFriendAdd.setOnClickListener {
-                checkNotNull(onItemClickListener).onClick(getItem(friendViewHolder.adapterPosition))
+                val position = friendViewHolder.adapterPosition
+                checkNotNull(onItemClickListener).onClick(getItem(position))
             }
         }
 
@@ -33,23 +36,28 @@ class UserListAdapter : ListAdapter<User, UserListAdapter.FriendViewHolder>(diff
     }
 
     override fun onBindViewHolder(holder: FriendViewHolder, position: Int) {
-        holder.bind(getItem(position), onItemClickListener)
+        holder.bind(getItem(position), isAddButtonVisible)
     }
 
     fun setOnAddButtonClickListener(listener: OnClickListener?) {
         onItemClickListener = listener
     }
 
+    fun setAddButtonVisible(isVisible: Boolean) {
+        isAddButtonVisible = isVisible
+    }
+
     class FriendViewHolder(
         private val binding: ItemFriendProfileBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(user: User, onItemClickListener: OnClickListener?) {
+        fun bind(user: User, isAddButtonVisible: Boolean) {
             binding.user = user
             binding.buttonFriendAdd.visibility =
-                if (onItemClickListener != null) View.VISIBLE else View.GONE
+                if (isAddButtonVisible) View.VISIBLE else View.GONE
             binding.executePendingBindings()
         }
+
     }
 
     interface OnClickListener {

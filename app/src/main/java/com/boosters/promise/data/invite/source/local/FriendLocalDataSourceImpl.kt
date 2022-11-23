@@ -10,4 +10,8 @@ class FriendLocalDataSourceImpl @Inject constructor(
         return userDao.getFriends()
     }
 
+    override suspend fun insertFriend(user: UserEntity) {
+        userDao.insertFriend(user)
+    }
+
 }
