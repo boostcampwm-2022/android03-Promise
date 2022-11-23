@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ActivityPromiseCalendarBinding
+import com.boosters.promise.ui.friend.FriendActivity
 import com.boosters.promise.ui.place.PlaceSearchViewModel
 import com.boosters.promise.ui.promisecalendar.adapter.PromiseDailyListAdapter
 import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
@@ -56,6 +57,10 @@ class PromiseCalendarActivity : AppCompatActivity() {
                 promiseCalendarViewModel.updatePromiseList(checkNotNull(date))
             }
             .launchIn(lifecycleScope)
+
+        binding.imageViewPromiseCalendarFriendsList.setOnClickListener {
+            startActivity(Intent(this, FriendActivity::class.java))
+        }
 
         binding.buttonPromiseCalendarCreatePromise.setOnClickListener {
             startActivity(Intent(this, PromiseSettingActivity::class.java))

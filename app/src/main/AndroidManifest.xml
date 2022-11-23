@@ -15,6 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Promise"
         tools:targetApi="33">
+
         <activity
             android:name=".ui.promisesetting.PromiseSettingActivity"
             android:windowSoftInputMode="adjustNothing"
@@ -44,6 +45,16 @@
         <activity
             android:name=".ui.promisecalendar.PromiseCalendarActivity"
             android:exported="true" />
+
+        <activity
+            android:name=".ui.friend.FriendActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.promisecalendar.PromiseCalendarActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity" />
+        </activity>
+
     </application>
 
 </manifest>
