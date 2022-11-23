@@ -3,8 +3,8 @@ package com.boosters.promise.ui.promisesetting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.R
-import com.boosters.promise.data.notification.NotificationRepository
 import com.boosters.promise.data.model.Location
+import com.boosters.promise.data.notification.NotificationRepository
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.promise.ServerKeyRepository
 import com.boosters.promise.data.user.User
@@ -18,7 +18,6 @@ import com.boosters.promise.ui.promisesetting.model.toPromise
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -38,7 +37,8 @@ class PromiseSettingViewModel @Inject constructor(
     val promiseUiState: StateFlow<PromiseUiState> = _promiseUiState.asStateFlow()
 
     private val _promiseSettingUiState = MutableSharedFlow<PromiseSettingUiState>()
-    val promiseSettingUiState: SharedFlow<PromiseSettingUiState> = _promiseSettingUiState.asSharedFlow()
+    val promiseSettingUiState: SharedFlow<PromiseSettingUiState> =
+        _promiseSettingUiState.asSharedFlow()
 
     private val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT)
     private lateinit var myInfo: User
@@ -76,7 +76,7 @@ class PromiseSettingViewModel @Inject constructor(
         }
         viewModelScope.launch {
             val members = promise.members.toMutableList()
-            members.add(myInfo.toUserUiState())
+            members.add(myInfo.copy(userToken = "").toUserUiState())
             promiseRepository.addPromise(promise.copy(members = members).toPromise()).collect {
                 when (it) {
                     true -> sendNotification()
@@ -124,18 +124,26 @@ class PromiseSettingViewModel @Inject constructor(
 
     private fun sendNotification() {
         viewModelScope.launch {
-            val userCodeList = _promiseUiState.value.members.filter { it.userCode != myInfo.userCode }.map { it.userCode }
+            val userCodeList =
+                _promiseUiState.value.members.filter { it.userCode != myInfo.userCode }
+                    .map { it.userCode }
             if (userCodeList.isEmpty()) return@launch
             val key = serverKeyRepository.getServerKey()
             userRepository.getUserList(userCodeList).forEach { user ->
-                notificationRepository.sendNotification(_promiseUiState.value.title, "[${_promiseUiState.value.date}] 새로운 약속이 추가 되었습니다.", user.userToken, key)
+                notificationRepository.sendNotification(
+                    _promiseUiState.value.title,
+                    String.format(NOTIFICATION_FORMAT, _promiseUiState.value.date),
+                    user.userToken,
+                    key
+                )
             }
             changeUiState(PromiseSettingUiState.Success)
         }
     }
 
     companion object {
-        private const val DATE_FORMAT = "yyyy/MM/dd HH:mm"
+        const val DATE_FORMAT = "yyyy/MM/dd HH:mm"
+        const val NOTIFICATION_FORMAT = "[%s] 새로운 약속이 추가 되었습니다."
     }
 
 }

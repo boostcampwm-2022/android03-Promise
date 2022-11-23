@@ -41,7 +41,7 @@ class PromiseRemoteDataSourceImpl @Inject constructor(
     override suspend fun getPromiseList(user: User, date: String): List<PromiseBody> {
         val task = promiseRef
             .whereEqualTo(DATABASE_PROMISE_DATE_KEY, date)
-            .whereArrayContainsAny(DATABASE_PROMISE_MEMBERS_KEY, listOf(user))
+            .whereArrayContainsAny(DATABASE_PROMISE_MEMBERS_KEY, listOf(user.copy(userToken = "")))
             .get()
         task.await()
         return task.result.documents.mapNotNull {
