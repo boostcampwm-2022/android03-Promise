@@ -3,6 +3,7 @@ package com.boosters.promise.ui.friend
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -72,6 +73,15 @@ class FriendActivity : AppCompatActivity() {
             override fun onTabUnselected(tab: TabLayout.Tab?) = Unit
 
             override fun onTabReselected(tab: TabLayout.Tab?) = Unit
+        })
+
+        binding.searchViewFriend.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean = false
+
+            override fun onQueryTextChange(query: String?): Boolean {
+                friendViewModel.searchUser(query.orEmpty())
+                return false
+            }
         })
     }
 

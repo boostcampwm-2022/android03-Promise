@@ -19,6 +19,8 @@ class FriendViewModel @Inject constructor(
     private var _myInfo = User()
     val myInfo: User get() = _myInfo
 
+    private var allUserList: List<User> = emptyList()
+
     private val _usersList = MutableStateFlow(emptyList<User>())
     val usersList: StateFlow<List<User>> get() = _usersList.asStateFlow()
 
@@ -34,6 +36,7 @@ class FriendViewModel @Inject constructor(
     fun loadFriendsList() {
         viewModelScope.launch {
             _usersList.value = friendRepository.getFriends()
+            allUserList = _usersList.value
         }
     }
 
@@ -47,6 +50,8 @@ class FriendViewModel @Inject constructor(
                 _usersList.value = userList.filterNot { stranger ->
                     stranger.userCode in friendsCodeList
                 }
+
+                allUserList = _usersList.value
             }
         }
     }
@@ -55,6 +60,20 @@ class FriendViewModel @Inject constructor(
         viewModelScope.launch {
             friendRepository.addFriend(user)
         }
+    }
+
+    fun searchUser(query: String) {
+        viewModelScope.launch {
+            _usersList.value = if (query.matches(USER_CODE_REGEX)) allUserList.filter { user ->
+                user.userCode.contains(query.removePrefix("#"))
+            } else allUserList.filter { user ->
+                user.userName.contains(query)
+            }
+        }
+    }
+
+    companion object {
+        private val USER_CODE_REGEX = Regex("#[a-zA-Z0-9]{1,6}")
     }
 
 }

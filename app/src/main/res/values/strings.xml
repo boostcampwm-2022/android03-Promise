@@ -59,6 +59,6 @@
     <!-- 친구 리스트 화면 -->
     <string name="friend_tabFriend">친구</string>
     <string name="friend_tabSearch">검색</string>
-    <string name="friend_searchQueryHint">멤버 이름 / 멤버 아이디(#0000)</string>
+    <string name="friend_searchQueryHint">멤버 이름 / 멤버 코드(#000000)</string>
     <string name="friend_userCodeFormat">#%s</string>
 </resources>
