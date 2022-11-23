@@ -7,16 +7,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boosters.promise.databinding.ItemInviteMemberBinding
 import com.boosters.promise.ui.invite.model.UserUiState
 
-class MemberAdapter : ListAdapter<UserUiState, MemberAdapter.MemberViewHolder>(
+class InviteMemberAdapter : ListAdapter<UserUiState, InviteMemberAdapter.InviteMemberViewHolder>(
     UserDiffItemCallback
 ) {
 
     private var onItemClickListener: OnItemClickListener? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MemberViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InviteMemberViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemInviteMemberBinding.inflate(inflater, parent, false)
-        val holder = MemberViewHolder(binding)
+        val holder = InviteMemberViewHolder(binding)
 
         binding.root.setOnClickListener {
             val position = holder.adapterPosition
@@ -27,7 +27,7 @@ class MemberAdapter : ListAdapter<UserUiState, MemberAdapter.MemberViewHolder>(
         return holder
     }
 
-    override fun onBindViewHolder(holder: MemberViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: InviteMemberViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
@@ -35,7 +35,7 @@ class MemberAdapter : ListAdapter<UserUiState, MemberAdapter.MemberViewHolder>(
         onItemClickListener = listener
     }
 
-    class MemberViewHolder(
+    class InviteMemberViewHolder(
         private val binding: ItemInviteMemberBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 

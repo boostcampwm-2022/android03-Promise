@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import com.boosters.promise.R
 import com.boosters.promise.data.model.Location
 import com.boosters.promise.databinding.ActivityPromiseDetailBinding
+import com.boosters.promise.ui.detail.adapter.PromiseMemberAdapter
 import com.boosters.promise.ui.promisesetting.model.PromiseUiState
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.Tm128
@@ -22,6 +23,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var binding: ActivityPromiseDetailBinding
     private val promiseDetailViewModel: PromiseDetailViewModel by viewModels()
+    private val promiseMemberAdapter = PromiseMemberAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +31,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         setBinding()
         setPromiseInfo()
         initMap()
+
+        promiseMemberAdapter.submitList(promiseDetailViewModel.promiseInfo.value?.members)
     }
 
     @UiThread
@@ -49,6 +53,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun setBinding() {
         binding.lifecycleOwner = this
         binding.viewModel = promiseDetailViewModel
+        binding.recyclerViewPromiseDetailMemberList.adapter = promiseMemberAdapter
     }
 
     private fun setPromiseInfo() {

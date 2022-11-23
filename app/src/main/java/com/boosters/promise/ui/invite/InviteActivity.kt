@@ -9,7 +9,7 @@ import androidx.databinding.DataBindingUtil
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ActivityInviteBinding
 import com.boosters.promise.ui.invite.adapter.FriendAdapter
-import com.boosters.promise.ui.invite.adapter.MemberAdapter
+import com.boosters.promise.ui.invite.adapter.InviteMemberAdapter
 import com.boosters.promise.ui.invite.model.UserUiState
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,7 +19,7 @@ class InviteActivity : AppCompatActivity() {
     private lateinit var binding: ActivityInviteBinding
     private val inviteViewModel: InviteViewModel by viewModels()
     private val friendAdapter = FriendAdapter()
-    private val memberAdapter = MemberAdapter()
+    private val inviteMemberAdapter = InviteMemberAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +41,7 @@ class InviteActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.viewModel = inviteViewModel
         binding.recyclerViewInviteFriendList.adapter = friendAdapter
-        binding.recyclerViewInviteMemberList.adapter = memberAdapter
+        binding.recyclerViewInviteMemberList.adapter = inviteMemberAdapter
     }
 
     private fun observeCurrentFriendItems() {
@@ -52,7 +52,7 @@ class InviteActivity : AppCompatActivity() {
 
     private fun observeCurrentMemberItems() {
         inviteViewModel.currentMemberItems.observe(this) { memberItems ->
-            memberAdapter.submitList(memberItems)
+            inviteMemberAdapter.submitList(memberItems)
         }
     }
 
@@ -65,7 +65,8 @@ class InviteActivity : AppCompatActivity() {
     }
 
     private fun setMemberItemClickListener() {
-        memberAdapter.setOnItemClickListener(object : MemberAdapter.OnItemClickListener {
+        inviteMemberAdapter.setOnItemClickListener(object :
+            InviteMemberAdapter.OnItemClickListener {
             override fun onItemClick(user: UserUiState) {
                 inviteViewModel.removeMemberItems(user)
             }
@@ -75,7 +76,7 @@ class InviteActivity : AppCompatActivity() {
     private fun setConfirmButtonClickListener() {
         binding.buttonInviteConfirm.setOnClickListener {
             val intent = Intent().apply {
-                val memberList = ArrayList(memberAdapter.currentList)
+                val memberList = ArrayList(inviteMemberAdapter.currentList)
                 putParcelableArrayListExtra(MEMBER_LIST_KEY, memberList)
             }
             setResult(RESULT_OK, intent)

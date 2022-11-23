@@ -62,4 +62,5 @@
     <string name="promiseDetail_edit">수정하기</string>
     <string name="promiseDetail_delete">삭제</string>
     <string name="promiseDetail_date_format">%s, %s</string>
+    <string name="promiseDetail_member">약속 멤버</string>
 </resources>
