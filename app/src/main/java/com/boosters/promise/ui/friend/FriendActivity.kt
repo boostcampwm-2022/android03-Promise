@@ -1,6 +1,7 @@
 package com.boosters.promise.ui.friend
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -8,8 +9,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.boosters.promise.R
+import com.boosters.promise.data.user.User
 import com.boosters.promise.databinding.ActivityFriendBinding
 import com.boosters.promise.ui.friend.adapter.UserListAdapter
+import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -38,11 +41,41 @@ class FriendActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                friendViewModel.friendsList.collectLatest { friendsList ->
-                    userListAdapter.submitList(friendsList)
+                launch {
+                    friendViewModel.usersList.collectLatest { usersList ->
+                        userListAdapter.submitList(usersList)
+                    }
                 }
             }
         }
+
+        binding.tabFriend.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                when (tab?.position) {
+                    FRIEND_TAB_INDEX -> {
+                        userListAdapter.setOnAddButtonClickListener(null)
+                        friendViewModel.loadFriendsList()
+                    }
+                    ALLUSER_TAB_INDEX -> {
+                        userListAdapter.setOnAddButtonClickListener(object : UserListAdapter.OnClickListener {
+                            override fun onClick(user: User) {
+                                Log.d("OnClick", "Add $user")
+                            }
+                        })
+                        friendViewModel.loadAllUsersList()
+                    }
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) = Unit
+
+            override fun onTabReselected(tab: TabLayout.Tab?) = Unit
+        })
+    }
+
+    companion object {
+        const val FRIEND_TAB_INDEX = 0
+        const val ALLUSER_TAB_INDEX = 1
     }
 
 }

@@ -6,12 +6,14 @@ import com.boosters.promise.data.user.User
 data class UserBody(
     val userCode: String? = null,
     val userName: String? = null,
-    val location: Location? = null
+    val location: Location? = null,
+    val token: String? = null
 )
 
 fun UserBody.toUser() =
     User(
         userCode = userCode ?: throw NullPointerException(),
         userName = userName ?: "",
-        location = location
+        location = location,
+        userToken = token ?: ""
     )

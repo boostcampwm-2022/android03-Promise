@@ -1,6 +1,7 @@
 package com.boosters.promise.ui.friend.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
@@ -32,19 +33,21 @@ class UserListAdapter : ListAdapter<User, UserListAdapter.FriendViewHolder>(diff
     }
 
     override fun onBindViewHolder(holder: FriendViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), onItemClickListener)
     }
 
-    fun setOnAddButtonClickListener(listener: OnClickListener) {
+    fun setOnAddButtonClickListener(listener: OnClickListener?) {
         onItemClickListener = listener
     }
 
     class FriendViewHolder(
-        private val binding: ItemFriendProfileBinding
+        private val binding: ItemFriendProfileBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(user: User) {
+        fun bind(user: User, onItemClickListener: OnClickListener?) {
             binding.user = user
+            binding.buttonFriendAdd.visibility =
+                if (onItemClickListener != null) View.VISIBLE else View.GONE
             binding.executePendingBindings()
         }
     }

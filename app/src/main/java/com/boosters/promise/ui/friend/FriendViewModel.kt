@@ -6,10 +6,7 @@ import com.boosters.promise.data.invite.FriendRepository
 import com.boosters.promise.data.user.User
 import com.boosters.promise.data.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,22 +19,29 @@ class FriendViewModel @Inject constructor(
     private var _myInfo = User()
     val myInfo: User get() = _myInfo
 
-    private val _friendsList = MutableStateFlow(emptyList<User>())
-    val friendsList: StateFlow<List<User>> get() = _friendsList.asStateFlow()
+    private val _usersList = MutableStateFlow(emptyList<User>())
+    val usersList: StateFlow<List<User>> get() = _usersList.asStateFlow()
 
     init {
         viewModelScope.launch {
             userRepository.getMyInfo().first().onSuccess {
                 _myInfo = it
             }
-
-            loadFriendsList()
         }
+        loadFriendsList()
     }
 
     fun loadFriendsList() {
         viewModelScope.launch {
-            _friendsList.value = friendRepository.getFriends()
+            _usersList.value = friendRepository.getFriends()
+        }
+    }
+
+    fun loadAllUsersList() {
+        viewModelScope.launch {
+            userRepository.getAllUsers().collectLatest { userList ->
+                _usersList.value = userList
+            }
         }
     }
 

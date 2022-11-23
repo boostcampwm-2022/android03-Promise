@@ -5,6 +5,7 @@ import com.boosters.promise.data.user.di.UserModule
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ktx.snapshots
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -13,7 +14,7 @@ import javax.inject.Singleton
 @Singleton
 class UserRemoteDataSourceImpl @Inject constructor(
     @UserModule.UserCollectionReference private val userCollectionReference: CollectionReference,
-    private val networkConnectionUtil: NetworkConnectionUtil
+    private val networkConnectionUtil: NetworkConnectionUtil,
 ) : UserRemoteDataSource {
 
     override suspend fun requestSignUp(userName: String): Result<UserBody> = runCatching {
@@ -31,6 +32,11 @@ class UserRemoteDataSourceImpl @Inject constructor(
 
         userBody
     }
+
+    override fun getAllUsers(): Flow<List<UserBody>> =
+        userCollectionReference.snapshots().map {
+            it.toObjects(UserBody::class.java)
+        }
 
     override fun getUser(userCode: String): Flow<UserBody> =
         userCollectionReference.document(userCode).snapshots().mapNotNull {
