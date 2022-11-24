@@ -79,7 +79,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 finish()
             }
             R.id.item_detail_delete -> {
-                deletePromise()
+                showDeleteDialog()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -145,7 +145,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
 
-    private fun deletePromise() {
+    private fun showDeleteDialog() {
         AlertDialog.Builder(this)
             .setMessage(R.string.promiseDetail_delete_ask)
             .setPositiveButton(R.string.promiseDetail_dialog_yes) { _, _ ->

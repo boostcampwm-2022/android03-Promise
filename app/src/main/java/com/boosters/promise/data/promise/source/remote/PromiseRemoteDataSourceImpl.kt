@@ -1,7 +1,5 @@
 package com.boosters.promise.data.promise.source.remote
 
-import android.util.Log
-import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.user.User
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
