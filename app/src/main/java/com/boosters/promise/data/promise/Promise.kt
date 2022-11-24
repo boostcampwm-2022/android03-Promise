@@ -1,20 +1,21 @@
 package com.boosters.promise.data.promise
 
+import android.os.Parcelable
 import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.data.promise.source.remote.PromiseBody
 import com.boosters.promise.data.user.User
-import com.boosters.promise.data.user.toUserUiState
-import com.boosters.promise.ui.promisesetting.model.PromiseUiState
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Promise(
-    val promiseId: String,
-    val title: String,
-    val destinationName: String,
-    val destinationGeoLocation: GeoLocation,
-    val date: String,
-    val time: String,
-    val members: List<User>
-)
+    val promiseId: String = "",
+    val title: String = "",
+    val destinationName: String = "",
+    val destinationGeoLocation: GeoLocation = GeoLocation(),
+    val date: String = "",
+    val time: String = "",
+    val members: List<User> = listOf()
+) : Parcelable
 
 fun Promise.toPromiseBody() =
     PromiseBody(
@@ -25,17 +26,4 @@ fun Promise.toPromiseBody() =
         date = date,
         time = time,
         members = members
-    )
-
-fun Promise.toPromiseUiState() =
-    PromiseUiState(
-        promiseId = promiseId,
-        title = title,
-        destinationName = destinationName,
-        destinationGeoLocation = destinationGeoLocation,
-        date = date,
-        time = time,
-        members = members.map {
-            it.toUserUiState()
-        }
     )

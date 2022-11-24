@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boosters.promise.data.invite.FriendRepository
-import com.boosters.promise.data.user.toUserUiState
-import com.boosters.promise.ui.invite.model.UserUiState
+import com.boosters.promise.data.friend.FriendRepository
+import com.boosters.promise.data.user.toUserUiModel
+import com.boosters.promise.ui.invite.model.UserUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,19 +16,19 @@ class InviteViewModel @Inject constructor(
     private val friendRepository: FriendRepository
 ) : ViewModel() {
 
-    private var _currentFriendItems = MutableLiveData<List<UserUiState>?>()
-    val currentFriendItems: LiveData<List<UserUiState>?> = _currentFriendItems
+    private var _currentFriendItems = MutableLiveData<List<UserUiModel>?>()
+    val currentFriendItems: LiveData<List<UserUiModel>?> = _currentFriendItems
 
-    private var allFriendItems: List<UserUiState>? = null
+    private var allFriendItems: List<UserUiModel>? = null
 
-    private var _currentMemberItems = MutableLiveData<List<UserUiState>?>()
-    val currentMemberItems: LiveData<List<UserUiState>?> = _currentMemberItems
+    private var _currentMemberItems = MutableLiveData<List<UserUiModel>?>()
+    val currentMemberItems: LiveData<List<UserUiModel>?> = _currentMemberItems
 
     fun initAllFriendItems() {
         viewModelScope.launch {
             val data = friendRepository.getFriends()
             allFriendItems = data.map { user ->
-                user.toUserUiState()
+                user.toUserUiModel()
             }
             val inviteCheckedItems = allFriendItems?.map { user ->
                 if (currentMemberItems.value?.contains(user) == true) {
@@ -41,11 +41,11 @@ class InviteViewModel @Inject constructor(
         }
     }
 
-    fun initMemberItems(memberItems: List<UserUiState>?) {
+    fun initMemberItems(memberItems: List<UserUiModel>?) {
         _currentMemberItems.value = memberItems
     }
 
-    fun addMemberItems(user: UserUiState) {
+    fun addMemberItems(user: UserUiModel) {
         if (user.isSelected.not()) {
             _currentMemberItems.value = currentMemberItems.value?.plusElement(user)
             _currentFriendItems.value = currentFriendItems.value?.map {
@@ -54,7 +54,7 @@ class InviteViewModel @Inject constructor(
         }
     }
 
-    fun removeMemberItems(user: UserUiState) {
+    fun removeMemberItems(user: UserUiModel) {
         _currentMemberItems.value = _currentMemberItems.value?.minusElement(user)
         _currentFriendItems.value = currentFriendItems.value?.map {
             if (it.userCode == user.userCode) it.copy(isSelected = false) else it

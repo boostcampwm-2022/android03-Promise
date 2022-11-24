@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.boosters.promise.R
+import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.databinding.ItemPromiseCardBinding
-import com.boosters.promise.ui.promisesetting.model.PromiseUiState
 
 class PromiseDailyListAdapter :
-    ListAdapter<PromiseUiState, PromiseDailyListAdapter.PlaceSearchViewHolder>(diffUtil) {
+    ListAdapter<Promise, PromiseDailyListAdapter.PlaceSearchViewHolder>(diffUtil) {
 
     private var onItemClickListener: OnItemClickListener? = null
 
@@ -45,29 +45,29 @@ class PromiseDailyListAdapter :
     class PlaceSearchViewHolder(private val binding: ItemPromiseCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: PromiseUiState) {
-            binding.promiseUiState = item
+        fun bind(item: Promise) {
+            binding.promise = item
             binding.executePendingBindings()
         }
 
     }
 
     interface OnItemClickListener {
-        fun onItemClick(promise: PromiseUiState)
+        fun onItemClick(promise: Promise)
     }
 
     companion object {
-        val diffUtil = object : DiffUtil.ItemCallback<PromiseUiState>() {
+        val diffUtil = object : DiffUtil.ItemCallback<Promise>() {
             override fun areItemsTheSame(
-                oldItem: PromiseUiState,
-                newItem: PromiseUiState
+                oldItem: Promise,
+                newItem: Promise
             ): Boolean {
                 return oldItem.promiseId == newItem.promiseId
             }
 
             override fun areContentsTheSame(
-                oldItem: PromiseUiState,
-                newItem: PromiseUiState
+                oldItem: Promise,
+                newItem: Promise
             ): Boolean {
                 return oldItem == newItem
             }

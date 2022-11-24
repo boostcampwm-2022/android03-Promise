@@ -4,6 +4,7 @@ import androidx.core.text.parseAsHtml
 import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.data.place.Place
 import com.google.gson.annotations.SerializedName
+import com.naver.maps.geometry.Tm128
 
 data class PlaceResponseBody(
     @SerializedName("total") val total: Int,
@@ -31,6 +32,8 @@ fun PlaceItemResponseBody.toPlace(): Place {
         link = link,
         address = address,
         roadAddress = roadAddress,
-        geoLocation = GeoLocation(mapX.toDouble(), mapY.toDouble())
+        geoLocation = Tm128(mapX.toDouble(), mapY.toDouble()).toLatLng().run {
+            GeoLocation(latitude, longitude)
+        }
     )
 }

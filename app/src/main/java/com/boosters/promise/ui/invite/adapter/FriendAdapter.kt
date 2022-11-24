@@ -6,10 +6,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ItemInviteFriendBinding
-import com.boosters.promise.ui.invite.model.UserUiState
+import com.boosters.promise.ui.invite.model.UserUiModel
 
-class FriendAdapter : ListAdapter<UserUiState, FriendAdapter.FriendViewHolder>(
-    UserDiffItemCallback
+class FriendAdapter : ListAdapter<UserUiModel, FriendAdapter.FriendViewHolder>(
+    UserUiModelDiffItemCallback
 ) {
 
     private var onItemClickListener: OnItemClickListener? = null
@@ -40,10 +40,10 @@ class FriendAdapter : ListAdapter<UserUiState, FriendAdapter.FriendViewHolder>(
         private val binding: ItemInviteFriendBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(userUiState: UserUiState) {
-            binding.user = userUiState
+        fun bind(userUiModel: UserUiModel) {
+            binding.user = userUiModel
 
-            if (userUiState.isSelected) {
+            if (userUiModel.isSelected) {
                 binding.textViewInviteUserName.setTextAppearance(R.style.Promise_TextAppearance_MiddleGray)
                 binding.textViewInviteUserCode.setTextAppearance(R.style.Promise_TextAppearance_MiddleGray)
             } else {
@@ -54,7 +54,7 @@ class FriendAdapter : ListAdapter<UserUiState, FriendAdapter.FriendViewHolder>(
     }
 
     interface OnItemClickListener {
-        fun onItemClick(user: UserUiState, pos: Int)
+        fun onItemClick(user: UserUiModel, pos: Int)
     }
 
 }

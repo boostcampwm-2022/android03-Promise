@@ -7,7 +7,7 @@
 
         <variable
             name="user"
-            type="com.boosters.promise.ui.invite.model.UserUiState" />
+            type="com.boosters.promise.ui.invite.model.UserUiModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

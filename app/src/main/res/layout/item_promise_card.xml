@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="promiseUiState"
-            type="com.boosters.promise.ui.promisesetting.model.PromiseUiState" />
+            name="promise"
+            type="com.boosters.promise.data.promise.Promise" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -28,7 +28,7 @@
                 style="@style/Promise.TextAppearance.MiddleBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{promiseUiState.title}"
+                android:text="@{promise.title}"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toTopOf="@+id/textView_itemPromiseCard_destinationLabel"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -58,7 +58,7 @@
                 android:layout_marginStart="8dp"
                 android:ellipsize="end"
                 android:lines="1"
-                android:text="@{promiseUiState.destinationName}"
+                android:text="@{promise.destinationName}"
                 app:layout_constraintBottom_toBottomOf="@+id/textView_itemPromiseCard_destinationLabel"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.05"
@@ -87,7 +87,7 @@
                 android:layout_marginStart="8dp"
                 android:ellipsize="end"
                 android:lines="1"
-                android:text="@{promiseUiState.time}"
+                android:text="@{promise.time}"
                 app:layout_constraintBottom_toBottomOf="@+id/textView_itemPromiseCard_timeLabel"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.05"

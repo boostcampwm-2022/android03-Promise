@@ -2,7 +2,7 @@ package com.boosters.promise.ui.friend
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boosters.promise.data.invite.FriendRepository
+import com.boosters.promise.data.friend.FriendRepository
 import com.boosters.promise.data.user.User
 import com.boosters.promise.data.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

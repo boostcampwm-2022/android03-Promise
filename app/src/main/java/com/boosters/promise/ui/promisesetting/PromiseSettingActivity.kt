@@ -12,15 +12,17 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.boosters.promise.R
+import com.boosters.promise.data.promise.Promise
+import com.boosters.promise.data.user.toUserUiModel
 import com.boosters.promise.databinding.ActivityPromiseSettingBinding
+import com.boosters.promise.ui.detail.PromiseDetailActivity
 import com.boosters.promise.ui.invite.InviteActivity
-import com.boosters.promise.ui.invite.model.UserUiState
+import com.boosters.promise.ui.invite.model.UserUiModel
 import com.boosters.promise.ui.place.PlaceSearchDialogFragment
 import com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity
 import com.boosters.promise.ui.promisesetting.adapter.PromiseMemberListAdapter
 import com.boosters.promise.ui.promisesetting.model.PromiseSettingEvent
 import com.boosters.promise.ui.promisesetting.model.PromiseSettingUiState
-import com.boosters.promise.ui.promisesetting.model.PromiseUiState
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -44,7 +46,7 @@ class PromiseSettingActivity : AppCompatActivity() {
                 } else {
                     result.data?.extras?.getParcelableArrayList(
                         MEMBER_LIST_KEY,
-                        UserUiState::class.java
+                        UserUiModel::class.java
                     )
                 }?.let {
                     promiseSettingViewModel.updateMember(it.toList())
@@ -63,8 +65,8 @@ class PromiseSettingActivity : AppCompatActivity() {
             PromiseMemberListAdapter { promiseSettingViewModel.removeMember(it) }
         binding.recyclerViewPromiseSettingPromiseMembers.adapter = promiseMemberListAdapter
         lifecycleScope.launch {
-            promiseSettingViewModel.promiseUiState.collect { promiseUiState ->
-                promiseMemberListAdapter.submitList(promiseUiState.members)
+            promiseSettingViewModel.promiseUiState.collect { promise ->
+                promiseMemberListAdapter.submitList(promise.members.map { it.toUserUiModel() })
             }
         }
 
@@ -84,6 +86,13 @@ class PromiseSettingActivity : AppCompatActivity() {
                 when (promiseSettingUiState) {
                     PromiseSettingUiState.Edit -> return@collectLatest
                     PromiseSettingUiState.Success -> {
+                        val intent =
+                            Intent(this@PromiseSettingActivity, PromiseDetailActivity::class.java)
+                        intent.putExtra(
+                            PromiseCalendarActivity.PROMISE_ID_KEY,
+                            promiseSettingViewModel.promiseUiState.value
+                        )
+                        startActivity(intent)
                         finish()
                     }
                     is PromiseSettingUiState.Fail -> showStateSnackbar(promiseSettingUiState.message)
@@ -184,10 +193,10 @@ class PromiseSettingActivity : AppCompatActivity() {
     }
 
     private fun initPromise() {
-        if (Build.VERSION.SDK_INT < 33) {
+        if (VERSION.SDK_INT < 33) {
             intent.getParcelableExtra(PROMISE_KEY)
         } else {
-            intent.getParcelableExtra(PROMISE_KEY, PromiseUiState::class.java)
+            intent.getParcelableExtra(PROMISE_KEY, Promise::class.java)
         }?.let {
             promiseSettingViewModel.initPromise(it)
         }

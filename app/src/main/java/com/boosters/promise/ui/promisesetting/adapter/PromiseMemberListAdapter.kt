@@ -8,11 +8,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ItemPromiseMemberBinding
-import com.boosters.promise.ui.invite.model.UserUiState
+import com.boosters.promise.ui.invite.model.UserUiModel
 
 class PromiseMemberListAdapter(
-    private val onClickListener: (item: UserUiState) -> Unit
-) : ListAdapter<UserUiState, PromiseMemberListAdapter.PromiseMemberListViewHolder>(diffUtil) {
+    private val onClickListener: (item: UserUiModel) -> Unit
+) : ListAdapter<UserUiModel, PromiseMemberListAdapter.PromiseMemberListViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PromiseMemberListViewHolder {
         val binding: ItemPromiseMemberBinding = DataBindingUtil.inflate(
@@ -37,19 +37,19 @@ class PromiseMemberListAdapter(
     class PromiseMemberListViewHolder(private val binding: ItemPromiseMemberBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: UserUiState) {
+        fun bind(item: UserUiModel) {
             binding.userUiState = item
         }
 
     }
 
     companion object {
-        val diffUtil = object : DiffUtil.ItemCallback<UserUiState>() {
-            override fun areItemsTheSame(oldItem: UserUiState, newItem: UserUiState): Boolean {
+        val diffUtil = object : DiffUtil.ItemCallback<UserUiModel>() {
+            override fun areItemsTheSame(oldItem: UserUiModel, newItem: UserUiModel): Boolean {
                 return oldItem.userCode == newItem.userCode
             }
 
-            override fun areContentsTheSame(oldItem: UserUiState, newItem: UserUiState): Boolean {
+            override fun areContentsTheSame(oldItem: UserUiModel, newItem: UserUiModel): Boolean {
                 return oldItem == newItem
             }
         }
