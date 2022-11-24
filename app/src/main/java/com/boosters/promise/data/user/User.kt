@@ -6,11 +6,13 @@ import com.boosters.promise.ui.invite.model.UserUiState
 data class User(
     val userCode: String = "",
     val userName: String = "",
-    val location: Location? = null
+    val location: Location? = null,
+    val userToken: String = ""
 )
 
 fun User.toUserUiState() =
     UserUiState(
         userName = userName,
-        userCode = userCode
+        userCode = userCode,
+        userToken = userToken
     )

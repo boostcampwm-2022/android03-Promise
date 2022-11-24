@@ -1,9 +1,13 @@
 package com.boosters.promise.ui.promisecalendar
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -15,6 +19,7 @@ import com.boosters.promise.ui.place.PlaceSearchViewModel
 import com.boosters.promise.ui.promisecalendar.adapter.PromiseDailyListAdapter
 import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
 import com.boosters.promise.ui.promisesetting.model.PromiseUiState
+import com.google.android.material.snackbar.Snackbar
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,6 +37,8 @@ class PromiseCalendarActivity : AppCompatActivity() {
     @OptIn(FlowPreview::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        checkPermissions()
 
         binding =
             DataBindingUtil.inflate(layoutInflater, R.layout.activity_promise_calendar, null, false)
@@ -73,6 +80,21 @@ class PromiseCalendarActivity : AppCompatActivity() {
         })
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PromiseSettingActivity.PERMISSIONS_REQUEST -> {
+                if (grantResults.isNotEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Snackbar.make(binding.root, R.string.start_item_notification_permission, Snackbar.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     private fun MaterialCalendarView.dateChangesToFlow(): Flow<String?> {
         return callbackFlow {
             setOnDateChangedListener { _, date, _ ->
@@ -92,6 +114,22 @@ class PromiseCalendarActivity : AppCompatActivity() {
         }
     }
 
+    private fun checkPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    PromiseSettingActivity.PERMISSIONS_REQUEST
+                )
+            }
+        }
+    }
+    
     companion object {
         const val PROMISE_INFO_KEY = "promise"
     }

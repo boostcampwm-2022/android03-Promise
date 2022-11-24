@@ -10,4 +10,6 @@ interface UserRepository {
 
     fun getMyInfo(): Flow<Result<User>>
 
+    suspend fun getUserList(userCodeList: List<String>): List<User>
+
 }
