@@ -1,9 +1,11 @@
 package com.boosters.promise.data.user
 
+import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.data.user.source.local.MyInfoLocalDataSource
 import com.boosters.promise.data.user.source.remote.UserRemoteDataSource
 import com.boosters.promise.data.user.source.remote.toUser
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -43,5 +45,21 @@ class UserRepositoryImpl @Inject constructor(
 
     override fun getMyInfo(): Flow<Result<User>> =
         myInfoLocalDataSource.getMyInfo()
+
+    override suspend fun uploadMyGeoLocation(geoLocation: GeoLocation?): Result<Unit> = runCatching {
+        val user = getMyInfo().first().getOrThrow()
+        userRemoteDataSource.uploadMyGeoLocation(user.userCode, geoLocation)
+    }
+
+    override suspend fun resetMyGeoLocation() {
+        val user = getMyInfo().first().getOrNull()
+        if (user != null) {
+            userRemoteDataSource.resetMyGeoLocation(user.userCode)
+        }
+    }
+
+    override suspend fun getUserList(userCodeList: List<String>): List<User> {
+        return userRemoteDataSource.getUserList(userCodeList).map { it.toUser() }
+    }
 
 }

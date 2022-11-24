@@ -1,7 +1,7 @@
 package com.boosters.promise.ui.promisesetting.model
 
+import com.boosters.promise.data.location.GeoLocation
 import android.os.Parcelable
-import com.boosters.promise.data.model.Location
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.ui.invite.model.UserUiState
 import com.boosters.promise.ui.invite.model.toUser
@@ -12,7 +12,7 @@ data class PromiseUiState(
     val promiseId: String = "",
     val title: String = "",
     val destinationName: String = "",
-    val destinationLocation: Location = Location(),
+    val destinationGeoLocation: GeoLocation = GeoLocation(),
     val date: String = "",
     val time: String = "",
     val members: List<UserUiState> = listOf()
@@ -23,7 +23,7 @@ fun PromiseUiState.toPromise() =
         promiseId = promiseId,
         title = title,
         destinationName = destinationName,
-        destinationLocation = destinationLocation,
+        destinationGeoLocation = destinationGeoLocation,
         date = date,
         time = time,
         members = members.map {

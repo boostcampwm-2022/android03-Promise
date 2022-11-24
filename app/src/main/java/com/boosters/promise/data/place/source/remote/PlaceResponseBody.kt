@@ -1,7 +1,7 @@
 package com.boosters.promise.data.place.source.remote
 
 import androidx.core.text.parseAsHtml
-import com.boosters.promise.data.model.Location
+import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.data.place.Place
 import com.google.gson.annotations.SerializedName
 
@@ -31,6 +31,6 @@ fun PlaceItemResponseBody.toPlace(): Place {
         link = link,
         address = address,
         roadAddress = roadAddress,
-        location = Location(mapX, mapY)
+        geoLocation = GeoLocation(mapX.toDouble(), mapY.toDouble())
     )
 }

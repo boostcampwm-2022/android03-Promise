@@ -1,6 +1,6 @@
 package com.boosters.promise.data.promise.source.remote
 
-import com.boosters.promise.data.model.Location
+import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.user.User
 
@@ -8,7 +8,7 @@ data class PromiseBody(
     val promiseId: String = "",
     val title: String = "",
     val destinationName: String = "",
-    val destinationLocation: Location = Location(),
+    val destinationGeoLocation: GeoLocation = GeoLocation(),
     val date: String = "",
     val time: String = "",
     val members: List<User> = listOf()
@@ -19,7 +19,7 @@ fun PromiseBody.toPromise() =
         promiseId = promiseId,
         title = title,
         destinationName = destinationName,
-        destinationLocation = destinationLocation,
+        destinationGeoLocation = destinationGeoLocation,
         date = date,
         time = time,
         members = members
