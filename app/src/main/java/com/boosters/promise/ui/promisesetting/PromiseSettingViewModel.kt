@@ -1,6 +1,5 @@
 package com.boosters.promise.ui.promisesetting
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.R
@@ -77,9 +76,10 @@ class PromiseSettingViewModel @Inject constructor(
         }
         viewModelScope.launch {
             val members = promise.members.toMutableList()
-            members.add(myInfo.copy(userToken = "").toUserUiState())
+            if (promise.promiseId.isEmpty()) members.add(
+                myInfo.copy(userToken = "").toUserUiState()
+            )
             promiseRepository.addPromise(promise.copy(members = members).toPromise()).collect {
-                Log.d("MainActivity", "${it}")
                 when (it) {
                     true -> sendNotification()
                     false -> changeUiState(PromiseSettingUiState.Fail(R.string.promiseSetting_fail))
@@ -120,7 +120,8 @@ class PromiseSettingViewModel @Inject constructor(
 
     fun initPromise(promise: PromiseUiState) {
         _promiseUiState.update {
-            promise
+            val members = promise.members.filter { user -> user.userCode != myInfo.userCode }
+            promise.copy(members = members)
         }
     }
 

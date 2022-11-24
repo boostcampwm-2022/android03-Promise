@@ -61,8 +61,12 @@
     <!-- 약속 상세 화면 -->
     <string name="promiseDetail_location">장소</string>
     <string name="promiseDetail_date">일시</string>
-    <string name="promiseDetail_edit">수정하기</string>
+    <string name="promiseDetail_edit">수정</string>
     <string name="promiseDetail_delete">삭제</string>
     <string name="promiseDetail_date_format">%s, %s</string>
     <string name="promiseDetail_member">약속 멤버</string>
+    <string name="promiseDetail_delete_fail">삭제에 실패했습니다.</string>
+    <string name="promiseDetail_delete_ask">삭제하시겠습까?</string>
+    <string name="promiseDetail_dialog_yes">YES</string>
+    <string name="promiseDetail_dialog_no">NO</string>
 </resources>
