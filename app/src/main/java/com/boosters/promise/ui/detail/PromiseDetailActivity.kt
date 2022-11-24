@@ -4,7 +4,6 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.annotation.UiThread
 import androidx.databinding.DataBindingUtil
 import com.boosters.promise.R
 import com.boosters.promise.data.model.Location
@@ -29,25 +28,12 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_promise_detail)
         setBinding()
-        setPromiseInfo()
         initMap()
-
-        promiseMemberAdapter.submitList(promiseDetailViewModel.promiseInfo.value?.members)
+        setPromiseInfo()
     }
 
-    @UiThread
     override fun onMapReady(map: NaverMap) {
-        val location = requireNotNull(promiseDetailViewModel.promiseInfo.value).destinationLocation
-        val destinationLocation = convertLocation(location)
-
-        val cameraUpdate = CameraUpdate.scrollTo(destinationLocation)
-        map.moveCamera(cameraUpdate)
-
-        val marker = Marker()
-        marker.apply {
-            position = destinationLocation
-            this.map = map
-        }
+        setObserver(map)
     }
 
     private fun setBinding() {
@@ -77,6 +63,30 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
     }
 
+    private fun setObserver(map: NaverMap) {
+        promiseDetailViewModel.promiseInfo.observe(this) { promise ->
+            promiseMemberAdapter.submitList(promise.members)
+
+            val location = promise.destinationLocation
+            val destinationLocation = convertLocation(location)
+
+            moveCameraToDestination(destinationLocation, map)
+            markDestinationOnMap(destinationLocation, map)
+        }
+    }
+
+    private fun moveCameraToDestination(location: LatLng, map: NaverMap) {
+        val cameraUpdate = CameraUpdate.scrollTo(location)
+        map.moveCamera(cameraUpdate)
+    }
+
+    private fun markDestinationOnMap(location: LatLng, map: NaverMap) {
+        marker.apply {
+            position = location
+            this.map = map
+        }
+    }
+
     private fun convertLocation(location: Location): LatLng {
         val tm128Location = Tm128(location.x.toDouble(), location.y.toDouble())
         return tm128Location.toLatLng()
@@ -84,6 +94,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     companion object {
         const val PROMISE_INFO_KEY = "promise"
+        val marker = Marker()
     }
 
 }

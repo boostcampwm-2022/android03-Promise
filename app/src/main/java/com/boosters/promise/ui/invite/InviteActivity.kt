@@ -65,8 +65,7 @@ class InviteActivity : AppCompatActivity() {
     }
 
     private fun setMemberItemClickListener() {
-        inviteMemberAdapter.setOnItemClickListener(object :
-            InviteMemberAdapter.OnItemClickListener {
+        inviteMemberAdapter.setOnItemClickListener(object : InviteMemberAdapter.OnItemClickListener {
             override fun onItemClick(user: UserUiState) {
                 inviteViewModel.removeMemberItems(user)
             }

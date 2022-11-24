@@ -70,8 +70,7 @@ class PromiseCalendarActivity : AppCompatActivity() {
             startActivity(Intent(this, PromiseSettingActivity::class.java))
         }
 
-        promiseDailyListAdapter.setOnItemClickListener(object :
-            PromiseDailyListAdapter.OnItemClickListener {
+        promiseDailyListAdapter.setOnItemClickListener(object : PromiseDailyListAdapter.OnItemClickListener {
             override fun onItemClick(promise: PromiseUiState) {
                 val intent = Intent(this@PromiseCalendarActivity, PromiseDetailActivity::class.java)
                 intent.putExtra(PROMISE_INFO_KEY, promise)
