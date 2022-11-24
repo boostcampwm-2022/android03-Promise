@@ -20,6 +20,7 @@
     <string name="promiseSetting_fail">저장에 실패했습니다.</string>
     <string name="promiseSetting_empty">약속 정보를 모두 채워주세요.</string>
     <string name="promiseSetting_beforeTime">현재보다 이후의 시간으로 설정해주세요.</string>
+    <string name="promiseSetting_notification">[%s] 새로운 약속이 추가되었니다.</string>
 
     <!-- 약속 추가 다이얼로그 -->
     <string name="date_format">%d/%02d/%02d</string>
