@@ -4,6 +4,7 @@
     <!-- 홈 화면 약속 리스트 아이템 화면 -->
     <string name="start_item_promisePlace">장소</string>
     <string name="start_item_promiseTime">일시</string>
+    <string name="start_item_notification_permission">알림 권한을 설정해주세요.</string>
 
     <!-- 약속 추가 화면 -->
     <string name="promiseSetting_promiseTitle">제목을 입력하세요</string>
@@ -19,6 +20,7 @@
     <string name="promiseSetting_fail">저장에 실패했습니다.</string>
     <string name="promiseSetting_empty">약속 정보를 모두 채워주세요.</string>
     <string name="promiseSetting_beforeTime">현재보다 이후의 시간으로 설정해주세요.</string>
+    <string name="promiseSetting_notification">[%s] 새로운 약속이 추가되었니다.</string>
 
     <!-- 약속 추가 다이얼로그 -->
     <string name="date_format">%d/%02d/%02d</string>

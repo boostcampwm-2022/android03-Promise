@@ -18,11 +18,11 @@ object Retrofit {
         .addInterceptor(httpLoggingInterceptor)
         .build()
 
-    val promiseService: PromiseService = Retrofit.Builder()
+    val promiseService: CloudMessagingService = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-        .create(PromiseService::class.java)
+        .create(CloudMessagingService::class.java)
 
 }
