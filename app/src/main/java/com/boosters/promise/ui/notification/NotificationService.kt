@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.boosters.promise.R
+import com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity
 import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
 import com.boosters.promise.ui.promisesetting.PromiseSettingViewModel
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -28,7 +29,8 @@ class NotificationService : FirebaseMessagingService() {
     private fun sendNotification(remoteMessage: RemoteMessage) {
         val uniId = System.currentTimeMillis().toInt()
 
-        val intent = Intent(this, PromiseSettingActivity::class.java)
+
+        val intent = Intent(this, PromiseCalendarActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent =
             PendingIntent.getActivity(this, uniId, intent, PendingIntent.FLAG_IMMUTABLE)
