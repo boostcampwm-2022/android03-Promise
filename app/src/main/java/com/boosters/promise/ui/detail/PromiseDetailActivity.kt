@@ -10,7 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.boosters.promise.R
-import com.boosters.promise.data.model.Location
+import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.databinding.ActivityPromiseDetailBinding
 import com.boosters.promise.ui.detail.adapter.PromiseMemberAdapter
 import com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity
@@ -114,7 +114,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         promiseDetailViewModel.promiseInfo.observe(this) { promise ->
             promiseMemberAdapter.submitList(promise.members)
 
-            val location = promise.destinationLocation
+            val location = promise.destinationGeoLocation
             val destinationLocation = convertLocation(location)
 
             moveCameraToDestination(destinationLocation, map)
@@ -134,8 +134,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun convertLocation(location: Location): LatLng {
-        val tm128Location = Tm128(location.x.toDouble(), location.y.toDouble())
+    private fun convertLocation(location: GeoLocation): LatLng {
+        val tm128Location = Tm128(location.latitude, location.longitude)
         return tm128Location.toLatLng()
     }
 

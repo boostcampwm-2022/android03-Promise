@@ -12,7 +12,7 @@ data class PromiseUiState(
     val promiseId: String = "",
     val title: String = "",
     val destinationName: String = "",
-    val destinationGeoLocation: GeoLocation = GeoLocatioin(),
+    val destinationGeoLocation: GeoLocation = GeoLocation(),
     val date: String = "",
     val time: String = "",
     val members: List<UserUiState> = listOf()

@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.R
-import com.boosters.promise.data.model.Location
 import com.boosters.promise.data.notification.NotificationRepository
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.promise.ServerKeyRepository
