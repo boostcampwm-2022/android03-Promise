@@ -157,9 +157,9 @@ class PromiseSettingViewModel @Inject constructor(
     }
 
     companion object {
-        const val DATE_FORMAT = "yyyy/MM/dd HH:mm"
-        const val NOTIFICATION_EDIT = "0"
-        const val NOTIFICATION_ADD = "1"
+        private const val DATE_FORMAT = "yyyy/MM/dd HH:mm"
+        private const val NOTIFICATION_EDIT = "0"
+        private const val NOTIFICATION_ADD = "1"
     }
 
 }

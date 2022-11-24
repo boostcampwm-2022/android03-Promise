@@ -84,11 +84,7 @@ class PromiseSettingActivity : AppCompatActivity() {
                 when (promiseSettingUiState) {
                     PromiseSettingUiState.Edit -> return@collectLatest
                     PromiseSettingUiState.Success -> {
-                        startActivity(
-                            Intent(this@PromiseSettingActivity, PromiseCalendarActivity::class.java)
-                        ).also {
-                            finish()
-                        }
+                        finish()
                     }
                     is PromiseSettingUiState.Fail -> showStateSnackbar(promiseSettingUiState.message)
                 }

@@ -2,12 +2,12 @@ package com.boosters.promise.ui.detail
 
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.boosters.promise.R
 import com.boosters.promise.data.model.Location
@@ -48,10 +48,9 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         promiseDetailViewModel.isDeleted.observe(this) {
             if (it) {
-                startActivity(
-                    Intent(this, PromiseCalendarActivity::class.java)
-                ).also { finish() }
-                finish()
+                val intent = Intent(this, PromiseCalendarActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                startActivity(intent)
             } else {
                 showStateSnackbar(R.string.promiseDetail_delete_ask)
             }

@@ -70,11 +70,11 @@ class NotificationService : FirebaseMessagingService() {
     }
 
     companion object {
-        const val CHANNEL_ID = "my_channel"
-        const val CHANNEL_NAME = "Notice"
-        const val MESSAGE_BODY = "body"
-        const val MESSAGE_TITLE = "title"
-        const val NOTIFICATION_EDIT = "0"
+        private const val CHANNEL_ID = "my_channel"
+        private const val CHANNEL_NAME = "Notice"
+        private const val MESSAGE_BODY = "body"
+        private const val MESSAGE_TITLE = "title"
+        private const val NOTIFICATION_EDIT = "0"
     }
 
 }
