@@ -6,4 +6,6 @@ interface FriendRepository {
 
     suspend fun getFriends(): List<User>
 
+    suspend fun addFriend(user: User)
+
 }

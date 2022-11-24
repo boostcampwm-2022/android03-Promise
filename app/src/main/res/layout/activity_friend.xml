@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="myInfo"
+            type="com.boosters.promise.data.user.User" />
+        <variable
+            name="friendViewModel"
+            type="com.boosters.promise.ui.friend.FriendViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.friend.FriendActivity">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_friend_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.05" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_friend_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.95" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_friend_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.95" />
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar_friend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/ic_navigate_back" />
+
+        <include
+            android:id="@+id/item_friend_myInfo"
+            layout="@layout/item_friend_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            bind:user="@{myInfo}"
+            app:layout_constraintBottom_toTopOf="@id/divider_friend"
+            app:layout_constraintEnd_toEndOf="@+id/guideline_friend_end"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline_friend_start"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar_friend" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider_friend"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/black"
+            app:layout_constraintBottom_toTopOf="@id/tab_friend"
+            app:layout_constraintEnd_toEndOf="@id/guideline_friend_end"
+            app:layout_constraintStart_toStartOf="@+id/guideline_friend_start"
+            app:layout_constraintTop_toBottomOf="@+id/item_friend_myInfo" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_friend"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/searchView_friend"
+            app:layout_constraintEnd_toEndOf="@+id/guideline_friend_end"
+            app:layout_constraintStart_toStartOf="@+id/guideline_friend_start"
+            app:layout_constraintTop_toBottomOf="@+id/divider_friend">
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/friend_tabFriend" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/friend_tabSearch" />
+
+        </com.google.android.material.tabs.TabLayout>
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView_friend"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/button_confirm"
+            app:iconifiedByDefault="false"
+            app:layout_constraintBottom_toTopOf="@+id/recyclerView_friend"
+            app:layout_constraintEnd_toEndOf="@+id/guideline_friend_end"
+            app:layout_constraintStart_toStartOf="@id/guideline_friend_start"
+            app:layout_constraintTop_toBottomOf="@+id/tab_friend"
+            app:queryHint="@string/friend_searchQueryHint" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_friend"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@+id/guideline_friend_bottom"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_friend_end"
+            app:layout_constraintStart_toStartOf="@+id/guideline_friend_start"
+            app:layout_constraintTop_toBottomOf="@+id/searchView_friend"
+            tools:listitem="@layout/item_friend_profile" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

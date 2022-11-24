@@ -54,6 +54,15 @@
             android:name=".ui.promisecalendar.PromiseCalendarActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ui.friend.FriendActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.promisecalendar.PromiseCalendarActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity" />
+        </activity>
+
         <service
             android:name=".ui.notification.NotificationService"
             android:directBootAware="true"

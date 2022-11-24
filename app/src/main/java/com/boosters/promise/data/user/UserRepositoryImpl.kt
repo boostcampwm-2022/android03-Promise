@@ -32,11 +32,16 @@ class UserRepositoryImpl @Inject constructor(
             }
         }
 
+    override fun getUserByName(userName: String): Flow<List<User>> =
+        userRemoteDataSource.getUserByName(userName).mapNotNull { userList ->
+            try {
+                userList.map { it.toUser() }
+            } catch (e: NullPointerException) {
+                null
+            }
+        }
+
     override fun getMyInfo(): Flow<Result<User>> =
         myInfoLocalDataSource.getMyInfo()
-
-    override suspend fun getUserList(userCodeList: List<String>): List<User> {
-        return userRemoteDataSource.getUserList(userCodeList).map { it.toUser() }
-    }
 
 }

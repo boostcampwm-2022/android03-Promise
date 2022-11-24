@@ -8,8 +8,8 @@ interface UserRepository {
 
     fun getUser(userCode: String): Flow<User>
 
-    fun getMyInfo(): Flow<Result<User>>
+    fun getUserByName(userName: String): Flow<List<User>>
 
-    suspend fun getUserList(userCodeList: List<String>): List<User>
+    fun getMyInfo(): Flow<Result<User>>
 
 }

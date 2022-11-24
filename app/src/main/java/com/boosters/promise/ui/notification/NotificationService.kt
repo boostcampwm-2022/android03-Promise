@@ -19,10 +19,6 @@ import com.google.gson.Gson
 
 class NotificationService : FirebaseMessagingService() {
 
-    override fun onNewToken(token: String) {
-        super.onNewToken(token)
-    }
-
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         if (remoteMessage.data.isNotEmpty()) {
             sendNotification(remoteMessage)

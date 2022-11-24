@@ -1,8 +1,6 @@
 package com.boosters.promise.data.user.source.remote
 
 import com.boosters.promise.data.network.NetworkConnectionUtil
-import com.boosters.promise.data.promise.source.remote.PromiseRemoteDataSourceImpl
-import com.boosters.promise.data.user.User
 import com.boosters.promise.data.user.di.UserModule
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ktx.snapshots
@@ -42,19 +40,14 @@ class UserRemoteDataSourceImpl @Inject constructor(
             it.toObject(UserBody::class.java)
         }
 
-    override suspend fun getUserList(userCode: List<String>): List<UserBody> {
-        val task = userCollectionReference
-            .whereIn(USER_CODE_KEY, userCode)
-            .get()
-        task.await()
-        return task.result.documents.mapNotNull {
-            it.toObject(UserBody::class.java)
+    override fun getUserByName(userName: String): Flow<List<UserBody>> =
+        userCollectionReference.whereEqualTo(USER_NAME_KEY, userName).snapshots().mapNotNull {
+            it.toObjects(UserBody::class.java)
         }
-    }
 
     companion object {
         private const val USER_CODE_LENGTH = 6
-        private const val USER_CODE_KEY = "userCode"
+        private const val USER_NAME_KEY = "userName"
     }
 
 }
