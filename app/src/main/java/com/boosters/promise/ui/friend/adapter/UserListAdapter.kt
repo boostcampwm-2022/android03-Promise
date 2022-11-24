@@ -28,7 +28,9 @@ class UserListAdapter : ListAdapter<User, UserListAdapter.FriendViewHolder>(diff
         if (onItemClickListener != null) {
             binding.buttonFriendAdd.setOnClickListener {
                 val position = friendViewHolder.adapterPosition
-                checkNotNull(onItemClickListener).onClick(getItem(position))
+                if (position != RecyclerView.NO_POSITION) {
+                    checkNotNull(onItemClickListener).onClick(getItem(position))
+                }
             }
         }
 
