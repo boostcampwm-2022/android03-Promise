@@ -1,6 +1,7 @@
 package com.boosters.promise.data.notification.source.remote
 
 import com.boosters.promise.data.network.CloudMessagingService
+import com.boosters.promise.data.promise.Promise
 import javax.inject.Inject
 
 class NotificationRemoteDateSourceImpl @Inject constructor(
@@ -9,7 +10,7 @@ class NotificationRemoteDateSourceImpl @Inject constructor(
 
     override suspend fun sendNotification(
         title: String,
-        message: String,
+        message: Promise,
         token: String,
         key: String
     ) {

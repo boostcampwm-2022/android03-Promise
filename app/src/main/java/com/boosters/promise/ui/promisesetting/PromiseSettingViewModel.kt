@@ -116,6 +116,13 @@ class PromiseSettingViewModel @Inject constructor(
         }
     }
 
+    fun initPromise(promise: PromiseUiState) {
+        _promiseUiState.update {
+            val members = promise.members.filter { user -> user.userCode != myInfo.userCode }
+            promise.copy(members = members)
+        }
+    }
+
     private fun changeUiState(state: PromiseSettingUiState) {
         viewModelScope.launch {
             _promiseSettingUiState.emit(state)
@@ -127,27 +134,35 @@ class PromiseSettingViewModel @Inject constructor(
             val userCodeList =
                 _promiseUiState.value.members.filter { it.userCode != myInfo.userCode }
                     .map { it.userCode }
-            if (userCodeList.isEmpty()) return@launch
-            val key = serverKeyRepository.getServerKey()
-
-            userCodeList.forEach { userCode ->
-                launch {
-                    userRepository.getUser(userCode).first().run {
-                        notificationRepository.sendNotification(
-                            _promiseUiState.value.title,
-                            _promiseUiState.value.date,
-                            userToken,
-                            key
-                        )
-                    }
-                }
+            if (userCodeList.isEmpty()) {
+                changeUiState(PromiseSettingUiState.Success)
+                return@launch
             }
+            val key = serverKeyRepository.getServerKey()
+            
+            val title = if (_promiseUiState.value.promiseId.isEmpty()) {
+                NOTIFICATION_ADD
+            } else {
+                NOTIFICATION_EDIT
+            }
+
+            userRepository.getUserList(userCodeList).forEach { user ->
+                notificationRepository.sendNotification(
+                    title,
+                    _promiseUiState.value.toPromise(),
+                    user.userToken,
+                    key
+                )
+            }
+            
             changeUiState(PromiseSettingUiState.Success)
         }
     }
 
     companion object {
-        const val DATE_FORMAT = "yyyy/MM/dd HH:mm"
+        private const val DATE_FORMAT = "yyyy/MM/dd HH:mm"
+        private const val NOTIFICATION_EDIT = "0"
+        private const val NOTIFICATION_ADD = "1"
     }
 
 }

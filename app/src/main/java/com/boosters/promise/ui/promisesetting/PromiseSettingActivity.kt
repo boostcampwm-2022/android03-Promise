@@ -1,6 +1,7 @@
 package com.boosters.promise.ui.promisesetting
 
 import android.content.Intent
+import android.os.Build
 import android.os.Build.VERSION
 import android.os.Bundle
 import android.text.format.DateFormat
@@ -19,6 +20,7 @@ import com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity
 import com.boosters.promise.ui.promisesetting.adapter.PromiseMemberListAdapter
 import com.boosters.promise.ui.promisesetting.model.PromiseSettingEvent
 import com.boosters.promise.ui.promisesetting.model.PromiseSettingUiState
+import com.boosters.promise.ui.promisesetting.model.PromiseUiState
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -82,14 +84,14 @@ class PromiseSettingActivity : AppCompatActivity() {
                 when (promiseSettingUiState) {
                     PromiseSettingUiState.Edit -> return@collectLatest
                     PromiseSettingUiState.Success -> {
-                        startActivity(
-                            Intent(this@PromiseSettingActivity, PromiseCalendarActivity::class.java)
-                        ).also { finish() }
+                        finish()
                     }
                     is PromiseSettingUiState.Fail -> showStateSnackbar(promiseSettingUiState.message)
                 }
             }
         }
+
+        initPromise()
 
     }
 
@@ -181,11 +183,22 @@ class PromiseSettingActivity : AppCompatActivity() {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
 
+    private fun initPromise() {
+        if (Build.VERSION.SDK_INT < 33) {
+            intent.getParcelableExtra(PROMISE_KEY)
+        } else {
+            intent.getParcelableExtra(PROMISE_KEY, PromiseUiState::class.java)
+        }?.let {
+            promiseSettingViewModel.initPromise(it)
+        }
+    }
+
     companion object {
         const val DATEPICKER_TAG = "New Selected Date"
         const val TIMEPICKER_TAG = "New Selected Time"
         const val SEARCH_DIALOG_TAG = "New Search Address Dialog"
         const val MEMBER_LIST_KEY = "memberList"
+        private const val PROMISE_KEY = "promise"
         const val PERMISSIONS_REQUEST = 0x0000001
     }
 

@@ -20,7 +20,6 @@
     <string name="promiseSetting_fail">저장에 실패했습니다.</string>
     <string name="promiseSetting_empty">약속 정보를 모두 채워주세요.</string>
     <string name="promiseSetting_beforeTime">현재보다 이후의 시간으로 설정해주세요.</string>
-    <string name="promiseSetting_notification">[%s] 새로운 약속이 추가되었니다.</string>
 
     <!-- 약속 추가 다이얼로그 -->
     <string name="date_format">%d/%02d/%02d</string>
@@ -67,8 +66,17 @@
     <!-- 약속 상세 화면 -->
     <string name="promiseDetail_location">장소</string>
     <string name="promiseDetail_date">일시</string>
-    <string name="promiseDetail_edit">수정하기</string>
+    <string name="promiseDetail_edit">수정</string>
     <string name="promiseDetail_delete">삭제</string>
     <string name="promiseDetail_date_format">%s, %s</string>
     <string name="promiseDetail_member">약속 멤버</string>
+    <string name="promiseDetail_delete_fail">삭제에 실패했습니다.</string>
+    <string name="promiseDetail_delete_ask">삭제하시겠습니까?</string>
+    <string name="promiseDetail_dialog_yes">YES</string>
+    <string name="promiseDetail_dialog_no">NO</string>
+
+    <!-- 알림 -->
+    <string name="notification_add">[%s] 새로운 약속이 추가되었습니다.</string>
+    <string name="notification_edit">[%s] 약속이 수정되었습니다.</string>
+
 </resources>
