@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ActivityPromiseDetailBinding
 import com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity
@@ -71,15 +72,14 @@ class PromiseDetailActivity : AppCompatActivity() {
 
     private fun deletePromise() {
         AlertDialog.Builder(this)
-            .setTitle("삭제")
             .setMessage("약속 정보를 삭제합니다.")
-            .setPositiveButton("YES") { dialog , which ->
+            .setPositiveButton("YES") { _ , _ ->
                 promiseDetailViewModel.removePromise()
                 startActivity(
                     Intent(this, PromiseCalendarActivity::class.java)
                 ).also { finish() }
             }
-            .setNegativeButton("NO"){ dialog, which ->
+            .setNegativeButton("NO"){ _, _ ->
                 return@setNegativeButton
             }
             .create()

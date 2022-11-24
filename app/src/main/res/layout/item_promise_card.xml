@@ -87,7 +87,7 @@
                 android:layout_marginStart="8dp"
                 android:ellipsize="end"
                 android:lines="1"
-                android:text="@{promiseUiState.title}"
+                android:text="@{promiseUiState.time}"
                 app:layout_constraintBottom_toBottomOf="@+id/textView_itemPromiseCard_timeLabel"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.05"
