@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
+import androidx.core.app.TaskStackBuilder
 import com.boosters.promise.R
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.toPromiseUiState
@@ -34,10 +35,12 @@ class NotificationService : FirebaseMessagingService() {
 
         val intent = Intent(this, PromiseDetailActivity::class.java)
         intent.putExtra(PromiseCalendarActivity.PROMISE_INFO_KEY, promise.toPromiseUiState())
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
-        val pendingIntent =
-            PendingIntent.getActivity(this, uniId, intent, PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
+            addNextIntentWithParentStack(intent)
+            getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        }
 
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

@@ -76,9 +76,7 @@ class PromiseSettingViewModel @Inject constructor(
         }
         viewModelScope.launch {
             val members = promise.members.toMutableList()
-            if (promise.promiseId.isEmpty()) members.add(
-                myInfo.copy(userToken = "").toUserUiState()
-            )
+            members.add(myInfo.copy(userToken = "").toUserUiState())
             promiseRepository.addPromise(promise.copy(members = members).toPromise()).collect {
                 when (it) {
                     true -> sendNotification()
