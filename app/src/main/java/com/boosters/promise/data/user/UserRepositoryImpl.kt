@@ -46,7 +46,7 @@ class UserRepositoryImpl @Inject constructor(
     override fun getMyInfo(): Flow<Result<User>> =
         myInfoLocalDataSource.getMyInfo()
 
-    override suspend fun uploadMyGeoLocation(geoLocation: GeoLocation): Result<Unit> = runCatching {
+    override suspend fun uploadMyGeoLocation(geoLocation: GeoLocation?): Result<Unit> = runCatching {
         val user = getMyInfo().first().getOrThrow()
         userRemoteDataSource.uploadMyGeoLocation(user.userCode, geoLocation)
     }

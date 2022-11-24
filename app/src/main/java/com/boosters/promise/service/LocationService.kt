@@ -48,9 +48,7 @@ class LocationService : LifecycleService() {
         showNotification()
         lifecycleScope.launch {
             locationRepository.lastGeoLocation.collectLatest { geoLocation ->
-                if (geoLocation != null) {
-                    userRepository.uploadMyGeoLocation(geoLocation)
-                }
+                userRepository.uploadMyGeoLocation(geoLocation)
             }
         }
     }
