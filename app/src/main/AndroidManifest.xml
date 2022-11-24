@@ -16,10 +16,23 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Promise"
         tools:targetApi="33">
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="${MAP_API_ID}" />
 
         <activity
-            android:name=".ui.promisesetting.PromiseDetailActivity"
-            android:exported="true">
+            android:name=".ui.detail.PromiseDetailActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.promisesetting.PromiseSettingActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustNothing" />
+
+        <activity
+            android:name=".ui.start.StartActivity"
+            android:exported="true"
+            android:theme="@style/Theme.App.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,27 +41,17 @@
         </activity>
 
         <activity
-            android:name=".ui.promisesetting.PromiseSettingActivity"
-            android:windowSoftInputMode="adjustNothing"
-            android:exported="false" />
-
-        <activity
-            android:name=".ui.start.StartActivity"
-            android:exported="true"
-            android:theme="@style/Theme.App.Starting">
-        </activity>
-        <activity
             android:name=".ui.invite.InviteActivity"
             android:exported="false"
-            android:theme="@style/Theme.Promise"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustNothing" />
+
         <activity
             android:name=".ui.signup.SignUpActivity"
             android:exported="false" />
 
         <activity
             android:name=".ui.promisecalendar.PromiseCalendarActivity"
-            android:exported="true" />
+            android:exported="false" />
 
         <service
             android:name=".ui.notification.NotificationService"
@@ -58,6 +61,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
     </application>
 
 </manifest>

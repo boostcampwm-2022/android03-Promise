@@ -143,7 +143,7 @@ class PromiseSettingViewModel @Inject constructor(
             userRepository.getUserList(userCodeList).forEach { user ->
                 notificationRepository.sendNotification(
                     _promiseUiState.value.title,
-                    String.format(NOTIFICATION_FORMAT, _promiseUiState.value.date),
+                    _promiseUiState.value.date,
                     user.userToken,
                     key
                 )
@@ -154,7 +154,6 @@ class PromiseSettingViewModel @Inject constructor(
 
     companion object {
         const val DATE_FORMAT = "yyyy/MM/dd HH:mm"
-        const val NOTIFICATION_FORMAT = "[%s] 새로운 약속이 추가 되었습니다."
     }
 
 }

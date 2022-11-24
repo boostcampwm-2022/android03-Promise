@@ -10,7 +10,7 @@ data class Promise(
     val promiseId: String,
     val title: String,
     val destinationName: String,
-    val destinationLocation: Location?,
+    val destinationLocation: Location,
     val date: String,
     val time: String,
     val members: List<User>

@@ -8,7 +8,7 @@ data class PromiseBody(
     val promiseId: String = "",
     val title: String = "",
     val destinationName: String = "",
-    val destinationLocation: Location? = null,
+    val destinationLocation: Location = Location(),
     val date: String = "",
     val time: String = "",
     val members: List<User> = listOf()

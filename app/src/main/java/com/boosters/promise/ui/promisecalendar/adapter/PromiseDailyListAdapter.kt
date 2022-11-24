@@ -10,7 +10,10 @@ import com.boosters.promise.R
 import com.boosters.promise.databinding.ItemPromiseCardBinding
 import com.boosters.promise.ui.promisesetting.model.PromiseUiState
 
-class PromiseDailyListAdapter : ListAdapter<PromiseUiState, PromiseDailyListAdapter.PlaceSearchViewHolder>(diffUtil) {
+class PromiseDailyListAdapter :
+    ListAdapter<PromiseUiState, PromiseDailyListAdapter.PlaceSearchViewHolder>(diffUtil) {
+
+    private var onItemClickListener: OnItemClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaceSearchViewHolder {
         val binding: ItemPromiseCardBinding = DataBindingUtil.inflate(
@@ -19,12 +22,24 @@ class PromiseDailyListAdapter : ListAdapter<PromiseUiState, PromiseDailyListAdap
             parent,
             false
         )
+        val holder = PlaceSearchViewHolder(binding)
 
-        return PlaceSearchViewHolder(binding)
+        binding.root.setOnClickListener {
+            val position = holder.adapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                onItemClickListener?.onItemClick(getItem(position))
+            }
+        }
+
+        return holder
     }
 
     override fun onBindViewHolder(viewHolder: PlaceSearchViewHolder, position: Int) {
         viewHolder.bind(getItem(position))
+    }
+
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        onItemClickListener = listener
     }
 
     class PlaceSearchViewHolder(private val binding: ItemPromiseCardBinding) :
@@ -37,13 +52,23 @@ class PromiseDailyListAdapter : ListAdapter<PromiseUiState, PromiseDailyListAdap
 
     }
 
+    interface OnItemClickListener {
+        fun onItemClick(promise: PromiseUiState)
+    }
+
     companion object {
         val diffUtil = object : DiffUtil.ItemCallback<PromiseUiState>() {
-            override fun areItemsTheSame(oldItem: PromiseUiState, newItem: PromiseUiState): Boolean {
+            override fun areItemsTheSame(
+                oldItem: PromiseUiState,
+                newItem: PromiseUiState
+            ): Boolean {
                 return oldItem.promiseId == newItem.promiseId
             }
 
-            override fun areContentsTheSame(oldItem: PromiseUiState, newItem: PromiseUiState): Boolean {
+            override fun areContentsTheSame(
+                oldItem: PromiseUiState,
+                newItem: PromiseUiState
+            ): Boolean {
                 return oldItem == newItem
             }
         }
