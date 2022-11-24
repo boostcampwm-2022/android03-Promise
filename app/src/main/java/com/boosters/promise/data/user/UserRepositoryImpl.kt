@@ -23,15 +23,6 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getAllUsers(): Flow<List<User>> =
-        userRemoteDataSource.getAllUsers().mapNotNull { allUserBodyList ->
-            try {
-                allUserBodyList.map { it.toUser() }
-            } catch (e: NullPointerException) {
-                null
-            }
-        }
-
     override fun getUser(userCode: String): Flow<User> =
         userRemoteDataSource.getUser(userCode).mapNotNull { userBody ->
             try {
@@ -41,11 +32,16 @@ class UserRepositoryImpl @Inject constructor(
             }
         }
 
+    override fun getUserByName(userName: String): Flow<List<User>> =
+        userRemoteDataSource.getUserByName(userName).mapNotNull { userList ->
+            try {
+                userList.map { it.toUser() }
+            } catch (e: NullPointerException) {
+                null
+            }
+        }
+
     override fun getMyInfo(): Flow<Result<User>> =
         myInfoLocalDataSource.getMyInfo()
-
-    override suspend fun getUserList(userCodeList: List<String>): List<User> {
-        return userRemoteDataSource.getUserList(userCodeList).map { it.toUser() }
-    }
 
 }

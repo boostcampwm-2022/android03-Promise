@@ -9,15 +9,10 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.boosters.promise.R
 import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
-import com.boosters.promise.ui.promisesetting.PromiseSettingViewModel
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
 class NotificationService : FirebaseMessagingService() {
-
-    override fun onNewToken(token: String) {
-        super.onNewToken(token)
-    }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         if (remoteMessage.data.isNotEmpty()) {

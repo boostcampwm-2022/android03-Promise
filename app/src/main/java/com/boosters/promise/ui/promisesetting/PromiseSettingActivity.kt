@@ -1,9 +1,6 @@
 package com.boosters.promise.ui.promisesetting
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Build.VERSION
 import android.os.Bundle
 import android.text.format.DateFormat
@@ -12,7 +9,6 @@ import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ActivityPromiseSettingBinding

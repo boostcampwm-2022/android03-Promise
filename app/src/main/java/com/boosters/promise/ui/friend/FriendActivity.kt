@@ -40,7 +40,6 @@ class FriendActivity : AppCompatActivity() {
             setOnAddButtonClickListener(object : UserListAdapter.OnClickListener {
                 override fun onClick(user: User) {
                     friendViewModel.addFriend(user)
-                    friendViewModel.loadAllUsersList()
                 }
             })
         }
@@ -65,7 +64,7 @@ class FriendActivity : AppCompatActivity() {
                     }
                     ALLUSER_TAB_INDEX -> {
                         userListAdapter.setAddButtonVisible(true)
-                        friendViewModel.loadAllUsersList()
+                        friendViewModel.searchUser("")
                     }
                 }
             }
@@ -76,12 +75,15 @@ class FriendActivity : AppCompatActivity() {
         })
 
         binding.searchViewFriend.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean = false
-
-            override fun onQueryTextChange(query: String?): Boolean {
-                friendViewModel.searchUser(query.orEmpty())
-                return false
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                when (binding.tabFriend.selectedTabPosition) {
+                    FRIEND_TAB_INDEX -> friendViewModel.searchFriend(query.orEmpty())
+                    ALLUSER_TAB_INDEX -> friendViewModel.searchUser(query.orEmpty())
+                }
+                return true
             }
+
+            override fun onQueryTextChange(query: String?): Boolean = false
         })
     }
 

@@ -27,7 +27,7 @@ class PromiseSettingViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository,
     private val promiseRepository: PromiseRepository,
     private val userRepository: UserRepository,
-    private val serverKeyRepository: ServerKeyRepository,
+    private val serverKeyRepository: ServerKeyRepository
 ) : ViewModel() {
 
     private val _dialogEventFlow = MutableSharedFlow<PromiseSettingEvent>()
@@ -129,13 +129,18 @@ class PromiseSettingViewModel @Inject constructor(
                     .map { it.userCode }
             if (userCodeList.isEmpty()) return@launch
             val key = serverKeyRepository.getServerKey()
-            userRepository.getUserList(userCodeList).forEach { user ->
-                notificationRepository.sendNotification(
-                    _promiseUiState.value.title,
-                    _promiseUiState.value.date,
-                    user.userToken,
-                    key
-                )
+
+            userCodeList.forEach { userCode ->
+                launch {
+                    userRepository.getUser(userCode).first().run {
+                        notificationRepository.sendNotification(
+                            _promiseUiState.value.title,
+                            _promiseUiState.value.date,
+                            userToken,
+                            key
+                        )
+                    }
+                }
             }
             changeUiState(PromiseSettingUiState.Success)
         }

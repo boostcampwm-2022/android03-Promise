@@ -13,13 +13,11 @@ import javax.inject.Inject
 @HiltViewModel
 class FriendViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val friendRepository: FriendRepository,
+    private val friendRepository: FriendRepository
 ) : ViewModel() {
 
     private var _myInfo = User()
     val myInfo: User get() = _myInfo
-
-    private var allUserList: List<User> = emptyList()
 
     private val _usersList = MutableStateFlow(emptyList<User>())
     val usersList: StateFlow<List<User>> get() = _usersList.asStateFlow()
@@ -36,39 +34,41 @@ class FriendViewModel @Inject constructor(
     fun loadFriendsList() {
         viewModelScope.launch {
             _usersList.value = friendRepository.getFriends()
-            allUserList = _usersList.value
-        }
-    }
-
-    fun loadAllUsersList() {
-        viewModelScope.launch {
-            userRepository.getAllUsers().collectLatest { userList ->
-                val friendsCodeList = friendRepository.getFriends().map { friend ->
-                    friend.userCode
-                } + myInfo.userCode
-
-                _usersList.value = userList.filterNot { stranger ->
-                    stranger.userCode in friendsCodeList
-                }
-
-                allUserList = _usersList.value
-            }
         }
     }
 
     fun addFriend(user: User) {
         viewModelScope.launch {
             friendRepository.addFriend(user)
+            _usersList.update { beforeUserList ->
+                beforeUserList.filterNot { it.userCode == user.userCode }
+            }
+        }
+    }
+
+    fun searchFriend(query: String) {
+        viewModelScope.launch {
+            val allFriendList = _usersList.value
+
+            _usersList.value = if (query.matches(USER_CODE_REGEX)) allFriendList.filter { user ->
+                user.userCode.contains(query.removePrefix("#"))
+            } else allFriendList.filter { user ->
+                user.userName.contains(query)
+            }
         }
     }
 
     fun searchUser(query: String) {
         viewModelScope.launch {
-            _usersList.value = if (query.matches(USER_CODE_REGEX)) allUserList.filter { user ->
-                user.userCode.contains(query.removePrefix("#"))
-            } else allUserList.filter { user ->
-                user.userName.contains(query)
-            }
+            val filterUserCodeList = friendRepository.getFriends().map {
+                it.userCode
+            } + myInfo.userCode
+
+            val result = if (query.matches(USER_CODE_REGEX)) {
+                listOf(userRepository.getUser(query.removePrefix("#")).first())
+            } else userRepository.getUserByName(query).first()
+
+            _usersList.value = result.filterNot { it.userCode in filterUserCodeList }
         }
     }
 
