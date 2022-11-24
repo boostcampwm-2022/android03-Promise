@@ -144,7 +144,7 @@ class PromiseSettingViewModel @Inject constructor(
             userRepository.getUserList(userCodeList).forEach { user ->
                 notificationRepository.sendNotification(
                     _promiseUiState.value.title,
-                    _promiseUiState.value.date,
+                    _promiseUiState.value.toPromise(),
                     user.userToken,
                     key
                 )

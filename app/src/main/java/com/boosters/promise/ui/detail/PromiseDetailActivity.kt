@@ -44,7 +44,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         supportActionBar?.apply {
             setDisplayShowCustomEnabled(true)
             setDisplayShowTitleEnabled(false)
-            setDisplayHomeAsUpEnabled(true)
         }
 
         promiseDetailViewModel.isDeleted.observe(this) {
