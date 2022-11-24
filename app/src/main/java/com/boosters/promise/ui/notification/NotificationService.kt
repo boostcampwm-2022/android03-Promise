@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
+import androidx.core.app.TaskStackBuilder
 import com.boosters.promise.R
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.toPromiseUiState
@@ -34,10 +35,11 @@ class NotificationService : FirebaseMessagingService() {
 
         val intent = Intent(this, PromiseDetailActivity::class.java)
         intent.putExtra(PromiseCalendarActivity.PROMISE_INFO_KEY, promise.toPromiseUiState())
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
-        val pendingIntent =
-            PendingIntent.getActivity(this, uniId, intent, PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
+            addNextIntentWithParentStack(intent)
+            getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        }
 
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -51,10 +53,15 @@ class NotificationService : FirebaseMessagingService() {
         }
         notificationManager.createNotificationChannel(channel)
 
+        val contentText = if (remoteMessage.data[MESSAGE_TITLE] == NOTIFICATION_EDIT) {
+            String.format(getString(R.string.notification_edit), promise.date)
+        } else {
+            String.format(getString(R.string.notification_add), promise.date)
+        }
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(promise.title)
-            .setContentText(String.format(getString(R.string.promiseSetting_notification), promise.date))
+            .setContentText(contentText)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .setCategory(Notification.CATEGORY_MESSAGE)
@@ -63,9 +70,11 @@ class NotificationService : FirebaseMessagingService() {
     }
 
     companion object {
-        const val CHANNEL_ID = "my_channel"
-        const val CHANNEL_NAME = "Notice"
-        const val MESSAGE_BODY = "body"
+        private const val CHANNEL_ID = "my_channel"
+        private const val CHANNEL_NAME = "Notice"
+        private const val MESSAGE_BODY = "body"
+        private const val MESSAGE_TITLE = "title"
+        private const val NOTIFICATION_EDIT = "0"
     }
 
 }
