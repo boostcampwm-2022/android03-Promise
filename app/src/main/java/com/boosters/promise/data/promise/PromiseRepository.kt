@@ -7,7 +7,7 @@ interface PromiseRepository {
 
     fun addPromise(promise: Promise): Flow<Boolean>
 
-    fun removePromise(promise: Promise)
+    fun removePromise(promiseId: String): Flow<Boolean>
 
     suspend fun getPromiseList(myInfo: User, date: String): List<Promise>
 

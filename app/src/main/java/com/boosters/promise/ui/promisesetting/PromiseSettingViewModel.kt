@@ -76,7 +76,9 @@ class PromiseSettingViewModel @Inject constructor(
         }
         viewModelScope.launch {
             val members = promise.members.toMutableList()
-            members.add(myInfo.copy(userToken = "").toUserUiState())
+            if (promise.promiseId.isEmpty()) members.add(
+                myInfo.copy(userToken = "").toUserUiState()
+            )
             promiseRepository.addPromise(promise.copy(members = members).toPromise()).collect {
                 when (it) {
                     true -> sendNotification()
@@ -116,6 +118,13 @@ class PromiseSettingViewModel @Inject constructor(
         }
     }
 
+    fun initPromise(promise: PromiseUiState) {
+        _promiseUiState.update {
+            val members = promise.members.filter { user -> user.userCode != myInfo.userCode }
+            promise.copy(members = members)
+        }
+    }
+
     private fun changeUiState(state: PromiseSettingUiState) {
         viewModelScope.launch {
             _promiseSettingUiState.emit(state)
@@ -127,12 +136,15 @@ class PromiseSettingViewModel @Inject constructor(
             val userCodeList =
                 _promiseUiState.value.members.filter { it.userCode != myInfo.userCode }
                     .map { it.userCode }
-            if (userCodeList.isEmpty()) return@launch
+            if (userCodeList.isEmpty()) {
+                changeUiState(PromiseSettingUiState.Success)
+                return@launch
+            }
             val key = serverKeyRepository.getServerKey()
             userRepository.getUserList(userCodeList).forEach { user ->
                 notificationRepository.sendNotification(
                     _promiseUiState.value.title,
-                    _promiseUiState.value.date,
+                    _promiseUiState.value.toPromise(),
                     user.userToken,
                     key
                 )

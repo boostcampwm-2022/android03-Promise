@@ -24,6 +24,7 @@
             android:maxLines="1"
             android:maxLength="10"
             android:inputType="text"
+            android:text="@{promiseSettingViewModel.promiseUiState.title}"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintVertical_bias="0.0"
             app:layout_constraintBottom_toTopOf="@+id/textView_promiseSetting_promiseDate"
