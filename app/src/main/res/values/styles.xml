@@ -69,4 +69,8 @@
         <item name="android:textStyle">bold</item>
         <item name="backgroundTint">@color/pure_blue</item>
     </style>
+
+    <style name="Promise.ActionBar.TopAppBar" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/white</item>
+    </style>
 </resources>

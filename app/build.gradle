@@ -25,6 +25,7 @@ android {
 
         buildConfigField "String", "SEARCH_API_ID", properties['search_api.client_id']
         buildConfigField "String", "SEARCH_API_SECRET", properties['search_api.client_secret']
+        manifestPlaceholders = [MAP_API_ID: properties['map_api.client_id']]
     }
 
     buildTypes {
@@ -76,6 +77,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation platform('com.google.firebase:firebase-bom:31.0.2')
     implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-messaging-ktx'
 
     //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -91,6 +93,9 @@ dependencies {
 
     //material calendarview
     implementation 'com.github.prolificinteractive:material-calendarview:1.6.0'
+
+    //Naver Maps API
+    implementation 'com.naver.maps:map-sdk:3.16.0'
 }
 
 kapt {

@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.R
 import com.boosters.promise.data.model.Location
+import com.boosters.promise.data.notification.NotificationRepository
 import com.boosters.promise.data.promise.PromiseRepository
+import com.boosters.promise.data.promise.ServerKeyRepository
 import com.boosters.promise.data.user.User
 import com.boosters.promise.data.user.UserRepository
 import com.boosters.promise.data.user.toUserUiState
@@ -22,8 +24,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PromiseSettingViewModel @Inject constructor(
+    private val notificationRepository: NotificationRepository,
     private val promiseRepository: PromiseRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val serverKeyRepository: ServerKeyRepository,
 ) : ViewModel() {
 
     private val _dialogEventFlow = MutableSharedFlow<PromiseSettingEvent>()
@@ -33,9 +37,10 @@ class PromiseSettingViewModel @Inject constructor(
     val promiseUiState: StateFlow<PromiseUiState> = _promiseUiState.asStateFlow()
 
     private val _promiseSettingUiState = MutableSharedFlow<PromiseSettingUiState>()
-    val promiseSettingUiState: SharedFlow<PromiseSettingUiState> = _promiseSettingUiState.asSharedFlow()
+    val promiseSettingUiState: SharedFlow<PromiseSettingUiState> =
+        _promiseSettingUiState.asSharedFlow()
 
-    private val dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")
+    private val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT)
     private lateinit var myInfo: User
 
     init {
@@ -71,10 +76,10 @@ class PromiseSettingViewModel @Inject constructor(
         }
         viewModelScope.launch {
             val members = promise.members.toMutableList()
-            members.add(myInfo.toUserUiState())
+            members.add(myInfo.copy(userToken = "").toUserUiState())
             promiseRepository.addPromise(promise.copy(members = members).toPromise()).collect {
                 when (it) {
-                    true -> changeUiState(PromiseSettingUiState.Success)
+                    true -> sendNotification()
                     false -> changeUiState(PromiseSettingUiState.Fail(R.string.promiseSetting_fail))
                 }
             }
@@ -115,6 +120,29 @@ class PromiseSettingViewModel @Inject constructor(
         viewModelScope.launch {
             _promiseSettingUiState.emit(state)
         }
+    }
+
+    private fun sendNotification() {
+        viewModelScope.launch {
+            val userCodeList =
+                _promiseUiState.value.members.filter { it.userCode != myInfo.userCode }
+                    .map { it.userCode }
+            if (userCodeList.isEmpty()) return@launch
+            val key = serverKeyRepository.getServerKey()
+            userRepository.getUserList(userCodeList).forEach { user ->
+                notificationRepository.sendNotification(
+                    _promiseUiState.value.title,
+                    _promiseUiState.value.date,
+                    user.userToken,
+                    key
+                )
+            }
+            changeUiState(PromiseSettingUiState.Success)
+        }
+    }
+
+    companion object {
+        const val DATE_FORMAT = "yyyy/MM/dd HH:mm"
     }
 
 }

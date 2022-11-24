@@ -46,9 +46,11 @@ class InviteViewModel @Inject constructor(
     }
 
     fun addMemberItems(user: UserUiState) {
-        _currentMemberItems.value = currentMemberItems.value?.plusElement(user)
-        _currentFriendItems.value = currentFriendItems.value?.map {
-            if (it.userCode == user.userCode) it.copy(isSelected = true) else it
+        if (user.isSelected.not()) {
+            _currentMemberItems.value = currentMemberItems.value?.plusElement(user)
+            _currentFriendItems.value = currentFriendItems.value?.map {
+                if (it.userCode == user.userCode) it.copy(isSelected = true) else it
+            }
         }
     }
 
