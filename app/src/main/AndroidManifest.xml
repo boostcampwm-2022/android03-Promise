@@ -75,8 +75,6 @@
             </intent-filter>
         </service>
 
-            android:exported="true" />
-
         <service
             android:name=".service.LocationService"
             android:foregroundServiceType="location" />
