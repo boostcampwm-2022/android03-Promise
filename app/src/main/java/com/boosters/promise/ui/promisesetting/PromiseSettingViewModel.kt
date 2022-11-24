@@ -139,9 +139,14 @@ class PromiseSettingViewModel @Inject constructor(
                 return@launch
             }
             val key = serverKeyRepository.getServerKey()
+            val title = if (_promiseUiState.value.promiseId.isEmpty()) {
+                NOTIFICATION_ADD
+            } else {
+                NOTIFICATION_EDIT
+            }
             userRepository.getUserList(userCodeList).forEach { user ->
                 notificationRepository.sendNotification(
-                    _promiseUiState.value.title,
+                    title,
                     _promiseUiState.value.toPromise(),
                     user.userToken,
                     key
@@ -153,6 +158,8 @@ class PromiseSettingViewModel @Inject constructor(
 
     companion object {
         const val DATE_FORMAT = "yyyy/MM/dd HH:mm"
+        const val NOTIFICATION_EDIT = "0"
+        const val NOTIFICATION_ADD = "1"
     }
 
 }

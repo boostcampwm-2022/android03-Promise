@@ -35,7 +35,6 @@ class NotificationService : FirebaseMessagingService() {
 
         val intent = Intent(this, PromiseDetailActivity::class.java)
         intent.putExtra(PromiseCalendarActivity.PROMISE_INFO_KEY, promise.toPromiseUiState())
-        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
         val pendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
             addNextIntentWithParentStack(intent)
@@ -54,10 +53,15 @@ class NotificationService : FirebaseMessagingService() {
         }
         notificationManager.createNotificationChannel(channel)
 
+        val contentText = if (remoteMessage.data[MESSAGE_TITLE] == NOTIFICATION_EDIT) {
+            String.format(getString(R.string.notification_edit), promise.date)
+        } else {
+            String.format(getString(R.string.notification_add), promise.date)
+        }
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(promise.title)
-            .setContentText(String.format(getString(R.string.promiseSetting_notification), promise.date))
+            .setContentText(contentText)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .setCategory(Notification.CATEGORY_MESSAGE)
@@ -69,6 +73,8 @@ class NotificationService : FirebaseMessagingService() {
         const val CHANNEL_ID = "my_channel"
         const val CHANNEL_NAME = "Notice"
         const val MESSAGE_BODY = "body"
+        const val MESSAGE_TITLE = "title"
+        const val NOTIFICATION_EDIT = "0"
     }
 
 }
