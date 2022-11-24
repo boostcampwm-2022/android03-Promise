@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="default_horizontal_padding">30dp</dimen>
-    <dimen name="large">24dp</dimen>
-    <dimen name="big">20dp</dimen>
-    <dimen name="middle">14dp</dimen>
-    <dimen name="small">12dp</dimen>
+    <dimen name="large">24sp</dimen>
+    <dimen name="big">20sp</dimen>
+    <dimen name="middle">14sp</dimen>
+    <dimen name="small">12sp</dimen>
 </resources>

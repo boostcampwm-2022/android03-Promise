@@ -14,9 +14,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ActivityPromiseCalendarBinding
+import com.boosters.promise.ui.detail.PromiseDetailActivity
 import com.boosters.promise.ui.place.PlaceSearchViewModel
 import com.boosters.promise.ui.promisecalendar.adapter.PromiseDailyListAdapter
 import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
+import com.boosters.promise.ui.promisesetting.model.PromiseUiState
 import com.google.android.material.snackbar.Snackbar
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
@@ -67,6 +69,14 @@ class PromiseCalendarActivity : AppCompatActivity() {
         binding.buttonPromiseCalendarCreatePromise.setOnClickListener {
             startActivity(Intent(this, PromiseSettingActivity::class.java))
         }
+
+        promiseDailyListAdapter.setOnItemClickListener(object : PromiseDailyListAdapter.OnItemClickListener {
+            override fun onItemClick(promise: PromiseUiState) {
+                val intent = Intent(this@PromiseCalendarActivity, PromiseDetailActivity::class.java)
+                intent.putExtra(PROMISE_INFO_KEY, promise)
+                startActivity(intent)
+            }
+        })
     }
 
     override fun onRequestPermissionsResult(
@@ -117,6 +127,10 @@ class PromiseCalendarActivity : AppCompatActivity() {
                 )
             }
         }
+    }
+    
+    companion object {
+        const val PROMISE_INFO_KEY = "promise"
     }
 
 }

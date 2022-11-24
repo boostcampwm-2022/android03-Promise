@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.boosters.promise.ui.detail.PromiseDetailViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.detail.PromiseDetailActivity">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout_promiseDetail_appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:elevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/appBar_promiseDetail_appBar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:theme="@style/Promise.ActionBar.TopAppBar"
+                app:menu="@menu/menu_detail_appbar" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_promiseDetail_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.05" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_promiseDetail_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.95" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_promiseDetail_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.95" />
+
+        <TextView
+            android:id="@+id/textView_promiseDetail_promiseTitle"
+            style="@style/Promise.TextAppearance.LargeBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewModel.promiseInfo.title}"
+            app:layout_constraintBottom_toTopOf="@+id/textView_promiseDetail_location"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="@+id/guideline_promiseDetail_left"
+            app:layout_constraintTop_toBottomOf="@+id/appBarLayout_promiseDetail_appBar"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="부스터즈 모각코" />
+
+        <TextView
+            android:id="@+id/textView_promiseDetail_location"
+            style="@style/Promise.TextAppearance.MiddleBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/promiseDetail_location"
+            app:layout_constraintBottom_toTopOf="@+id/textView_promiseDetail_date"
+            app:layout_constraintEnd_toStartOf="@+id/textView_promiseDetail_promiseLocation"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@+id/textView_promiseDetail_promiseTitle"
+            app:layout_constraintTop_toBottomOf="@+id/textView_promiseDetail_promiseTitle" />
+
+        <TextView
+            android:id="@+id/textView_promiseDetail_promiseLocation"
+            style="@style/Promise.TextAppearance.MiddleNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@{viewModel.promiseInfo.destinationName}"
+            app:layout_constraintBottom_toBottomOf="@+id/textView_promiseDetail_location"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView_promiseDetail_location"
+            app:layout_constraintTop_toTopOf="@+id/textView_promiseDetail_location"
+            tools:text="홍대입구역 90번 출구" />
+
+        <TextView
+            android:id="@+id/textView_promiseDetail_date"
+            style="@style/Promise.TextAppearance.MiddleBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/promiseDetail_date"
+            app:layout_constraintBottom_toTopOf="@+id/fragment_promiseDetail_map"
+            app:layout_constraintEnd_toStartOf="@+id/textView_promiseDetail_promiseDate"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@+id/textView_promiseDetail_promiseTitle"
+            app:layout_constraintTop_toBottomOf="@+id/textView_promiseDetail_location" />
+
+        <TextView
+            android:id="@+id/textView_promiseDetail_promiseDate"
+            style="@style/Promise.TextAppearance.MiddleNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@{@string/promiseDetail_date_format(viewModel.promiseInfo.date, viewModel.promiseInfo.time)}"
+            app:layout_constraintBottom_toBottomOf="@+id/textView_promiseDetail_date"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView_promiseDetail_date"
+            app:layout_constraintTop_toTopOf="@+id/textView_promiseDetail_date"
+            tools:text="2022/11/23 17:00" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_promiseDetail_map"
+            android:name="com.naver.maps.map.MapFragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintBottom_toTopOf="@+id/recyclerView_promiseDetail_memberList"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_promiseDetail_right"
+            app:layout_constraintStart_toStartOf="@+id/guideline_promiseDetail_left"
+            app:layout_constraintTop_toBottomOf="@+id/textView_promiseDetail_date"
+            tools:background="@color/azure_radiance" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_promiseDetail_memberList"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@id/guideline_promiseDetail_bottom"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_promiseDetail_right"
+            app:layout_constraintStart_toStartOf="@+id/guideline_promiseDetail_left"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_promiseDetail_map"
+            tools:listitem="@layout/item_promise_detail_member" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
