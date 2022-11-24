@@ -1,16 +1,19 @@
 package com.boosters.promise.data.location
 
-import android.os.Looper
 import kotlinx.coroutines.flow.StateFlow
 
 interface LocationRepository {
 
     val isReceivingLocationUpdates: StateFlow<Boolean>
 
+    val isUploadMyLocation: StateFlow<Boolean>
+
     val lastGeoLocation: StateFlow<GeoLocation?>
 
-    fun startLocationUpdates(looper: Looper): Result<Unit>
+    fun startLocationUpdates(): Result<Unit>
 
     fun stopLocationUpdates()
+
+    fun setIsUploadMyLocation(isUploadMyLocation: Boolean)
 
 }
