@@ -1,4 +1,4 @@
-package com.boosters.promise.data.invite
+package com.boosters.promise.data.friend
 
 import com.boosters.promise.data.user.User
 

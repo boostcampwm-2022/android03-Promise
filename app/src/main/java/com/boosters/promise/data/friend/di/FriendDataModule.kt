@@ -1,13 +1,13 @@
-package com.boosters.promise.data.invite.di
+package com.boosters.promise.data.friend.di
 
 import android.content.Context
 import androidx.room.Room
 import com.boosters.promise.data.database.UserDataBase
-import com.boosters.promise.data.invite.FriendRepository
-import com.boosters.promise.data.invite.FriendRepositoryImpl
-import com.boosters.promise.data.invite.source.local.FriendLocalDataSource
-import com.boosters.promise.data.invite.source.local.FriendLocalDataSourceImpl
-import com.boosters.promise.data.invite.source.local.UserDao
+import com.boosters.promise.data.friend.FriendRepository
+import com.boosters.promise.data.friend.FriendRepositoryImpl
+import com.boosters.promise.data.friend.source.local.FriendLocalDataSource
+import com.boosters.promise.data.friend.source.local.FriendLocalDataSourceImpl
+import com.boosters.promise.data.friend.source.local.FriendDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,13 +17,13 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DataModule {
+object FriendDataModule {
 
     const val USER = "user"
 
     @Singleton
     @Provides
-    fun provideUserDao(userDataBase: UserDataBase): UserDao {
+    fun provideUserDao(userDataBase: UserDataBase): FriendDao {
         return userDataBase.userDao()
     }
 
@@ -39,8 +39,8 @@ object DataModule {
 
     @Singleton
     @Provides
-    fun provideFriendLocalDataSource(userDao: UserDao): FriendLocalDataSource {
-        return FriendLocalDataSourceImpl(userDao)
+    fun provideFriendLocalDataSource(friendDao: FriendDao): FriendLocalDataSource {
+        return FriendLocalDataSourceImpl(friendDao)
     }
 
     @Singleton

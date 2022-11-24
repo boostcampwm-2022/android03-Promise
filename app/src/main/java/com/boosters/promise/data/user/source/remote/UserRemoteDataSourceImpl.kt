@@ -54,15 +54,10 @@ class UserRemoteDataSourceImpl @Inject constructor(
         uploadMyGeoLocation(userCode, null)
     }
 
-    override suspend fun getUserList(userCodeList: List<String>): List<UserBody> {
-        val task = userCollectionReference
-            .whereIn(USER_CODE_KEY, userCodeList)
-            .get()
-        task.await()
-        return task.result.documents.mapNotNull {
-            it.toObject(UserBody::class.java)
+    override suspend fun getUserList(userCodeList: List<String>): Flow<List<UserBody>> =
+        userCollectionReference.whereIn(USER_CODE_KEY, userCodeList).snapshots().mapNotNull {
+            it.toObjects(UserBody::class.java)
         }
-    }
 
     override fun getUserByName(userName: String): Flow<List<UserBody>> =
         userCollectionReference.whereEqualTo(USER_NAME_KEY, userName).snapshots().mapNotNull {

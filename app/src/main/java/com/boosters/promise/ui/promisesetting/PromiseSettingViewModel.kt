@@ -5,16 +5,15 @@ import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.R
 import com.boosters.promise.data.notification.NotificationRepository
+import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.promise.ServerKeyRepository
 import com.boosters.promise.data.user.User
 import com.boosters.promise.data.user.UserRepository
-import com.boosters.promise.data.user.toUserUiState
-import com.boosters.promise.ui.invite.model.UserUiState
+import com.boosters.promise.ui.invite.model.UserUiModel
+import com.boosters.promise.ui.invite.model.toUser
 import com.boosters.promise.ui.promisesetting.model.PromiseSettingEvent
 import com.boosters.promise.ui.promisesetting.model.PromiseSettingUiState
-import com.boosters.promise.ui.promisesetting.model.PromiseUiState
-import com.boosters.promise.ui.promisesetting.model.toPromise
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -33,8 +32,8 @@ class PromiseSettingViewModel @Inject constructor(
     private val _dialogEventFlow = MutableSharedFlow<PromiseSettingEvent>()
     val dialogEventFlow: SharedFlow<PromiseSettingEvent> = _dialogEventFlow.asSharedFlow()
 
-    private val _promiseUiState = MutableStateFlow(PromiseUiState())
-    val promiseUiState: StateFlow<PromiseUiState> = _promiseUiState.asStateFlow()
+    private val _promiseUiState = MutableStateFlow(Promise())
+    val promiseUiState: StateFlow<Promise> = _promiseUiState.asStateFlow()
 
     private val _promiseSettingUiState = MutableSharedFlow<PromiseSettingUiState>()
     val promiseSettingUiState: SharedFlow<PromiseSettingUiState> =
@@ -51,13 +50,17 @@ class PromiseSettingViewModel @Inject constructor(
         }
     }
 
-    fun updateMember(newMemberList: List<UserUiState>) {
+    fun updateMember(newMemberList: List<UserUiModel>) {
         _promiseUiState.update {
-            it.copy(members = newMemberList)
+            it.copy(
+                members = newMemberList.map { userUiModel ->
+                    userUiModel.toUser()
+                }
+            )
         }
     }
 
-    fun removeMember(removeMember: UserUiState) {
+    fun removeMember(removeMember: UserUiModel) {
         _promiseUiState.update {
             it.copy(members = it.members.filter { member -> member.userCode != removeMember.userCode })
         }
@@ -76,8 +79,8 @@ class PromiseSettingViewModel @Inject constructor(
         }
         viewModelScope.launch {
             val members = promise.members.toMutableList()
-            members.add(myInfo.copy(userToken = "").toUserUiState())
-            promiseRepository.addPromise(promise.copy(members = members).toPromise()).collect {
+            members.add(myInfo.copy(userToken = ""))
+            promiseRepository.addPromise(promise.copy(members = members)).collect {
                 when (it) {
                     true -> sendNotification()
                     false -> changeUiState(PromiseSettingUiState.Fail(R.string.promiseSetting_fail))
@@ -106,7 +109,10 @@ class PromiseSettingViewModel @Inject constructor(
 
     fun setPromiseDestination(destinationName: String, destinationGeoLocation: GeoLocation) {
         _promiseUiState.update {
-            it.copy(destinationName = destinationName, destinationGeoLocation = destinationGeoLocation)
+            it.copy(
+                destinationName = destinationName,
+                destinationGeoLocation = destinationGeoLocation
+            )
         }
     }
 
@@ -116,7 +122,7 @@ class PromiseSettingViewModel @Inject constructor(
         }
     }
 
-    fun initPromise(promise: PromiseUiState) {
+    fun initPromise(promise: Promise) {
         _promiseUiState.update {
             val members = promise.members.filter { user -> user.userCode != myInfo.userCode }
             promise.copy(members = members)
@@ -139,23 +145,24 @@ class PromiseSettingViewModel @Inject constructor(
                 return@launch
             }
             val key = serverKeyRepository.getServerKey()
-            
+
             val title = if (_promiseUiState.value.promiseId.isEmpty()) {
                 NOTIFICATION_ADD
             } else {
                 NOTIFICATION_EDIT
             }
 
-            userRepository.getUserList(userCodeList).forEach { user ->
-                notificationRepository.sendNotification(
-                    title,
-                    _promiseUiState.value.toPromise(),
-                    user.userToken,
-                    key
-                )
+            userRepository.getUserList(userCodeList).collectLatest {
+                it.forEach { user ->
+                    notificationRepository.sendNotification(
+                        title,
+                        _promiseUiState.value,
+                        user.userToken,
+                        key
+                    )
+                }
+                changeUiState(PromiseSettingUiState.Success)
             }
-            
-            changeUiState(PromiseSettingUiState.Success)
         }
     }
 

@@ -5,10 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.boosters.promise.databinding.ItemInviteMemberBinding
-import com.boosters.promise.ui.invite.model.UserUiState
+import com.boosters.promise.ui.invite.model.UserUiModel
 
-class InviteMemberAdapter : ListAdapter<UserUiState, InviteMemberAdapter.InviteMemberViewHolder>(
-    UserDiffItemCallback
+class InviteMemberAdapter : ListAdapter<UserUiModel, InviteMemberAdapter.InviteMemberViewHolder>(
+    UserUiModelDiffItemCallback
 ) {
 
     private var onItemClickListener: OnItemClickListener? = null
@@ -39,13 +39,13 @@ class InviteMemberAdapter : ListAdapter<UserUiState, InviteMemberAdapter.InviteM
         private val binding: ItemInviteMemberBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(userUiState: UserUiState) {
-            binding.user = userUiState
+        fun bind(userUiModel: UserUiModel) {
+            binding.user = userUiModel
         }
     }
 
     interface OnItemClickListener {
-        fun onItemClick(user: UserUiState)
+        fun onItemClick(user: UserUiModel)
     }
 
 }

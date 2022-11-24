@@ -5,7 +5,7 @@
     <data>
         <variable
             name="userUiState"
-            type="com.boosters.promise.ui.invite.model.UserUiState" />
+            type="com.boosters.promise.ui.invite.model.UserUiModel" />
     </data>
 
     <com.google.android.material.chip.Chip

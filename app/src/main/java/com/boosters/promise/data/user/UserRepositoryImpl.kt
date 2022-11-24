@@ -58,8 +58,13 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getUserList(userCodeList: List<String>): List<User> {
-        return userRemoteDataSource.getUserList(userCodeList).map { it.toUser() }
-    }
+    override suspend fun getUserList(userCodeList: List<String>): Flow<List<User>> =
+        userRemoteDataSource.getUserList(userCodeList).mapNotNull { userList ->
+            try {
+                userList.map { it.toUser() }
+            } catch (e: NullPointerException) {
+                null
+            }
+        }
 
 }

@@ -1,25 +1,28 @@
 package com.boosters.promise.data.user
 
+import android.os.Parcelable
 import com.boosters.promise.data.location.GeoLocation
-import com.boosters.promise.data.invite.source.local.UserEntity
-import com.boosters.promise.ui.invite.model.UserUiState
+import com.boosters.promise.data.friend.source.local.FriendEntity
+import com.boosters.promise.ui.invite.model.UserUiModel
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class User(
     val userCode: String = "",
     val userName: String = "",
     val geoLocation: GeoLocation? = null,
     val userToken: String = ""
-)
+) : Parcelable
 
-fun User.toUserUiState() =
-    UserUiState(
+fun User.toUserUiModel() =
+    UserUiModel(
         userName = userName,
         userCode = userCode,
         userToken = userToken
     )
 
-fun User.toUserEntity() =
-    UserEntity(
+fun User.toFriendEntity() =
+    FriendEntity(
         userName = userName,
         userCode = userCode
     )

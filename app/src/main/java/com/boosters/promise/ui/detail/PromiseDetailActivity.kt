@@ -1,30 +1,36 @@
 package com.boosters.promise.ui.detail
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.boosters.promise.R
-import com.boosters.promise.data.location.GeoLocation
+import com.boosters.promise.data.location.toLatLng
 import com.boosters.promise.databinding.ActivityPromiseDetailBinding
+import com.boosters.promise.service.LocationService
 import com.boosters.promise.ui.detail.adapter.PromiseMemberAdapter
 import com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity
 import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
-import com.boosters.promise.ui.promisesetting.model.PromiseUiState
 import com.google.android.material.snackbar.Snackbar
 import com.naver.maps.geometry.LatLng
-import com.naver.maps.geometry.Tm128
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import android.Manifest.permission
+import android.graphics.Color
 
 @AndroidEntryPoint
 class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -33,10 +39,21 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private val promiseDetailViewModel: PromiseDetailViewModel by viewModels()
     private val promiseMemberAdapter = PromiseMemberAdapter()
 
+    private val destinationMarker = Marker()
+
+    private val localPermissions = arrayOf(
+        permission.ACCESS_COARSE_LOCATION,
+        permission.ACCESS_FINE_LOCATION
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_promise_detail)
         setBinding()
+
+        requestPermission()
+
         initMap()
         setPromiseInfo()
 
@@ -70,7 +87,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         when (item.itemId) {
             R.id.item_detail_edit -> {
                 val intent = Intent(this, PromiseSettingActivity::class.java).putExtra(
-                    PROMISE_INFO_KEY,
+                    PROMISE_ID_KEY,
                     promiseDetailViewModel.promiseInfo.value
                 )
                 startActivity(intent)
@@ -90,14 +107,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun setPromiseInfo() {
-        val promise = if (Build.VERSION.SDK_INT < 33) {
-            intent.getParcelableExtra(PROMISE_INFO_KEY)
-        } else {
-            intent.getParcelableExtra(PROMISE_INFO_KEY, PromiseUiState::class.java)
-        }
-
-        if (promise != null) {
-            promiseDetailViewModel.setPromiseInfo(promise)
+        intent.getStringExtra(PROMISE_ID_KEY)?.let { promiseId ->
+            promiseDetailViewModel.setPromiseInfo(promiseId)
         }
     }
 
@@ -111,14 +122,22 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun setObserver(map: NaverMap) {
-        promiseDetailViewModel.promiseInfo.observe(this) { promise ->
-            promiseMemberAdapter.submitList(promise.members)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                promiseDetailViewModel.promiseInfo.collectLatest { promise ->
+                    launch {
+                        promiseMemberAdapter.submitList(promise.members)
+                    }
 
-            val location = promise.destinationGeoLocation
-            val destinationLocation = convertLocation(location)
+                    launch {
+                        val destinationLocation = promise.destinationGeoLocation.toLatLng()
 
-            moveCameraToDestination(destinationLocation, map)
-            markDestinationOnMap(destinationLocation, map)
+                        moveCameraToDestination(destinationLocation, map)
+                        markDestinationOnMap(destinationLocation, map)
+                        markUserLocationOnMap(map)
+                    }
+                }
+            }
         }
     }
 
@@ -128,15 +147,26 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun markDestinationOnMap(location: LatLng, map: NaverMap) {
-        marker.apply {
+        destinationMarker.apply {
             position = location
             this.map = map
         }
     }
 
-    private fun convertLocation(location: GeoLocation): LatLng {
-        val tm128Location = Tm128(location.latitude, location.longitude)
-        return tm128Location.toLatLng()
+    private suspend fun markUserLocationOnMap(map: NaverMap) {
+        lifecycleScope.launch {
+            promiseDetailViewModel.memberLocations.collectLatest {
+                it.forEachIndexed { idx, memberLocation ->
+                    if (memberLocation != null) {
+                        promiseDetailViewModel.memberMarkers[idx].apply {
+                            iconTintColor = Color.BLUE
+                            position = memberLocation.toLatLng()
+                            this.map = map
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun showStateSnackbar(message: Int) {
@@ -159,9 +189,26 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             .show()
     }
 
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            localPermissions.fold(false) { acc, localPermission ->
+                acc || permissions.getOrDefault(localPermission, false)
+            }.let { isLocalPermissionGranted ->
+                if (isLocalPermissionGranted) {
+                    promiseDetailViewModel.setIsUploadMyLocation(true)
+                    startForegroundService(Intent(this, LocationService::class.java))
+                } else {
+                    promiseDetailViewModel.setIsUploadMyLocation(false)
+                }
+            }
+        }
+
+    private fun requestPermission() {
+        requestPermissionLauncher.launch(localPermissions)
+    }
+
     companion object {
-        const val PROMISE_INFO_KEY = "promise"
-        val marker = Marker()
+        const val PROMISE_ID_KEY = "promiseId"
     }
 
 }

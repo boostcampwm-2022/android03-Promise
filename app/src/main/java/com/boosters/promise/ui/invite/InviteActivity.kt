@@ -10,7 +10,7 @@ import com.boosters.promise.R
 import com.boosters.promise.databinding.ActivityInviteBinding
 import com.boosters.promise.ui.invite.adapter.FriendAdapter
 import com.boosters.promise.ui.invite.adapter.InviteMemberAdapter
-import com.boosters.promise.ui.invite.model.UserUiState
+import com.boosters.promise.ui.invite.model.UserUiModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -58,7 +58,7 @@ class InviteActivity : AppCompatActivity() {
 
     private fun setFriendItemClickListener() {
         friendAdapter.setOnItemClickListener(object : FriendAdapter.OnItemClickListener {
-            override fun onItemClick(user: UserUiState, pos: Int) {
+            override fun onItemClick(user: UserUiModel, pos: Int) {
                 inviteViewModel.addMemberItems(user)
             }
         })
@@ -66,7 +66,7 @@ class InviteActivity : AppCompatActivity() {
 
     private fun setMemberItemClickListener() {
         inviteMemberAdapter.setOnItemClickListener(object : InviteMemberAdapter.OnItemClickListener {
-            override fun onItemClick(user: UserUiState) {
+            override fun onItemClick(user: UserUiModel) {
                 inviteViewModel.removeMemberItems(user)
             }
         })
@@ -87,7 +87,7 @@ class InviteActivity : AppCompatActivity() {
         val memberItems = if (Build.VERSION.SDK_INT < 33) {
             intent.getParcelableArrayListExtra(MEMBER_LIST_KEY)
         } else {
-            intent.getParcelableArrayListExtra(MEMBER_LIST_KEY, UserUiState::class.java)
+            intent.getParcelableArrayListExtra(MEMBER_LIST_KEY, UserUiModel::class.java)
         }
 
         inviteViewModel.initMemberItems(memberItems)

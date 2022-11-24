@@ -13,13 +13,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.boosters.promise.R
+import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.databinding.ActivityPromiseCalendarBinding
 import com.boosters.promise.ui.friend.FriendActivity
 import com.boosters.promise.ui.detail.PromiseDetailActivity
 import com.boosters.promise.ui.place.PlaceSearchViewModel
 import com.boosters.promise.ui.promisecalendar.adapter.PromiseDailyListAdapter
 import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
-import com.boosters.promise.ui.promisesetting.model.PromiseUiState
 import com.google.android.material.snackbar.Snackbar
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
@@ -76,9 +76,9 @@ class PromiseCalendarActivity : AppCompatActivity() {
         }
 
         promiseDailyListAdapter.setOnItemClickListener(object : PromiseDailyListAdapter.OnItemClickListener {
-            override fun onItemClick(promise: PromiseUiState) {
+            override fun onItemClick(promise: Promise) {
                 val intent = Intent(this@PromiseCalendarActivity, PromiseDetailActivity::class.java)
-                intent.putExtra(PROMISE_INFO_KEY, promise)
+                intent.putExtra(PROMISE_ID_KEY, promise.promiseId)
                 startActivity(intent)
             }
         })
@@ -133,9 +133,9 @@ class PromiseCalendarActivity : AppCompatActivity() {
             }
         }
     }
-    
+
     companion object {
-        const val PROMISE_INFO_KEY = "promise"
+        const val PROMISE_ID_KEY = "promiseId"
     }
 
 }

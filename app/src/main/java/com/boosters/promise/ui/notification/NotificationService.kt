@@ -10,7 +10,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
 import com.boosters.promise.R
 import com.boosters.promise.data.promise.Promise
-import com.boosters.promise.data.promise.toPromiseUiState
 import com.boosters.promise.ui.detail.PromiseDetailActivity
 import com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -30,7 +29,7 @@ class NotificationService : FirebaseMessagingService() {
         val promise = Gson().fromJson(remoteMessage.data[MESSAGE_BODY], Promise::class.java)
 
         val intent = Intent(this, PromiseDetailActivity::class.java)
-        intent.putExtra(PromiseCalendarActivity.PROMISE_INFO_KEY, promise.toPromiseUiState())
+        intent.putExtra(PromiseCalendarActivity.PROMISE_ID_KEY, promise)
 
         val pendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
             addNextIntentWithParentStack(intent)
