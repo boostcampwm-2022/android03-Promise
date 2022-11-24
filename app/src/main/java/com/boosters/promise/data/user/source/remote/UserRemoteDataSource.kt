@@ -1,5 +1,6 @@
 package com.boosters.promise.data.user.source.remote
 
+import com.boosters.promise.data.location.GeoLocation
 import kotlinx.coroutines.flow.Flow
 
 interface UserRemoteDataSource {
@@ -12,7 +13,7 @@ interface UserRemoteDataSource {
 
     suspend fun resetMyGeoLocation(userCode: String)
 
-    suspend fun getUserList(userCodeList: List<String>): List<UserBody>
+    suspend fun getUserList(userCodeList: List<String>): Flow<List<UserBody>>
 
     fun getUserByName(userName: String): Flow<List<UserBody>>
 

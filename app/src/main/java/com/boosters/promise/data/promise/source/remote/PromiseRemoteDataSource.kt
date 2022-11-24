@@ -9,6 +9,8 @@ interface PromiseRemoteDataSource {
 
     fun removePromise(promiseId: String): Flow<Boolean>
 
+    fun getPromise(promiseId: String): Flow<PromiseBody>
+
     suspend fun getPromiseList(user: User, date: String): List<PromiseBody>
 
 }

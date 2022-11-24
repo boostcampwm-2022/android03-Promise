@@ -17,6 +17,6 @@ interface UserRepository {
 
     suspend fun resetMyGeoLocation()
 
-    suspend fun getUserList(userCodeList: List<String>): List<User>
+    suspend fun getUserList(userCodeList: List<String>): Flow<List<User>>
 
 }

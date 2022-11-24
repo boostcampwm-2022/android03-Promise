@@ -4,6 +4,7 @@ import com.boosters.promise.data.promise.source.remote.PromiseRemoteDataSource
 import com.boosters.promise.data.promise.source.remote.toPromise
 import com.boosters.promise.data.user.User
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.mapNotNull
 import javax.inject.Inject
 
 class PromiseRepositoryImpl @Inject constructor(
@@ -16,6 +17,10 @@ class PromiseRepositoryImpl @Inject constructor(
 
     override fun removePromise(promiseId: String): Flow<Boolean> {
         return promiseRemoteDataSource.removePromise(promiseId)
+    }
+
+    override fun getPromise(promiseId: String): Flow<Promise> {
+        return promiseRemoteDataSource.getPromise(promiseId).mapNotNull { it.toPromise() }
     }
 
     override suspend fun getPromiseList(myInfo: User, date: String): List<Promise> {
