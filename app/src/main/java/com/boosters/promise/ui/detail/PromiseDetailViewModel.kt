@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boosters.promise.data.location.LocationRepository
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.user.UserRepository
@@ -18,8 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PromiseDetailViewModel @Inject constructor(
     private val promiseRepository: PromiseRepository,
-    private val userRepository: UserRepository,
-    private val locationRepository: LocationRepository
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _promiseInfo = MutableStateFlow(Promise())
@@ -52,10 +50,6 @@ class PromiseDetailViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    fun setIsUploadMyLocation(isUploadMyLocation: Boolean) {
-        locationRepository.setIsUploadMyLocation(isUploadMyLocation)
     }
 
 }

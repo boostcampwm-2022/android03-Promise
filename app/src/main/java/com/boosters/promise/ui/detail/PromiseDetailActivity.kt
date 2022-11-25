@@ -15,7 +15,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.boosters.promise.R
 import com.boosters.promise.data.location.toLatLng
 import com.boosters.promise.databinding.ActivityPromiseDetailBinding
-import com.boosters.promise.service.LocationService
 import com.boosters.promise.ui.detail.adapter.PromiseMemberAdapter
 import com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity
 import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
@@ -30,7 +29,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import android.Manifest.permission
+import android.content.pm.PackageManager
 import android.graphics.Color
+import com.boosters.promise.service.locationupload.LocationUploadForegroundService
+import com.boosters.promise.service.locationupload.LocationUploadServiceConnection
 
 @AndroidEntryPoint
 class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -41,18 +43,27 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private val destinationMarker = Marker()
 
-    private val localPermissions = arrayOf(
+    private val locationPermissions = arrayOf(
         permission.ACCESS_COARSE_LOCATION,
         permission.ACCESS_FINE_LOCATION
     )
+    private val requestLocationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            val locationPermissionCheckResult = locationPermissions.map {
+                permissions.getOrDefault(it, false)
+            }
+            if (isLocationPermissionGranted(locationPermissionCheckResult)) {
+                startLocationUploadService()
+            }
+        }
+
+    private val locationUploadServiceConnection = LocationUploadServiceConnection()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_promise_detail)
         setBinding()
-
-        requestPermission()
 
         initMap()
         setPromiseInfo()
@@ -72,6 +83,16 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 showStateSnackbar(R.string.promiseDetail_delete_ask)
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (checkLocationPermission()) startLocationUploadService() else requestPermission()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unbindService(locationUploadServiceConnection)
     }
 
     override fun onMapReady(map: NaverMap) {
@@ -189,26 +210,34 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             .show()
     }
 
-    private val requestPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-            localPermissions.fold(false) { acc, localPermission ->
-                acc || permissions.getOrDefault(localPermission, false)
-            }.let { isLocalPermissionGranted ->
-                if (isLocalPermissionGranted) {
-                    promiseDetailViewModel.setIsUploadMyLocation(true)
-                    startForegroundService(Intent(this, LocationService::class.java))
-                } else {
-                    promiseDetailViewModel.setIsUploadMyLocation(false)
-                }
-            }
+    private fun startLocationUploadService() {
+        val intent = Intent(this, LocationUploadForegroundService::class.java).apply {
+            putExtra(LocationUploadForegroundService.END_TIME_KEY, DEFAULT_LOCATION_UPLOAD_END_TIME)
         }
+        bindService(intent, locationUploadServiceConnection, BIND_AUTO_CREATE)
+    }
+
+    private fun checkLocationPermission(): Boolean {
+        val locationPermissionCheckResult = locationPermissions.map {
+            checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
+        }
+        return isLocationPermissionGranted(locationPermissionCheckResult)
+    }
 
     private fun requestPermission() {
-        requestPermissionLauncher.launch(localPermissions)
+        requestLocationPermissionLauncher.launch(locationPermissions)
+    }
+
+    private fun isLocationPermissionGranted(permissionCheckResult: List<Boolean>): Boolean {
+        return permissionCheckResult.fold(false) { acc, locationPermission ->
+            acc || locationPermission
+        }
     }
 
     companion object {
         const val PROMISE_ID_KEY = "promiseId"
+
+        private const val DEFAULT_LOCATION_UPLOAD_END_TIME = 90_000L
     }
 
 }
