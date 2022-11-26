@@ -3,9 +3,8 @@ package com.boosters.promise.service.locationupload
 import android.content.ComponentName
 import android.content.ServiceConnection
 import android.os.IBinder
-import javax.inject.Inject
 
-class LocationUploadServiceConnection @Inject constructor() : ServiceConnection {
+class LocationUploadServiceConnection : ServiceConnection {
 
     var locationUploadService: LocationUploadService? = null
         private set
