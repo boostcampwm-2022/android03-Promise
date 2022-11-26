@@ -76,7 +76,8 @@
         </service>
 
         <service
-            android:name=".service.LocationService"
+            android:name=".service.locationupload.LocationUploadForegroundService"
+            android:exported="false"
             android:foregroundServiceType="location" />
     </application>
 

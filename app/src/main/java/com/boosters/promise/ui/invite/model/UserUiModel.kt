@@ -19,5 +19,5 @@ fun UserUiModel.toUser() =
         userName = userName,
         userCode = userCode,
         userToken = userToken,
-        geoLocation = userLocation ?: GeoLocation(0.0, 0.0)
+        geoLocation = userLocation
     )

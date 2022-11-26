@@ -13,7 +13,7 @@ interface UserRepository {
 
     fun getMyInfo(): Flow<Result<User>>
 
-    suspend fun uploadMyGeoLocation(geoLocation: GeoLocation?): Result<Unit>
+    suspend fun uploadMyGeoLocation(geoLocation: GeoLocation): Result<Unit>
 
     suspend fun resetMyGeoLocation()
 

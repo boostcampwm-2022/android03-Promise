@@ -6,6 +6,7 @@ import com.google.android.gms.location.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,14 +15,11 @@ class LocationRepositoryImpl @Inject constructor(
     private val fusedLocationProviderClient: FusedLocationProviderClient
 ) : LocationRepository {
 
-    private val _isReceivingLocationUpdates = MutableStateFlow(false)
-    override val isReceivingLocationUpdates: StateFlow<Boolean> = _isReceivingLocationUpdates.asStateFlow()
+    private val _locationUpdateRequestCount = MutableStateFlow(0)
+    override val locationUpdateRequestCount: StateFlow<Int> = _locationUpdateRequestCount
 
     private val _lastGeoLocation = MutableStateFlow<GeoLocation?>(null)
     override val lastGeoLocation: StateFlow<GeoLocation?> = _lastGeoLocation.asStateFlow()
-
-    private val _isUploadMyLocation = MutableStateFlow(false)
-    override val isUploadMyLocation: StateFlow<Boolean> = _isUploadMyLocation.asStateFlow()
 
     val callback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
@@ -32,7 +30,10 @@ class LocationRepositoryImpl @Inject constructor(
     }
 
     override fun startLocationUpdates(): Result<Unit> = runCatching {
-        if (isReceivingLocationUpdates.value) return Result.success(Unit)
+        if (locationUpdateRequestCount.value > 0) {
+            _locationUpdateRequestCount.update { locationUpdateRequestCount.value + 1 }
+            return Result.success(Unit)
+        }
 
         val looper = HandlerThread(LOCATION_UPDATES_HANDLER_NAME).apply { start() }.looper
         val request = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, INTERVAL_MILLIS)
@@ -48,17 +49,17 @@ class LocationRepositoryImpl @Inject constructor(
         } catch (e: SecurityException) {
             throw e
         }
-        _isReceivingLocationUpdates.value = true
+
+        _locationUpdateRequestCount.update { locationUpdateRequestCount.value + 1 }
     }
 
     override fun stopLocationUpdates() {
-        fusedLocationProviderClient.removeLocationUpdates(callback)
-        _isReceivingLocationUpdates.value = false
-        _lastGeoLocation.value = null
-    }
+        _locationUpdateRequestCount.update { locationUpdateRequestCount.value - 1 }
 
-    override fun setIsUploadMyLocation(isUploadMyLocation: Boolean) {
-        _isUploadMyLocation.value = isUploadMyLocation
+        if (locationUpdateRequestCount.value < 1) {
+            fusedLocationProviderClient.removeLocationUpdates(callback)
+            _lastGeoLocation.value = null
+        }
     }
 
     private fun Location.toGeoLocation() =
