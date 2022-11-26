@@ -35,7 +35,7 @@ class LocationUploadForegroundService : LifecycleService(), LocationUploadServic
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.getLongExtra(END_TIME_KEY, DEFAULT_SERVICE_END_DELAY)?.let { endTime ->
             setServiceEndTime(endTime)
-        }
+        } ?: setServiceEndTime(DEFAULT_SERVICE_END_DELAY)
 
         if (isStartForegroundService.not()) {
             isStartForegroundService = true
@@ -63,10 +63,15 @@ class LocationUploadForegroundService : LifecycleService(), LocationUploadServic
     }
 
     override fun setServiceEndTime(delayMillis: Long) {
-        serviceEndTime = SystemClock.uptimeMillis() + delayMillis
+        if (delayMillis <= 1_000) {
+            stopService()
+            return
+        }
 
-        alarmHandler.removeCallbacksAndMessages(null)
-        alarmHandler.postAtTime({ stopService() }, serviceEndTime)
+        val newServiceEndTime = SystemClock.uptimeMillis() + delayMillis
+        alarmHandler.removeCallbacksAndMessages(SERVICE_END_TOKEN)
+        alarmHandler.postAtTime({ stopService() }, SERVICE_END_TOKEN, newServiceEndTime)
+        serviceEndTime = newServiceEndTime
     }
 
     override fun getServiceEndTime(): Long {
@@ -114,6 +119,7 @@ class LocationUploadForegroundService : LifecycleService(), LocationUploadServic
     companion object {
         private const val ALARM_HANDLER_NAME = "alarmHandlerName"
         private const val DEFAULT_SERVICE_END_DELAY = 60_000L
+        private const val SERVICE_END_TOKEN = "serviceEndToken"
 
         private const val FOREGROUND_NOTIFICATION_ID = 5138
         private const val FOREGROUND_CHANNEL_ID = "foregroundChannelId"
