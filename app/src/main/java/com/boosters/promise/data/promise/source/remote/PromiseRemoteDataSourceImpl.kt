@@ -7,7 +7,6 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class PromiseRemoteDataSourceImpl @Inject constructor(
