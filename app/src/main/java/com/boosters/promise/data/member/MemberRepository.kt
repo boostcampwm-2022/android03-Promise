@@ -6,8 +6,10 @@ interface MemberRepository {
 
     fun initMember(promiseId: String, userCodes: List<String>): Result<Unit>
 
-    fun updateIsAcceptLocation(member: Member): Result<Unit>
-
     fun getMembers(promiseId: String): Flow<List<Member>>
+
+    suspend fun updateIsAcceptLocation(member: Member): Result<Unit>
+
+    suspend fun getIsAcceptLocation(promiseId: String): Flow<Result<Boolean>>
 
 }
