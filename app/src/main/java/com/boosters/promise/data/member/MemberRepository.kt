@@ -14,6 +14,6 @@ interface MemberRepository {
 
     suspend fun removeIsAcceptLocation(promiseId: String)
 
-    suspend fun getIsAcceptLocation(promiseId: String): Flow<Result<Boolean>>
+    fun getIsAcceptLocation(promiseId: String): Flow<Result<Boolean>>
 
 }
