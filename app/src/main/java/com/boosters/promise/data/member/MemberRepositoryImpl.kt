@@ -30,6 +30,10 @@ class MemberRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun addIsAcceptLocation(promiseId: String) {
+        locationSharingPermissionLocalDataSource.saveLocationSharingPermission(promiseId, false)
+    }
+
     override suspend fun updateIsAcceptLocation(member: Member): Result<Unit> =
         memberRemoteDataSource.updateIsAcceptLocation(member.toMemberBody()).mapCatching {
             locationSharingPermissionLocalDataSource.saveLocationSharingPermission(member.promiseId, member.isAcceptLocation)
