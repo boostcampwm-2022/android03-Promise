@@ -24,6 +24,12 @@ class LocationSharingPermissionLocalDataSource @Inject constructor(
         }
     }
 
+    suspend fun removeLocationSharingPermission(promiseId: String) {
+        locationSharingPermissionPreferences.edit { preferences ->
+            preferences.remove(booleanPreferencesKey(promiseId))
+        }
+    }
+
     fun getLocationSharingPermission(promiseId: String): Flow<Result<Boolean>> =
         locationSharingPermissionPreferences.data.catch { exception ->
             if (exception is IOException) emit(emptyPreferences())

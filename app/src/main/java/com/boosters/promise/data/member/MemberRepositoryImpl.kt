@@ -35,6 +35,10 @@ class MemberRepositoryImpl @Inject constructor(
             locationSharingPermissionLocalDataSource.saveLocationSharingPermission(member.promiseId, member.isAcceptLocation)
         }
 
+    override suspend fun removeIsAcceptLocation(promiseId: String) {
+        locationSharingPermissionLocalDataSource.removeLocationSharingPermission(promiseId)
+    }
+
     override suspend fun getIsAcceptLocation(promiseId: String): Flow<Result<Boolean>> =
         locationSharingPermissionLocalDataSource.getLocationSharingPermission(promiseId)
 
