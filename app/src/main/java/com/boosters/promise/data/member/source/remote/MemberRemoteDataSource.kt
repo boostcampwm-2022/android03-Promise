@@ -35,7 +35,7 @@ class MemberRemoteDataSource @Inject constructor(
             .addOnSuccessListener { documents ->
                 for (document in documents) {
                     memberCollectionReference.document(document.id)
-                        .update(IS_ACCEPT_LOCATION_KEY, memberBody.isAcceptLocation)
+                        .update(IS_ACCEPT_LOCATION_KEY, memberBody.acceptLocation)
                 }
             }
     }
@@ -48,7 +48,7 @@ class MemberRemoteDataSource @Inject constructor(
     private companion object {
         const val PROMISE_ID_KEY = "promiseId"
         const val USER_CODE_KEY = "userCode"
-        const val IS_ACCEPT_LOCATION_KEY = "isAcceptLocation"
+        const val IS_ACCEPT_LOCATION_KEY = "acceptLocation"
     }
 
 }

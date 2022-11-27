@@ -12,5 +12,5 @@ fun Member.toMemberBody() =
     MemberBody(
         promiseId = promiseId,
         userCode = userCode,
-        isAcceptLocation = isAcceptLocation
+        acceptLocation = isAcceptLocation
     )
