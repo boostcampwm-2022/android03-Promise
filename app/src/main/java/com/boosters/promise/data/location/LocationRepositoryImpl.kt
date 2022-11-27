@@ -54,8 +54,7 @@ class LocationRepositoryImpl @Inject constructor(
     }
 
     override fun stopLocationUpdates() {
-        _locationUpdateRequestCount.update { locationUpdateRequestCount.value - 1 }
-
+        _locationUpdateRequestCount.update { (locationUpdateRequestCount.value - 1).coerceAtLeast(0) }
         if (locationUpdateRequestCount.value < 1) {
             fusedLocationProviderClient.removeLocationUpdates(callback)
             _lastGeoLocation.value = null
