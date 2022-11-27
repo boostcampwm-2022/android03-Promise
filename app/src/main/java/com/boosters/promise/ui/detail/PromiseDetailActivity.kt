@@ -33,6 +33,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import com.boosters.promise.service.locationupload.LocationUploadForegroundService
 import com.boosters.promise.service.locationupload.LocationUploadServiceConnection
+import kotlinx.coroutines.delay
 
 @AndroidEntryPoint
 class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -141,6 +142,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun setObserver(map: NaverMap) {
         lifecycleScope.launch {
+            delay(1_000)
+            // TODO: 비동기 버그 해결하기 #110
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 promiseDetailViewModel.promiseInfo.collectLatest { promise ->
                     launch {
