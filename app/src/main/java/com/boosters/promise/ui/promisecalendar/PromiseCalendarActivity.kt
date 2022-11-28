@@ -3,9 +3,12 @@ package com.boosters.promise.ui.promisecalendar
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.icu.text.SimpleDateFormat
 import android.os.Build
 import android.os.Bundle
+import android.util.TypedValue
 import androidx.activity.viewModels
+import androidx.appcompat.R.attr.colorPrimary
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
@@ -18,12 +21,14 @@ import com.boosters.promise.databinding.ActivityPromiseCalendarBinding
 import com.boosters.promise.ui.detail.PromiseDetailActivity
 import com.boosters.promise.ui.friend.FriendActivity
 import com.boosters.promise.ui.promisecalendar.adapter.PromiseDailyListAdapter
+import com.boosters.promise.ui.promisecalendar.model.PromiseListUiState
 import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
 import com.google.android.material.snackbar.Snackbar
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.util.*
 
 @AndroidEntryPoint
 class PromiseCalendarActivity : AppCompatActivity() {
@@ -106,21 +111,48 @@ class PromiseCalendarActivity : AppCompatActivity() {
     }
 
     private fun bindCalendarView() {
+        val dateFormatter = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
+        val primaryColor = TypedValue().also {
+            theme.resolveAttribute(colorPrimary, it, true)
+        }.data
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                promiseCalendarViewModel.myPromiseList.collectLatest {
+                    if (it is PromiseListUiState.Success) {
+                        val promiseDayList = it.data.map { promise ->
+                            CalendarDay.from(
+                                Calendar.getInstance().apply {
+                                    time = dateFormatter.parse(promise.date)
+                                }
+                            )
+                        }
+                        val promiseCalendarDecorator = PromiseContainCalendarDecorator(promiseDayList, primaryColor)
+                        binding.materialCalendarViewPromiseCalendar.addDecorator(promiseCalendarDecorator)
+                    }
+                }
+            }
+        }
+
         with(CalendarDay.today()) {
             val today = getString(R.string.date_format).format(year, month + 1, day)
             promiseCalendarViewModel.updateDailyPromiseList(today)
             binding.materialCalendarViewPromiseCalendar.selectedDate = this
         }
+
         binding.materialCalendarViewPromiseCalendar.setOnDateChangedListener { widget, date, selected ->
             val selectedDate = with(date) {
                 getString(R.string.date_format).format(year, month + 1, day)
             }
             promiseCalendarViewModel.updateDailyPromiseList(selectedDate)
         }
+
+        binding.materialCalendarViewPromiseCalendar.selectionColor = primaryColor
     }
 
     companion object {
         const val PROMISE_ID_KEY = "promiseId"
+        const val DATE_FORMAT = "yyyy/MM/dd"
     }
 
 }
