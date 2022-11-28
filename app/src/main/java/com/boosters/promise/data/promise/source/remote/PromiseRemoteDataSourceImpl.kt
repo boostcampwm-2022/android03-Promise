@@ -57,7 +57,7 @@ class PromiseRemoteDataSourceImpl @Inject constructor(
     override fun getPromiseList(user: User, date: String): Flow<List<PromiseBody>> {
         return promiseRef
             .whereEqualTo(DATABASE_PROMISE_DATE_KEY, date)
-            .whereArrayContainsAny(DATABASE_PROMISE_MEMBERS_KEY, listOf(user.copy(userToken = "")))
+            .whereArrayContainsAny(DATABASE_PROMISE_MEMBERS_KEY, listOf(user.userCode))
             .snapshots()
             .mapNotNull {
                 it.toObjects(PromiseBody::class.java)
