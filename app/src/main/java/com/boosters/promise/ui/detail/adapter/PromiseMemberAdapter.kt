@@ -40,7 +40,7 @@ class PromiseMemberAdapter : ListAdapter<User, PromiseMemberAdapter.PromiseMembe
         notifyItemChanged(selectedItemPosition)
     }
 
-    private fun unselectPreviousMember() {
+    fun unselectPreviousMember() {
         previousPosition = selectedItemPosition
         notifyItemChanged(previousPosition)
     }
