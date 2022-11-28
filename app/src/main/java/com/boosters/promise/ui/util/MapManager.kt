@@ -7,17 +7,17 @@ import com.naver.maps.map.NaverMap
 import com.naver.maps.map.overlay.Marker
 
 class MapManager(val map: NaverMap) {
-    
+
     fun initCameraPosition(location: LatLng) {
         val cameraUpdate = CameraUpdate.scrollTo(location)
         map.moveCamera(cameraUpdate)
     }
-    
+
     fun moveCamera(location: LatLng) {
         val cameraUpdate = CameraUpdate.scrollTo(location).animate(CameraAnimation.Easing)
         map.moveCamera(cameraUpdate)
     }
-    
+
     fun markLocation(location: LatLng, marker: Marker) {
         marker.also {
             it.position = location
@@ -32,4 +32,9 @@ class MapManager(val map: NaverMap) {
             it.map = map
         }
     }
+
+    fun calculateDistance(location1: LatLng, location2: LatLng): Double {
+        return location1.distanceTo(location2)
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.boosters.promise.ui.detail.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -13,6 +14,7 @@ class PromiseMemberAdapter : ListAdapter<User, PromiseMemberAdapter.PromiseMembe
 ) {
 
     private var onItemClickListener: OnItemClickListener? = null
+    var arrivedMember = RecyclerView.NO_POSITION
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PromiseMemberViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -37,12 +39,16 @@ class PromiseMemberAdapter : ListAdapter<User, PromiseMemberAdapter.PromiseMembe
         onItemClickListener = listener
     }
 
-    class PromiseMemberViewHolder(
+    inner class PromiseMemberViewHolder(
         private val binding: ItemPromiseDetailMemberBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(user: User) {
             binding.user = user
+
+            if (adapterPosition == arrivedMember) {
+                binding.textViewPromiseMemberItemArrive.visibility = View.VISIBLE
+            }
         }
 
     }
