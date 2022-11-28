@@ -207,7 +207,7 @@ class PromiseSettingActivity : AppCompatActivity() {
         const val TIMEPICKER_TAG = "New Selected Time"
         const val SEARCH_DIALOG_TAG = "New Search Address Dialog"
         const val MEMBER_LIST_KEY = "memberList"
-        private const val PROMISE_KEY = "promise"
+        const val PROMISE_KEY = "promise"
         const val PERMISSIONS_REQUEST = 0x0000001
     }
 

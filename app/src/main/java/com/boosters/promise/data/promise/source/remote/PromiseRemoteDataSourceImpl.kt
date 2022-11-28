@@ -55,15 +55,14 @@ class PromiseRemoteDataSourceImpl @Inject constructor(
             it.toObject(PromiseBody::class.java)
         }
 
-    override suspend fun getPromiseList(user: User, date: String): List<PromiseBody> {
-        val task = promiseRef
+    override fun getPromiseList(user: User, date: String): Flow<List<PromiseBody>> {
+        return promiseRef
             .whereEqualTo(DATABASE_PROMISE_DATE_KEY, date)
             .whereArrayContainsAny(DATABASE_PROMISE_MEMBERS_KEY, listOf(user.copy(userToken = "")))
-            .get()
-        task.await()
-        return task.result.documents.mapNotNull {
-            it.toObject(PromiseBody::class.java)
-        }
+            .snapshots()
+            .mapNotNull {
+                it.toObjects(PromiseBody::class.java)
+            }
     }
 
     companion object {

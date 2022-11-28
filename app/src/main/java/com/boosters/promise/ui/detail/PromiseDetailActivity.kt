@@ -76,9 +76,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         promiseDetailViewModel.isDeleted.observe(this) {
             if (it) {
-                val intent = Intent(this, PromiseCalendarActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                startActivity(intent)
+                finish()
             } else {
                 showStateSnackbar(R.string.promiseDetail_delete_ask)
             }
@@ -108,11 +106,10 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         when (item.itemId) {
             R.id.item_detail_edit -> {
                 val intent = Intent(this, PromiseSettingActivity::class.java).putExtra(
-                    PROMISE_ID_KEY,
+                    PromiseSettingActivity.PROMISE_KEY,
                     promiseDetailViewModel.promiseInfo.value
                 )
                 startActivity(intent)
-                finish()
             }
             R.id.item_detail_delete -> {
                 showDeleteDialog()
@@ -236,7 +233,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     companion object {
         const val PROMISE_ID_KEY = "promiseId"
-
         private const val DEFAULT_LOCATION_UPLOAD_END_TIME = 90_000L
     }
 
