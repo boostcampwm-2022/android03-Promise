@@ -18,7 +18,6 @@ import com.boosters.promise.databinding.ActivityPromiseCalendarBinding
 import com.boosters.promise.ui.detail.PromiseDetailActivity
 import com.boosters.promise.ui.friend.FriendActivity
 import com.boosters.promise.ui.promisecalendar.adapter.PromiseDailyListAdapter
-import com.boosters.promise.ui.promisecalendar.model.PromiseListUiState
 import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
 import com.google.android.material.snackbar.Snackbar
 import com.prolificinteractive.materialcalendarview.CalendarDay
@@ -42,20 +41,8 @@ class PromiseCalendarActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         setContentView(binding.root)
 
-        val promiseDailyListAdapter = PromiseDailyListAdapter()
-        binding.recyclerViewPromiseCalendarDailyList.adapter = promiseDailyListAdapter
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                promiseCalendarViewModel.myPromiseList.collectLatest {
-                    if (it is PromiseListUiState.Success) {
-                        promiseDailyListAdapter.submitList(it.data)
-                    }
-                }
-            }
-        }
-
-        binding.materialCalendarViewPromiseCalendar.selectedDate = CalendarDay.today()
+        attachAdapter()
+        bindCalendarView()
 
         binding.imageViewPromiseCalendarFriendsList.setOnClickListener {
             startActivity(Intent(this, FriendActivity::class.java))
@@ -64,14 +51,6 @@ class PromiseCalendarActivity : AppCompatActivity() {
         binding.buttonPromiseCalendarCreatePromise.setOnClickListener {
             startActivity(Intent(this, PromiseSettingActivity::class.java))
         }
-
-        promiseDailyListAdapter.setOnItemClickListener(object : PromiseDailyListAdapter.OnItemClickListener {
-            override fun onItemClick(promise: Promise) {
-                val intent = Intent(this@PromiseCalendarActivity, PromiseDetailActivity::class.java)
-                intent.putExtra(PROMISE_ID_KEY, promise.promiseId)
-                startActivity(intent)
-            }
-        })
     }
 
     override fun onRequestPermissionsResult(
@@ -102,6 +81,41 @@ class PromiseCalendarActivity : AppCompatActivity() {
                     PromiseSettingActivity.PERMISSIONS_REQUEST
                 )
             }
+        }
+    }
+
+    private fun attachAdapter() {
+        val promiseDailyListAdapter = PromiseDailyListAdapter()
+        binding.recyclerViewPromiseCalendarDailyList.adapter = promiseDailyListAdapter
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                promiseCalendarViewModel.dailyPromiseList.collectLatest {
+                    promiseDailyListAdapter.submitList(it)
+                }
+            }
+        }
+
+        promiseDailyListAdapter.setOnItemClickListener(object : PromiseDailyListAdapter.OnItemClickListener {
+            override fun onItemClick(promise: Promise) {
+                val intent = Intent(this@PromiseCalendarActivity, PromiseDetailActivity::class.java)
+                intent.putExtra(PROMISE_ID_KEY, promise.promiseId)
+                startActivity(intent)
+            }
+        })
+    }
+
+    private fun bindCalendarView() {
+        with(CalendarDay.today()) {
+            val today = getString(R.string.date_format).format(year, month + 1, day)
+            promiseCalendarViewModel.updateDailyPromiseList(today)
+            binding.materialCalendarViewPromiseCalendar.selectedDate = this
+        }
+        binding.materialCalendarViewPromiseCalendar.setOnDateChangedListener { widget, date, selected ->
+            val selectedDate = with(date) {
+                getString(R.string.date_format).format(year, month + 1, day)
+            }
+            promiseCalendarViewModel.updateDailyPromiseList(selectedDate)
         }
     }
 

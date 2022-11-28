@@ -2,6 +2,7 @@ package com.boosters.promise.ui.promisecalendar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.user.UserRepository
 import com.boosters.promise.ui.promisecalendar.model.PromiseListUiState
@@ -21,10 +22,12 @@ class PromiseCalendarViewModel @Inject constructor(
     private val myInfo: StateFlow<UserUiState> =
         _myInfo.stateIn(viewModelScope, SharingStarted.Eagerly, UserUiState.Loading)
 
-    private val _myPromiseList: MutableStateFlow<PromiseListUiState> =
-        MutableStateFlow(PromiseListUiState.Loading)
-    val myPromiseList: SharedFlow<PromiseListUiState> =
+    private val _myPromiseList: MutableStateFlow<PromiseListUiState> = MutableStateFlow(PromiseListUiState.Loading)
+    val myPromiseList: StateFlow<PromiseListUiState> =
         _myPromiseList.stateIn(viewModelScope, SharingStarted.Eagerly, PromiseListUiState.Empty)
+
+    private val _dailyPromiseList = MutableStateFlow(emptyList<Promise>())
+    val dailyPromiseList: StateFlow<List<Promise>> get() = _dailyPromiseList.asStateFlow()
 
     init {
         loadMyInfo()
@@ -49,6 +52,18 @@ class PromiseCalendarViewModel @Inject constructor(
                 if (myInfo is UserUiState.Success) {
                     promiseRepository.getPromiseList(myInfo.data).collectLatest { promiseList ->
                         _myPromiseList.emit(PromiseListUiState.Success(promiseList))
+                    }
+                }
+            }
+        }
+    }
+
+    fun updateDailyPromiseList(date: String) {
+        viewModelScope.launch {
+            _myPromiseList.collectLatest {
+                if (it is PromiseListUiState.Success) {
+                    _dailyPromiseList.value = it.data.filter { promise ->
+                        promise.date == date
                     }
                 }
             }
