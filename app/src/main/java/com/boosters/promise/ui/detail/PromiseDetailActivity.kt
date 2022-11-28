@@ -105,9 +105,9 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.item_detail_edit -> {
-                val intent = Intent(this, PromiseDetailActivity::class.java).putExtra(
+                val intent = Intent(this, PromiseSettingActivity::class.java).putExtra(
                 PromiseCalendarActivity.PROMISE_ID_KEY,
-                    promiseDetailViewModel.promiseInfo.value.promiseId
+                    promiseDetailViewModel.promiseInfo.value
                 )
                 startActivity(intent)
             }
