@@ -101,7 +101,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                             mapManager.moveCamera(selectedMemberPosition.toLatLng())
                         } else {
                             showStateSnackbar(R.string.promiseDetail_memberLocation_null)
-                            promiseMemberAdapter.unselectPreviousMember()
                         }
                     }
                 }
