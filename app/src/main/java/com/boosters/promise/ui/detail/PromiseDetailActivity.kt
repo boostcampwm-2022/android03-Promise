@@ -33,7 +33,6 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import com.boosters.promise.service.locationupload.LocationUploadForegroundService
 import com.boosters.promise.service.locationupload.LocationUploadServiceConnection
-import kotlinx.coroutines.delay
 
 @AndroidEntryPoint
 class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -142,20 +141,20 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun setObserver(map: NaverMap) {
         lifecycleScope.launch {
-            delay(1_000)
-            // TODO: 비동기 버그 해결하기 #110
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 promiseDetailViewModel.promiseInfo.collectLatest { promise ->
                     launch {
-                        promiseMemberAdapter.submitList(promise.members)
+                        promiseMemberAdapter.submitList(promise?.members)
                     }
 
                     launch {
-                        val destinationLocation = promise.destinationGeoLocation.toLatLng()
+                        if (promise != null) {
+                            val destinationLocation = promise.destinationGeoLocation.toLatLng()
 
-                        moveCameraToDestination(destinationLocation, map)
-                        markDestinationOnMap(destinationLocation, map)
-                        markUserLocationOnMap(map)
+                            moveCameraToDestination(destinationLocation, map)
+                            markDestinationOnMap(destinationLocation, map)
+                            markUserLocationOnMap(map)
+                        }
                     }
                 }
             }
@@ -177,7 +176,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private suspend fun markUserLocationOnMap(map: NaverMap) {
         lifecycleScope.launch {
             promiseDetailViewModel.memberLocations.collectLatest {
-                it.forEachIndexed { idx, memberLocation ->
+                it?.forEachIndexed { idx, memberLocation ->
                     if (memberLocation != null) {
                         promiseDetailViewModel.memberMarkers[idx].apply {
                             iconTintColor = Color.BLUE
