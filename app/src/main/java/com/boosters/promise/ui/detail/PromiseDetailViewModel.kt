@@ -4,10 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boosters.promise.data.location.GeoLocation
+import com.boosters.promise.data.location.LocationRepository
+import com.boosters.promise.data.location.UserGeoLocation
+import com.boosters.promise.data.member.MemberRepository
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
-import com.boosters.promise.data.user.UserRepository
 import com.naver.maps.map.overlay.Marker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class PromiseDetailViewModel @Inject constructor(
     private val promiseRepository: PromiseRepository,
-    private val userRepository: UserRepository
+    private val memberRepository: MemberRepository,
+    private val locationRepository: LocationRepository
 ) : ViewModel() {
 
     private val _promiseInfo = MutableStateFlow<Promise?>(null)
@@ -30,14 +32,20 @@ class PromiseDetailViewModel @Inject constructor(
 
     lateinit var memberMarkers: List<Marker>
 
+    val isAcceptLocationSharing = MutableStateFlow(false)
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    val memberLocations: Flow<List<GeoLocation?>?> = promiseInfo.flatMapLatest { promise ->
+    val memberLocations: Flow<List<UserGeoLocation?>?> = promiseInfo.flatMapLatest { promise ->
         if (promise != null) {
-            userRepository.getUserList(promise.members.map { user -> user.userCode }).map { members ->
-                members.map { member -> member.geoLocation }
+            memberRepository.getMembers(promise.promiseId).flatMapLatest { members ->
+                locationRepository.getGeoLocations(
+                    members.filter { member ->
+                        member.isAcceptLocation
+                    }.map { member -> member.userCode }
+                )
             }
         } else {
-            flow { emit(null) }
+            flow<List<UserGeoLocation?>?> { emit(null) }
         }
     }
 
@@ -47,6 +55,7 @@ class PromiseDetailViewModel @Inject constructor(
             promiseInfo.collectLatest { promise ->
                 if (promise != null) {
                     memberMarkers = List(promise.members.size) { Marker() }
+                    isAcceptLocationSharing.value = memberRepository.getIsAcceptLocation(promiseId).first().getOrElse { false }
                     cancel()
                 }
             }

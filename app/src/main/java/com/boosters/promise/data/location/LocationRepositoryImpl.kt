@@ -2,17 +2,19 @@ package com.boosters.promise.data.location
 
 import android.location.Location
 import android.os.HandlerThread
+import com.boosters.promise.data.location.source.remote.LocationRemoteDataSource
+import com.boosters.promise.data.location.source.remote.toUserGeoLocation
+import com.boosters.promise.data.user.source.local.MyInfoLocalDataSource
 import com.google.android.gms.location.*
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class LocationRepositoryImpl @Inject constructor(
-    private val fusedLocationProviderClient: FusedLocationProviderClient
+    private val fusedLocationProviderClient: FusedLocationProviderClient,
+    private val myInfoLocalDataSource: MyInfoLocalDataSource,
+    private val locationRemoteDataSource: LocationRemoteDataSource
 ) : LocationRepository {
 
     private val _locationUpdateRequestCount = MutableStateFlow(0)
@@ -66,6 +68,40 @@ class LocationRepositoryImpl @Inject constructor(
             latitude,
             longitude
         )
+
+    override suspend fun uploadMyGeoLocation(geoLocation: GeoLocation): Result<Unit> = runCatching {
+        val user = myInfoLocalDataSource.getMyInfo().first().getOrThrow()
+        locationRemoteDataSource.uploadGeoLocation(user.userCode, geoLocation)
+    }
+
+    override suspend fun resetMyGeoLocation() {
+        val user = myInfoLocalDataSource.getMyInfo().first().getOrNull()
+        if (user != null) {
+            locationRemoteDataSource.resetMyGeoLocation(user.userCode)
+        }
+    }
+
+    override fun getGeoLocation(userCode: String): Flow<UserGeoLocation> {
+        return locationRemoteDataSource.getGeoLocation(userCode).mapNotNull {
+            try {
+                it.toUserGeoLocation()
+            } catch (e: NullPointerException) {
+                null
+            }
+        }
+    }
+
+    override fun getGeoLocations(userCodes: List<String>): Flow<List<UserGeoLocation>> {
+        return locationRemoteDataSource.getGeoLocations(userCodes).map { userGeoLocationBodies ->
+            userGeoLocationBodies.mapNotNull {
+                try {
+                    it.toUserGeoLocation()
+                } catch (e: NullPointerException) {
+                    null
+                }
+            }
+        }
+    }
 
     companion object {
         private const val INTERVAL_MILLIS = 10_000L

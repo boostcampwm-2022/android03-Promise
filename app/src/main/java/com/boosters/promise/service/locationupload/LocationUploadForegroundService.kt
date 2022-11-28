@@ -10,7 +10,6 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.boosters.promise.R
 import com.boosters.promise.data.location.LocationRepository
-import com.boosters.promise.data.user.UserRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -21,9 +20,6 @@ class LocationUploadForegroundService : LifecycleService(), LocationUploadServic
 
     @Inject
     lateinit var locationRepository: LocationRepository
-
-    @Inject
-    lateinit var userRepository: UserRepository
 
     private val locationUploadServiceBinder = LocationUploadServiceBinder(this)
 
@@ -54,7 +50,7 @@ class LocationUploadForegroundService : LifecycleService(), LocationUploadServic
     override fun onDestroy() {
         super.onDestroy()
         alarmHandler.looper.quit()
-        lifecycleScope.launch { userRepository.resetMyGeoLocation() }
+        lifecycleScope.launch { locationRepository.resetMyGeoLocation() }
         locationRepository.stopLocationUpdates()
     }
 
@@ -84,7 +80,7 @@ class LocationUploadForegroundService : LifecycleService(), LocationUploadServic
         lifecycleScope.launch {
             locationRepository.lastGeoLocation.collectLatest { geoLocation ->
                 if (geoLocation != null) {
-                    userRepository.uploadMyGeoLocation(geoLocation)
+                    locationRepository.uploadMyGeoLocation(geoLocation)
                 }
             }
         }
