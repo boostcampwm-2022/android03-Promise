@@ -22,7 +22,7 @@ class PromiseCalendarViewModel @Inject constructor(
     fun updatePromiseList(date: String) {
         viewModelScope.launch {
             userRepository.getMyInfo().first().onSuccess { myInfo ->
-                promiseRepository.getPromiseList(myInfo, date).let {
+                promiseRepository.getPromiseList(myInfo, date).collectLatest {
                     _promiseDailyList.value = it
                 }
             }
