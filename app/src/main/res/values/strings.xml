@@ -76,6 +76,7 @@
     <string name="promiseDetail_dialog_no">NO</string>
     <string name="promiseDetail_destination">목적지</string>
     <string name="promiseDetail_arrive">도착</string>
+    <string name="promiseDetail_memberSelect">멤버 선택</string>
 
     <!-- LocationService 알림 -->
     <string name="locationService_notification_title">위치 공유중입니다.</string>

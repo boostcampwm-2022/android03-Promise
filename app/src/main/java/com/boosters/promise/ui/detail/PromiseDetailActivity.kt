@@ -29,6 +29,7 @@ import kotlinx.coroutines.launch
 import android.Manifest.permission
 import android.content.pm.PackageManager
 import android.graphics.Color
+import com.boosters.promise.data.user.User
 import com.boosters.promise.service.locationupload.LocationUploadForegroundService
 import com.boosters.promise.service.locationupload.LocationUploadServiceConnection
 import com.boosters.promise.ui.util.MapManager
@@ -88,6 +89,21 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
         }
+
+        promiseMemberAdapter.setOnItemClickListener(object :
+            PromiseMemberAdapter.OnItemClickListener {
+            override fun onItemClick(user: User, position: Int) {
+                lifecycleScope.launch {
+                    promiseDetailViewModel.memberLocations.collectLatest {
+                        val selectedMemberPosition = it[position]
+
+                        if (selectedMemberPosition != null) {
+                            mapManager.moveCamera(selectedMemberPosition.toLatLng())
+                        }
+                    }
+                }
+            }
+        })
     }
 
     override fun onStart() {
