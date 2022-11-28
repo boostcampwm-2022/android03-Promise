@@ -19,8 +19,6 @@ import com.boosters.promise.ui.detail.adapter.PromiseMemberAdapter
 import com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity
 import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
 import com.google.android.material.snackbar.Snackbar
-import com.naver.maps.geometry.LatLng
-import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
@@ -33,6 +31,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import com.boosters.promise.service.locationupload.LocationUploadForegroundService
 import com.boosters.promise.service.locationupload.LocationUploadServiceConnection
+import com.boosters.promise.ui.util.MapManager
 
 @AndroidEntryPoint
 class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -40,7 +39,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityPromiseDetailBinding
     private val promiseDetailViewModel: PromiseDetailViewModel by viewModels()
     private val promiseMemberAdapter = PromiseMemberAdapter()
-
+    private lateinit var mapManager: MapManager
     private val destinationMarker = Marker()
 
     private val locationPermissions = arrayOf(
@@ -81,6 +80,14 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 showStateSnackbar(R.string.promiseDetail_delete_ask)
             }
         }
+
+        binding.imageButtonPromiseDetailDestination.setOnClickListener {
+            lifecycleScope.launch {
+                promiseDetailViewModel.promiseInfo.collectLatest { promise ->
+                    mapManager.moveCamera(promise.destinationGeoLocation.toLatLng())
+                }
+            }
+        }
     }
 
     override fun onStart() {
@@ -94,7 +101,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onMapReady(map: NaverMap) {
-        setObserver(map)
+        mapManager = MapManager(map)
+        setObserver()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -139,7 +147,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
     }
 
-    private fun setObserver(map: NaverMap) {
+    private fun setObserver() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 promiseDetailViewModel.promiseInfo.collectLatest { promise ->
@@ -150,36 +158,22 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     launch {
                         val destinationLocation = promise.destinationGeoLocation.toLatLng()
 
-                        moveCameraToDestination(destinationLocation, map)
-                        markDestinationOnMap(destinationLocation, map)
-                        markUserLocationOnMap(map)
+                        mapManager.initCameraPosition(destinationLocation)
+                        mapManager.markLocation(destinationLocation, destinationMarker)
+                        markUsersLocationOnMap()
                     }
                 }
             }
         }
     }
 
-    private fun moveCameraToDestination(location: LatLng, map: NaverMap) {
-        val cameraUpdate = CameraUpdate.scrollTo(location)
-        map.moveCamera(cameraUpdate)
-    }
-
-    private fun markDestinationOnMap(location: LatLng, map: NaverMap) {
-        destinationMarker.apply {
-            position = location
-            this.map = map
-        }
-    }
-
-    private suspend fun markUserLocationOnMap(map: NaverMap) {
+    private suspend fun markUsersLocationOnMap() {
         lifecycleScope.launch {
             promiseDetailViewModel.memberLocations.collectLatest {
                 it.forEachIndexed { idx, memberLocation ->
                     if (memberLocation != null) {
                         promiseDetailViewModel.memberMarkers[idx].apply {
-                            iconTintColor = Color.BLUE
-                            position = memberLocation.toLatLng()
-                            this.map = map
+                            mapManager.markLocation(memberLocation.toLatLng(), this, Color.BLUE)
                         }
                     }
                 }
