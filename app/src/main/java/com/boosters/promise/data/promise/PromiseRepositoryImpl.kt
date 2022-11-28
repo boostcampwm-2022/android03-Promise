@@ -23,8 +23,8 @@ class PromiseRepositoryImpl @Inject constructor(
         return promiseRemoteDataSource.getPromise(promiseId).mapNotNull { it.toPromise() }
     }
 
-    override fun getPromiseList(user: User, date: String): Flow<List<Promise>> {
-        return promiseRemoteDataSource.getPromiseList(user, date).mapNotNull { promiseList ->
+    override fun getPromiseList(user: User): Flow<List<Promise>> {
+        return promiseRemoteDataSource.getPromiseList(user).mapNotNull { promiseList ->
             try {
                 promiseList.map { it.toPromise() }
             } catch (e: NullPointerException) {

@@ -15,18 +15,15 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.boosters.promise.R
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.databinding.ActivityPromiseCalendarBinding
-import com.boosters.promise.ui.friend.FriendActivity
 import com.boosters.promise.ui.detail.PromiseDetailActivity
-import com.boosters.promise.ui.place.PlaceSearchViewModel
+import com.boosters.promise.ui.friend.FriendActivity
 import com.boosters.promise.ui.promisecalendar.adapter.PromiseDailyListAdapter
+import com.boosters.promise.ui.promisecalendar.model.PromiseListUiState
 import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
 import com.google.android.material.snackbar.Snackbar
 import com.prolificinteractive.materialcalendarview.CalendarDay
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -35,7 +32,6 @@ class PromiseCalendarActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPromiseCalendarBinding
     private val promiseCalendarViewModel: PromiseCalendarViewModel by viewModels()
 
-    @OptIn(FlowPreview::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -51,21 +47,15 @@ class PromiseCalendarActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                promiseCalendarViewModel.promiseDailyList.collect {
-                    promiseDailyListAdapter.submitList(it)
+                promiseCalendarViewModel.myPromiseList.collectLatest {
+                    if (it is PromiseListUiState.Success) {
+                        promiseDailyListAdapter.submitList(it.data)
+                    }
                 }
             }
         }
 
         binding.materialCalendarViewPromiseCalendar.selectedDate = CalendarDay.today()
-        binding.materialCalendarViewPromiseCalendar.dateChangesToFlow()
-            .filterNot { it.isNullOrEmpty() }
-            .debounce(PlaceSearchViewModel.SEARCH_TERM)
-            .distinctUntilChanged()
-            .onEach { date ->
-                promiseCalendarViewModel.updatePromiseList(checkNotNull(date))
-            }
-            .launchIn(lifecycleScope)
 
         binding.imageViewPromiseCalendarFriendsList.setOnClickListener {
             startActivity(Intent(this, FriendActivity::class.java))
@@ -96,25 +86,6 @@ class PromiseCalendarActivity : AppCompatActivity() {
                     Snackbar.make(binding.root, R.string.start_item_notification_permission, Snackbar.LENGTH_SHORT).show()
                 }
             }
-        }
-    }
-
-    private fun MaterialCalendarView.dateChangesToFlow(): Flow<String?> {
-        return callbackFlow {
-            setOnDateChangedListener { _, date, _ ->
-                trySend(
-                    with(date) {
-                        getString(R.string.date_format).format(year, month + 1, day)
-                    }
-                )
-            }
-            awaitClose { setOnDateChangedListener(null) }
-        }.onStart {
-            emit(
-                with(CalendarDay.today()) {
-                    getString(R.string.date_format).format(year, month + 1, day)
-                }
-            )
         }
     }
 

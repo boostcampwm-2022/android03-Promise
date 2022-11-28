@@ -11,6 +11,6 @@ interface PromiseRepository {
 
     fun getPromise(promiseId: String): Flow<Promise>
 
-    fun getPromiseList(user: User, date: String): Flow<List<Promise>>
+    fun getPromiseList(user: User): Flow<List<Promise>>
 
 }
