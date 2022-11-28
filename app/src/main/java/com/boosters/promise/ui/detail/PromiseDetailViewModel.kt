@@ -6,9 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.location.LocationRepository
 import com.boosters.promise.data.location.UserGeoLocation
+import com.boosters.promise.data.member.Member
 import com.boosters.promise.data.member.MemberRepository
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
+import com.boosters.promise.data.user.UserRepository
 import com.naver.maps.map.overlay.Marker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,6 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PromiseDetailViewModel @Inject constructor(
     private val promiseRepository: PromiseRepository,
+    private val userRepository: UserRepository,
     private val memberRepository: MemberRepository,
     private val locationRepository: LocationRepository
 ) : ViewModel() {
@@ -71,6 +74,28 @@ class PromiseDetailViewModel @Inject constructor(
                         cancel()
                     }
                 }
+            }
+        }
+    }
+
+    fun updateLocationSharingPermission(isAcceptLocationSharing: Boolean) {
+        viewModelScope.launch {
+            try {
+                val userCode = userRepository.getMyInfo().first().getOrElse { throw IllegalStateException() }.userCode
+                promiseInfo.collectLatest { promise ->
+                    if (promise != null) {
+                        memberRepository.updateIsAcceptLocation(
+                            Member(
+                                promiseId = promise.promiseId,
+                                userCode = userCode,
+                                isAcceptLocation = isAcceptLocationSharing
+                            )
+                        )
+                        cancel()
+                    }
+                }
+            } catch (e: IllegalStateException) {
+                cancel()
             }
         }
     }

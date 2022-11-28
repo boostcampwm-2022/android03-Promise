@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -8,8 +10,7 @@
             type="com.boosters.promise.ui.detail.PromiseDetailViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.detail.PromiseDetailActivity">
@@ -81,7 +82,7 @@
             android:layout_marginStart="10dp"
             android:text="@{viewModel.promiseInfo.destinationName}"
             app:layout_constraintBottom_toBottomOf="@+id/textView_promiseDetail_location"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/switch_promiseDetail_locationSharing"
             app:layout_constraintStart_toEndOf="@+id/textView_promiseDetail_location"
             app:layout_constraintTop_toTopOf="@+id/textView_promiseDetail_location"
             tools:text="홍대입구역 90번 출구" />
@@ -108,10 +109,38 @@
             android:layout_marginStart="10dp"
             android:text="@{@string/promiseDetail_date_format(viewModel.promiseInfo.date, viewModel.promiseInfo.time)}"
             app:layout_constraintBottom_toBottomOf="@+id/textView_promiseDetail_date"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/switch_promiseDetail_locationSharing"
             app:layout_constraintStart_toEndOf="@+id/textView_promiseDetail_date"
             app:layout_constraintTop_toTopOf="@+id/textView_promiseDetail_date"
             tools:text="2022/11/23 17:00" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_promiseDetail_promiseDataAndLocationEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            app:constraint_referenced_ids="textView_promiseDetail_promiseLocation, textView_promiseDetail_promiseDate" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_promiseDetail_dateBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="textView_promiseDetail_date, textView_promiseDetail_promiseDate" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_promiseDetail_locationSharing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/promiseDetail_location_sharing_permission"
+            android:checked="@={viewModel.isAcceptLocationSharing}"
+            android:onCheckedChanged="@{(buttonView, isChecked) -> viewModel.updateLocationSharingPermission(isChecked)}"
+            app:layout_constraintBottom_toTopOf="@id/barrier_promiseDetail_dateBottom"
+            app:layout_constraintEnd_toEndOf="@id/guideline_promiseDetail_right"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@id/barrier_promiseDetail_promiseDataAndLocationEnd"
+            app:layout_constraintTop_toBottomOf="@id/textView_promiseDetail_promiseTitle"
+            app:layout_constraintVertical_bias="1.0" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_promiseDetail_map"
@@ -124,9 +153,9 @@
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/guideline_promiseDetail_right"
             app:layout_constraintStart_toStartOf="@+id/guideline_promiseDetail_left"
-            app:layout_constraintTop_toBottomOf="@+id/textView_promiseDetail_date"
+            app:layout_constraintTop_toBottomOf="@+id/barrier_promiseDetail_dateBottom"
             tools:background="@color/azure_radiance"
-            tools:layout="@layout/activity_promise_detail" />
+            tools:layout="@layout/activity_start" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView_promiseDetail_memberList"
