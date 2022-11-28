@@ -3,8 +3,8 @@ package com.boosters.promise.data.member.source.remote
 import com.boosters.promise.data.member.Member
 
 data class MemberBody(
-    val promiseId: String?,
-    val userCode: String?,
+    val promiseId: String? = null,
+    val userCode: String? = null,
     val acceptLocation: Boolean? = false
 )
 
