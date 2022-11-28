@@ -194,9 +194,9 @@ class PromiseSettingActivity : AppCompatActivity() {
 
     private fun initPromise() {
         if (VERSION.SDK_INT < 33) {
-            intent.getParcelableExtra(PromiseCalendarActivity.PROMISE_ID_KEY)
+            intent.getParcelableExtra(PROMISE_KEY)
         } else {
-            intent.getParcelableExtra(PromiseCalendarActivity.PROMISE_ID_KEY, Promise::class.java)
+            intent.getParcelableExtra(PROMISE_KEY, Promise::class.java)
         }?.let {
             promiseSettingViewModel.initPromise(it)
         }
