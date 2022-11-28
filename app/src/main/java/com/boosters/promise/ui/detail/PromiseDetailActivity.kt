@@ -106,7 +106,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         when (item.itemId) {
             R.id.item_detail_edit -> {
                 val intent = Intent(this, PromiseSettingActivity::class.java).putExtra(
-                PromiseCalendarActivity.PROMISE_ID_KEY,
+                    PromiseSettingActivity.PROMISE_KEY,
                     promiseDetailViewModel.promiseInfo.value
                 )
                 startActivity(intent)

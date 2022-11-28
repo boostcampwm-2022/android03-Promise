@@ -194,9 +194,9 @@ class PromiseSettingActivity : AppCompatActivity() {
 
     private fun initPromise() {
         if (VERSION.SDK_INT < 33) {
-            intent.getParcelableExtra(PromiseCalendarActivity.PROMISE_ID_KEY)
+            intent.getParcelableExtra(PROMISE_KEY)
         } else {
-            intent.getParcelableExtra(PromiseCalendarActivity.PROMISE_ID_KEY, Promise::class.java)
+            intent.getParcelableExtra(PROMISE_KEY, Promise::class.java)
         }?.let {
             promiseSettingViewModel.initPromise(it)
         }
@@ -207,6 +207,7 @@ class PromiseSettingActivity : AppCompatActivity() {
         const val TIMEPICKER_TAG = "New Selected Time"
         const val SEARCH_DIALOG_TAG = "New Search Address Dialog"
         const val MEMBER_LIST_KEY = "memberList"
+        const val PROMISE_KEY = "promise"
         const val PERMISSIONS_REQUEST = 0x0000001
     }
 
