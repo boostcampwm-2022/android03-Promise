@@ -1,10 +1,12 @@
 package com.boosters.promise.ui.util
 
+import com.boosters.promise.R
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.OverlayImage
 
 class MapManager(val map: NaverMap) {
 
@@ -18,23 +20,29 @@ class MapManager(val map: NaverMap) {
         map.moveCamera(cameraUpdate)
     }
 
-    fun markLocation(location: LatLng, marker: Marker) {
+    fun markDestination(location: LatLng, marker: Marker) {
         marker.also {
             it.position = location
             it.map = map
+            it.icon = OverlayImage.fromResource(R.drawable.ic_destination_marker)
+            it.globalZIndex = DESTINATION_MARKER_Z_INDEX
         }
     }
 
-    fun markLocation(location: LatLng, marker: Marker, markerColor: Int) {
+    fun markMemberLocation(location: LatLng, marker: Marker) {
         marker.also {
-            it.iconTintColor = markerColor
             it.position = location
             it.map = map
+            it.icon = OverlayImage.fromResource(R.drawable.ic_member_marker)
         }
     }
 
     fun calculateDistance(location1: LatLng, location2: LatLng): Double {
         return location1.distanceTo(location2)
+    }
+
+    companion object {
+        const val DESTINATION_MARKER_Z_INDEX = 15000
     }
 
 }

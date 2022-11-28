@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import android.Manifest.permission
 import android.content.pm.PackageManager
-import android.graphics.Color
 import com.boosters.promise.data.user.User
 import com.boosters.promise.service.locationupload.LocationUploadForegroundService
 import com.boosters.promise.service.locationupload.LocationUploadServiceConnection
@@ -181,7 +180,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                         val destinationLocation = promise.destinationGeoLocation.toLatLng()
 
                         mapManager.initCameraPosition(destinationLocation)
-                        mapManager.markLocation(destinationLocation, destinationMarker)
+                        mapManager.markDestination(destinationLocation, destinationMarker)
                         markUsersLocationOnMap()
                         checkArrival(destinationLocation)
                     }
@@ -196,7 +195,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 it.forEachIndexed { idx, memberLocation ->
                     if (memberLocation != null) {
                         promiseDetailViewModel.memberMarkers[idx].apply {
-                            mapManager.markLocation(memberLocation.toLatLng(), this, Color.BLUE)
+                            mapManager.markMemberLocation(memberLocation.toLatLng(), this)
                         }
                     }
                 }
