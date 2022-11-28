@@ -55,8 +55,8 @@
         <item name="android:textColor">@color/silver_gray</item>
     </style>
 
-    <style name="Promise.TextAppearance.SmallBlue" parent="TextAppearance.AppCompat">
-        <item name="android:textSize">@dimen/small</item>
+    <style name="Promise.TextAppearance.MiddleBlue" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/middle</item>
         <item name="android:textColor">@color/pure_blue</item>
     </style>
 

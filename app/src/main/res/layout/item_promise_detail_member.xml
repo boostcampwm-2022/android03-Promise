@@ -17,8 +17,8 @@
 
         <ImageView
             android:id="@+id/imageView_promiseMemberItem_memberImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:contentDescription="@string/promiseDetail_member"
             android:src="@drawable/ic_profile_image"
             app:layout_constraintBottom_toTopOf="@+id/textView_promiseMemberItem_memberName"
@@ -28,7 +28,7 @@
 
         <TextView
             android:id="@+id/textView_promiseMemberItem_memberName"
-            style="@style/Promise.TextAppearance.SmallBold"
+            style="@style/Promise.TextAppearance.MiddleBold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -41,7 +41,7 @@
 
         <TextView
             android:id="@+id/textView_promiseMemberItem_arrive"
-            style="@style/Promise.TextAppearance.SmallBlue"
+            style="@style/Promise.TextAppearance.MiddleBlue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/promiseDetail_arrive"
