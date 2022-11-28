@@ -32,6 +32,7 @@ class PromiseMemberAdapter : ListAdapter<User, PromiseMemberAdapter.PromiseMembe
     }
 
     override fun onBindViewHolder(holder: PromiseMemberViewHolder, position: Int) {
+        holder.arrivedMember = arrivedMember
         holder.bind(getItem(position))
     }
 
@@ -39,9 +40,10 @@ class PromiseMemberAdapter : ListAdapter<User, PromiseMemberAdapter.PromiseMembe
         onItemClickListener = listener
     }
 
-    inner class PromiseMemberViewHolder(
+    class PromiseMemberViewHolder(
         private val binding: ItemPromiseDetailMemberBinding
     ) : RecyclerView.ViewHolder(binding.root) {
+        var arrivedMember = RecyclerView.NO_POSITION
 
         fun bind(user: User) {
             binding.user = user
