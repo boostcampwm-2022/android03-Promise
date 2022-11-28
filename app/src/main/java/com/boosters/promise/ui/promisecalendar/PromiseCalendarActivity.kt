@@ -11,6 +11,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.R.attr.colorPrimary
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -127,8 +128,10 @@ class PromiseCalendarActivity : AppCompatActivity() {
                                 }
                             )
                         }
-                        val promiseCalendarDecorator = PromiseContainCalendarDecorator(promiseDayList, primaryColor)
-                        binding.materialCalendarViewPromiseCalendar.addDecorator(promiseCalendarDecorator)
+
+                        binding.materialCalendarViewPromiseCalendar.addDecorator(
+                            PromiseContainCalendarDecorator(promiseDayList, primaryColor)
+                        )
                     }
                 }
             }
@@ -148,6 +151,14 @@ class PromiseCalendarActivity : AppCompatActivity() {
         }
 
         binding.materialCalendarViewPromiseCalendar.selectionColor = primaryColor
+
+        val promiseTodayCalendarDecorator = PromiseTodayCalendarDecorator(
+            ContextCompat.getDrawable(
+                this,
+                R.drawable.bg_calendar_today_circle
+            )
+        )
+        binding.materialCalendarViewPromiseCalendar.addDecorator(promiseTodayCalendarDecorator)
     }
 
     companion object {
