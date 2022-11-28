@@ -74,6 +74,8 @@
     <string name="promiseDetail_delete_ask">삭제하시겠습니까?</string>
     <string name="promiseDetail_dialog_yes">YES</string>
     <string name="promiseDetail_dialog_no">NO</string>
+    <string name="promiseDetail_destination">목적지</string>
+    <string name="promiseDetail_arrive">도착</string>
 
     <!-- LocationService 알림 -->
     <string name="locationService_notification_title">위치 공유중입니다.</string>

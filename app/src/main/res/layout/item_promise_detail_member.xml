@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -8,9 +10,7 @@
             type="com.boosters.promise.data.user.User" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp">
@@ -33,10 +33,22 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="@{user.userName}"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/textView_promiseMemberItem_arrive"
             app:layout_constraintEnd_toEndOf="@+id/imageView_promiseMemberItem_memberImage"
             app:layout_constraintStart_toStartOf="@+id/imageView_promiseMemberItem_memberImage"
             app:layout_constraintTop_toBottomOf="@+id/imageView_promiseMemberItem_memberImage"
             tools:text="홍길동" />
+
+        <TextView
+            android:id="@+id/textView_promiseMemberItem_arrive"
+            style="@style/Promise.TextAppearance.SmallBlue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/promiseDetail_arrive"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_promiseMemberItem_memberName" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
