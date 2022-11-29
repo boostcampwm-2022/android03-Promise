@@ -78,6 +78,7 @@
     <string name="promiseDetail_arrive">도착</string>
     <string name="promiseDetail_memberSelect">멤버 선택</string>
     <string name="promiseDetail_memberLocation_null">위치를 찾을 수 없습니다.</string>
+    <string name="promiseDetail_overview">한 눈에 보기</string>
 
     <!-- LocationService 알림 -->
     <string name="locationService_notification_title">위치 공유중입니다.</string>
