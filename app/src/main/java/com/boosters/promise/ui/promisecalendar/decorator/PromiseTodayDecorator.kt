@@ -1,11 +1,11 @@
-package com.boosters.promise.ui.promisecalendar
+package com.boosters.promise.ui.promisecalendar.decorator
 
 import android.graphics.drawable.Drawable
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 
-class PromiseTodayCalendarDecorator(
+class PromiseTodayDecorator(
     private val drawable: Drawable?
 ) : DayViewDecorator {
 

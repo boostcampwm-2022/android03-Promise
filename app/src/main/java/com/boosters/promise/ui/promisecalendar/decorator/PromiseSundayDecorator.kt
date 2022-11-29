@@ -1,4 +1,4 @@
-package com.boosters.promise.ui.promisecalendar
+package com.boosters.promise.ui.promisecalendar.decorator
 
 import android.graphics.Color
 import android.text.style.ForegroundColorSpan
@@ -7,7 +7,7 @@ import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 import java.util.*
 
-class PromiseSaturdayDecorator : DayViewDecorator {
+class PromiseSundayDecorator : DayViewDecorator {
 
     private val calendar = Calendar.getInstance()
 
@@ -15,11 +15,11 @@ class PromiseSaturdayDecorator : DayViewDecorator {
         day.copyTo(calendar)
         val weekDay = calendar.get(Calendar.DAY_OF_WEEK)
 
-        return weekDay == Calendar.SATURDAY
+        return weekDay == Calendar.SUNDAY
     }
 
     override fun decorate(view: DayViewFacade) {
-        view.addSpan(ForegroundColorSpan(Color.BLUE))
+        view.addSpan(ForegroundColorSpan(Color.RED))
     }
 
 }

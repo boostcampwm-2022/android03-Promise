@@ -22,6 +22,7 @@ import com.boosters.promise.databinding.ActivityPromiseCalendarBinding
 import com.boosters.promise.ui.detail.PromiseDetailActivity
 import com.boosters.promise.ui.friend.FriendActivity
 import com.boosters.promise.ui.promisecalendar.adapter.PromiseDailyListAdapter
+import com.boosters.promise.ui.promisecalendar.decorator.*
 import com.boosters.promise.ui.promisecalendar.model.PromiseListUiState
 import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
 import com.google.android.material.snackbar.Snackbar
@@ -117,6 +118,22 @@ class PromiseCalendarActivity : AppCompatActivity() {
             theme.resolveAttribute(colorPrimary, it, true)
         }.data
 
+        val promiseDayAfterDecorator = PromiseDayAfterDecorator()
+        val promiseSaturdayDecorator = PromiseSaturdayDecorator()
+        val promiseSundayDecorator = PromiseSundayDecorator()
+        val promiseTodayCalendarDecorator = PromiseTodayDecorator(
+            ContextCompat.getDrawable(
+                this,
+                R.drawable.bg_calendar_today_circle
+            )
+        )
+        binding.materialCalendarViewPromiseCalendar.addDecorators(
+            promiseTodayCalendarDecorator,
+            promiseSaturdayDecorator,
+            promiseSundayDecorator,
+            promiseDayAfterDecorator
+        )
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 promiseCalendarViewModel.myPromiseList.collectLatest {
@@ -127,10 +144,12 @@ class PromiseCalendarActivity : AppCompatActivity() {
                                     time = dateFormatter.parse(promise.date)
                                 }
                             )
+                        }.filter { date ->
+                            date.isAfter(CalendarDay.today())
                         }
 
                         binding.materialCalendarViewPromiseCalendar.addDecorator(
-                            PromiseContainCalendarDecorator(promiseDayList, primaryColor)
+                            PromiseContainDecorator(promiseDayList, primaryColor)
                         )
                     }
                 }
@@ -144,26 +163,12 @@ class PromiseCalendarActivity : AppCompatActivity() {
         }
 
         binding.materialCalendarViewPromiseCalendar.selectionColor = primaryColor
-        binding.materialCalendarViewPromiseCalendar.setOnDateChangedListener { widget, date, selected ->
+        binding.materialCalendarViewPromiseCalendar.setOnDateChangedListener { _, date, _ ->
             val selectedDate = with(date) {
                 getString(R.string.date_format).format(year, month + 1, day)
             }
             promiseCalendarViewModel.updateDailyPromiseList(selectedDate)
         }
-
-        val promiseSaturdayDecorator = PromiseSaturdayDecorator()
-        val promiseSundayDecorator = PromiseSundayDecorator()
-        val promiseTodayCalendarDecorator = PromiseTodayCalendarDecorator(
-            ContextCompat.getDrawable(
-                this,
-                R.drawable.bg_calendar_today_circle
-            )
-        )
-        binding.materialCalendarViewPromiseCalendar.addDecorators(
-            promiseTodayCalendarDecorator,
-            promiseSaturdayDecorator,
-            promiseSundayDecorator
-        )
     }
 
     companion object {
