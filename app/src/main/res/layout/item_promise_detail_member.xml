@@ -5,9 +5,11 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
-            name="user"
-            type="com.boosters.promise.ui.detail.model.PromiseDetailUiModel" />
+            name="memberUiModel"
+            type="com.boosters.promise.ui.detail.model.MemberUiModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@{user.userName}"
+            android:text="@{memberUiModel.userName}"
             app:layout_constraintBottom_toTopOf="@+id/textView_promiseMemberItem_arrive"
             app:layout_constraintEnd_toEndOf="@+id/imageView_promiseMemberItem_memberImage"
             app:layout_constraintStart_toStartOf="@+id/imageView_promiseMemberItem_memberImage"
@@ -45,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/promiseDetail_arrive"
-            android:visibility="invisible"
+            android:visibility="@{memberUiModel.arrived ? View.VISIBLE : View.INVISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -3,7 +3,7 @@ package com.boosters.promise.data.user
 import android.os.Parcelable
 import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.data.friend.source.local.FriendEntity
-import com.boosters.promise.ui.detail.model.PromiseDetailUiModel
+import com.boosters.promise.ui.detail.model.MemberUiModel
 import com.boosters.promise.ui.invite.model.UserUiModel
 import kotlinx.parcelize.Parcelize
 
@@ -29,7 +29,7 @@ fun User.toFriendEntity() =
     )
 
 fun User.toPromiseDetailUiModel() =
-    PromiseDetailUiModel(
+    MemberUiModel(
         userCode = userCode,
         userName = userName,
         geoLocation = geoLocation

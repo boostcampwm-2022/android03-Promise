@@ -3,7 +3,7 @@ package com.boosters.promise.ui.util
 import com.boosters.promise.R
 import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.data.location.toLatLng
-import com.boosters.promise.ui.detail.model.PromiseDetailUiModel
+import com.boosters.promise.ui.detail.model.MemberUiModel
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraAnimation
@@ -19,7 +19,7 @@ class MapManager(val map: NaverMap) {
         map.maxZoom = MAP_MAX_ZOOM_LEVEL
     }
 
-    fun initCameraPosition(destination: GeoLocation, users: List<PromiseDetailUiModel>) {
+    fun initCameraPosition(destination: GeoLocation, users: List<MemberUiModel>) {
         val bound = calculateBound(destination, users.map { it.geoLocation })
 
         val cameraUpdate = CameraUpdate.fitBounds(bound, MAP_OVERVIEW_PADDING)
@@ -35,7 +35,7 @@ class MapManager(val map: NaverMap) {
         map.moveCamera(cameraUpdate)
     }
 
-    fun overviewMemberLocation(destination: GeoLocation, users: List<PromiseDetailUiModel>) {
+    fun overviewMemberLocation(destination: GeoLocation, users: List<MemberUiModel>) {
         val bound = calculateBound(destination, users.map { it.geoLocation })
 
         val cameraUpdate =
@@ -64,20 +64,20 @@ class MapManager(val map: NaverMap) {
         }
     }
 
-    fun calculateDistance(location1: GeoLocation, location2: GeoLocation): Double {
-        return location1.toLatLng().distanceTo(location2.toLatLng())
-    }
-
     private fun calculateBound(
         destination: GeoLocation,
         locations: List<GeoLocation?>
     ): LatLngBounds {
         val memberLocations = locations.filterNotNull().plus(destination)
 
-        val southWest = LatLng(memberLocations.minOf { it.latitude },
-            memberLocations.minOf { it.longitude })
-        val northEast = LatLng(memberLocations.maxOf { it.latitude },
-            memberLocations.maxOf { it.longitude })
+        val southWest = LatLng(
+            memberLocations.minOf { it.latitude },
+            memberLocations.minOf { it.longitude }
+        )
+        val northEast = LatLng(
+            memberLocations.maxOf { it.latitude },
+            memberLocations.maxOf { it.longitude }
+        )
 
         return LatLngBounds(southWest, northEast)
     }

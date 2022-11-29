@@ -31,7 +31,6 @@ import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.data.user.toPromiseDetailUiModel
 import com.boosters.promise.service.locationupload.LocationUploadForegroundService
 import com.boosters.promise.service.locationupload.LocationUploadServiceConnection
-import com.boosters.promise.ui.detail.model.PromiseDetailUiModel
 import com.boosters.promise.ui.util.MapManager
 
 @AndroidEntryPoint
@@ -158,9 +157,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
-        promiseMemberAdapter.setOnItemClickListener(object :
-            PromiseMemberAdapter.OnItemClickListener {
-            override fun onItemClick(user: PromiseDetailUiModel, position: Int) {
+        promiseMemberAdapter.setOnItemClickListener(object : PromiseMemberAdapter.OnItemClickListener {
+            override fun onItemClick(position: Int) {
                 lifecycleScope.launch {
                     promiseDetailViewModel.memberLocations.collectLatest {
                         val selectedMember = it[position]
@@ -207,8 +205,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun overviewMemberLocation(destination: GeoLocation) {
         lifecycleScope.launch {
-            promiseDetailViewModel.memberLocations.collectLatest {
-                mapManager.overviewMemberLocation(destination, it)
+            promiseDetailViewModel.memberLocations.collectLatest { memberUiModel ->
+                mapManager.overviewMemberLocation(destination, memberUiModel)
             }
         }
     }
@@ -216,12 +214,12 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private suspend fun markUsersLocationOnMap() {
         lifecycleScope.launch {
             promiseDetailViewModel.memberLocations.collectLatest {
-                it.forEachIndexed { idx, member ->
-                    if (member.geoLocation != null) {
+                it.forEachIndexed { idx, memberUiModel ->
+                    if (memberUiModel.geoLocation != null) {
                         promiseDetailViewModel.memberMarkers[idx].apply {
                             mapManager.markMemberLocation(
-                                member.userName,
-                                member.geoLocation,
+                                memberUiModel.userName,
+                                memberUiModel.geoLocation,
                                 this
                             )
                         }
@@ -234,20 +232,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun checkArrival(destination: GeoLocation) {
         lifecycleScope.launch {
             promiseDetailViewModel.memberLocations.collectLatest {
-                val arriveCheckedList = it.map { member ->
-                    if (member.geoLocation != null) {
-                        val distance =
-                            mapManager.calculateDistance(destination, member.geoLocation)
-
-                        if (distance < MINIMUM_ARRIVE_DISTANCE) {
-                            member.copy(isArrived = true)
-                        } else {
-                            member.copy(isArrived = false)
-                        }
-                    } else {
-                        member.copy(isArrived = false)
-                    }
-                }
+                val arriveCheckedList = promiseDetailViewModel.checkArrival(destination, it)
                 promiseMemberAdapter.submitList(arriveCheckedList)
             }
         }
@@ -300,7 +285,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     companion object {
         const val PROMISE_ID_KEY = "promiseId"
         private const val DEFAULT_LOCATION_UPLOAD_END_TIME = 90_000L
-        private const val MINIMUM_ARRIVE_DISTANCE = 50
     }
 
 }

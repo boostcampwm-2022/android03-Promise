@@ -1,16 +1,15 @@
 package com.boosters.promise.ui.detail.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.boosters.promise.databinding.ItemPromiseDetailMemberBinding
-import com.boosters.promise.ui.detail.model.PromiseDetailUiModel
+import com.boosters.promise.ui.detail.model.MemberUiModel
 
 class PromiseMemberAdapter :
-    ListAdapter<PromiseDetailUiModel, PromiseMemberAdapter.PromiseMemberViewHolder>(
+    ListAdapter<MemberUiModel, PromiseMemberAdapter.PromiseMemberViewHolder>(
         diffUtil
     ) {
 
@@ -24,7 +23,7 @@ class PromiseMemberAdapter :
         binding.root.setOnClickListener {
             val position = holder.adapterPosition
             if (position != RecyclerView.NO_POSITION) {
-                onItemClickListener?.onItemClick(getItem(position), position)
+                onItemClickListener?.onItemClick(position)
             }
         }
 
@@ -43,34 +42,28 @@ class PromiseMemberAdapter :
         private val binding: ItemPromiseDetailMemberBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(user: PromiseDetailUiModel) {
-            binding.user = user
-
-            if (user.isArrived) {
-                binding.textViewPromiseMemberItemArrive.visibility = View.VISIBLE
-            } else {
-                binding.textViewPromiseMemberItemArrive.visibility = View.INVISIBLE
-            }
+        fun bind(memberUiModel: MemberUiModel) {
+            binding.memberUiModel = memberUiModel
         }
 
     }
 
     interface OnItemClickListener {
-        fun onItemClick(user: PromiseDetailUiModel, position: Int)
+        fun onItemClick(position: Int)
     }
 
     companion object {
-        val diffUtil = object : DiffUtil.ItemCallback<PromiseDetailUiModel>() {
+        val diffUtil = object : DiffUtil.ItemCallback<MemberUiModel>() {
             override fun areItemsTheSame(
-                oldItem: PromiseDetailUiModel,
-                newItem: PromiseDetailUiModel
+                oldItem: MemberUiModel,
+                newItem: MemberUiModel
             ): Boolean {
                 return oldItem.userCode == newItem.userCode
             }
 
             override fun areContentsTheSame(
-                oldItem: PromiseDetailUiModel,
-                newItem: PromiseDetailUiModel
+                oldItem: MemberUiModel,
+                newItem: MemberUiModel
             ): Boolean {
                 return oldItem == newItem
             }
