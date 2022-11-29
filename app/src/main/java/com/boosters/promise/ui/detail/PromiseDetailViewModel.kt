@@ -30,9 +30,7 @@ class PromiseDetailViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val memberLocations = promiseInfo.flatMapLatest { promise ->
-        userRepository.getUserList(promise.members.map { user -> user.userCode }).map { members ->
-            members.map { member -> member.geoLocation }
-        }
+        userRepository.getUserList(promise.members.map { user -> user.userCode })
     }
 
     fun setPromiseInfo(promiseId: String) {

@@ -162,10 +162,10 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             override fun onItemClick(user: User, position: Int) {
                 lifecycleScope.launch {
                     promiseDetailViewModel.memberLocations.collectLatest {
-                        val selectedMemberPosition = it[position]
+                        val selectedMember = it[position]
 
-                        if (selectedMemberPosition != null) {
-                            mapManager.moveToLocation(selectedMemberPosition)
+                        if (selectedMember.geoLocation != null) {
+                            mapManager.moveToLocation(selectedMember.geoLocation)
                         } else {
                             showStateSnackbar(R.string.promiseDetail_memberLocation_null)
                         }
@@ -215,10 +215,14 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private suspend fun markUsersLocationOnMap() {
         lifecycleScope.launch {
             promiseDetailViewModel.memberLocations.collectLatest {
-                it.forEachIndexed { idx, memberLocation ->
-                    if (memberLocation != null) {
+                it.forEachIndexed { idx, member ->
+                    if (member.geoLocation != null) {
                         promiseDetailViewModel.memberMarkers[idx].apply {
-                            mapManager.markMemberLocation(memberLocation, this)
+                            mapManager.markMemberLocation(
+                                member.userName,
+                                member.geoLocation,
+                                this
+                            )
                         }
                     }
                 }
@@ -229,11 +233,11 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun checkArrival(destination: GeoLocation) {
         lifecycleScope.launch {
             promiseDetailViewModel.memberLocations.collectLatest {
-                it.forEachIndexed { idx, memberLocation ->
-                    if (memberLocation != null) {
+                it.forEachIndexed { idx, member ->
+                    if (member.geoLocation != null) {
                         promiseDetailViewModel.memberMarkers[idx].apply {
                             val distance =
-                                mapManager.calculateDistance(destination, memberLocation)
+                                mapManager.calculateDistance(destination, member.geoLocation)
 
                             if (distance < MINIMUM_ARRIVE_DISTANCE) {
                                 promiseMemberAdapter.arrivedMember = idx

@@ -3,18 +3,24 @@ package com.boosters.promise.ui.util
 import com.boosters.promise.R
 import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.data.location.toLatLng
+import com.boosters.promise.data.user.User
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.NaverMap
+import com.naver.maps.map.overlay.Align
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 
 class MapManager(val map: NaverMap) {
 
-    fun initCameraPosition(destination: GeoLocation, locations: List<GeoLocation?>) {
-        val bound = calculateBound(destination, locations)
+    init {
+        map.maxZoom = MAP_MAX_ZOOM_LEVEL
+    }
+
+    fun initCameraPosition(destination: GeoLocation, users: List<User>) {
+        val bound = calculateBound(destination, users.map { it.geoLocation })
 
         val cameraUpdate = CameraUpdate.fitBounds(bound, MAP_OVERVIEW_PADDING)
         map.moveCamera(cameraUpdate)
@@ -29,8 +35,8 @@ class MapManager(val map: NaverMap) {
         map.moveCamera(cameraUpdate)
     }
 
-    fun overviewMemberLocation(destination: GeoLocation, locations: List<GeoLocation?>) {
-        val bound = calculateBound(destination, locations)
+    fun overviewMemberLocation(destination: GeoLocation, users: List<User>) {
+        val bound = calculateBound(destination, users.map { it.geoLocation })
 
         val cameraUpdate =
             CameraUpdate.fitBounds(bound, MAP_OVERVIEW_PADDING)
@@ -47,11 +53,14 @@ class MapManager(val map: NaverMap) {
         }
     }
 
-    fun markMemberLocation(location: GeoLocation, marker: Marker) {
+    fun markMemberLocation(userName: String, location: GeoLocation, marker: Marker) {
         marker.also {
             it.position = location.toLatLng()
             it.map = map
             it.icon = OverlayImage.fromResource(R.drawable.ic_member_marker)
+            it.captionText = userName
+            it.captionTextSize = 15.0f
+            it.setCaptionAligns(Align.Top)
         }
     }
 
@@ -75,9 +84,10 @@ class MapManager(val map: NaverMap) {
 
     companion object {
         const val DESTINATION_MARKER_Z_INDEX = 15000
+        const val MAP_MAX_ZOOM_LEVEL = 16.0
         const val MAP_OVERVIEW_PADDING = 200
-        const val LOCATION_ZOOM_LEVEL = 16.0
-        const val MAP_ANIMATION_DURATION = 1000L
+        const val LOCATION_ZOOM_LEVEL = 14.0
+        const val MAP_ANIMATION_DURATION = 2000L
     }
 
 }
