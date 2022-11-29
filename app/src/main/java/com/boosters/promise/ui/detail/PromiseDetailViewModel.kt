@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.user.UserRepository
+import com.boosters.promise.ui.detail.model.PromiseDetailUiModel
 import com.naver.maps.map.overlay.Marker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,6 +32,14 @@ class PromiseDetailViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val memberLocations = promiseInfo.flatMapLatest { promise ->
         userRepository.getUserList(promise.members.map { user -> user.userCode })
+    }.map {
+        it.map { user ->
+            PromiseDetailUiModel(
+                user.userCode,
+                user.userName,
+                user.geoLocation
+            )
+        }
     }
 
     fun setPromiseInfo(promiseId: String) {

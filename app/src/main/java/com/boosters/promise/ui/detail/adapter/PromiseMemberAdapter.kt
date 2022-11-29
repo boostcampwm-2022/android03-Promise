@@ -6,15 +6,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.boosters.promise.data.user.User
 import com.boosters.promise.databinding.ItemPromiseDetailMemberBinding
+import com.boosters.promise.ui.detail.model.PromiseDetailUiModel
 
-class PromiseMemberAdapter : ListAdapter<User, PromiseMemberAdapter.PromiseMemberViewHolder>(
-    diffUtil
-) {
+class PromiseMemberAdapter :
+    ListAdapter<PromiseDetailUiModel, PromiseMemberAdapter.PromiseMemberViewHolder>(
+        diffUtil
+    ) {
 
     private var onItemClickListener: OnItemClickListener? = null
-    var arrivedMember = RecyclerView.NO_POSITION
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PromiseMemberViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -32,7 +32,6 @@ class PromiseMemberAdapter : ListAdapter<User, PromiseMemberAdapter.PromiseMembe
     }
 
     override fun onBindViewHolder(holder: PromiseMemberViewHolder, position: Int) {
-        holder.arrivedMember = arrivedMember
         holder.bind(getItem(position))
     }
 
@@ -43,34 +42,35 @@ class PromiseMemberAdapter : ListAdapter<User, PromiseMemberAdapter.PromiseMembe
     class PromiseMemberViewHolder(
         private val binding: ItemPromiseDetailMemberBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        var arrivedMember = RecyclerView.NO_POSITION
 
-        fun bind(user: User) {
+        fun bind(user: PromiseDetailUiModel) {
             binding.user = user
 
-            if (adapterPosition == arrivedMember) {
+            if (user.isArrived) {
                 binding.textViewPromiseMemberItemArrive.visibility = View.VISIBLE
+            } else {
+                binding.textViewPromiseMemberItemArrive.visibility = View.INVISIBLE
             }
         }
 
     }
 
     interface OnItemClickListener {
-        fun onItemClick(user: User, position: Int)
+        fun onItemClick(user: PromiseDetailUiModel, position: Int)
     }
 
     companion object {
-        val diffUtil = object : DiffUtil.ItemCallback<User>() {
+        val diffUtil = object : DiffUtil.ItemCallback<PromiseDetailUiModel>() {
             override fun areItemsTheSame(
-                oldItem: User,
-                newItem: User
+                oldItem: PromiseDetailUiModel,
+                newItem: PromiseDetailUiModel
             ): Boolean {
                 return oldItem.userCode == newItem.userCode
             }
 
             override fun areContentsTheSame(
-                oldItem: User,
-                newItem: User
+                oldItem: PromiseDetailUiModel,
+                newItem: PromiseDetailUiModel
             ): Boolean {
                 return oldItem == newItem
             }

@@ -3,7 +3,7 @@ package com.boosters.promise.ui.util
 import com.boosters.promise.R
 import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.data.location.toLatLng
-import com.boosters.promise.data.user.User
+import com.boosters.promise.ui.detail.model.PromiseDetailUiModel
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraAnimation
@@ -19,7 +19,7 @@ class MapManager(val map: NaverMap) {
         map.maxZoom = MAP_MAX_ZOOM_LEVEL
     }
 
-    fun initCameraPosition(destination: GeoLocation, users: List<User>) {
+    fun initCameraPosition(destination: GeoLocation, users: List<PromiseDetailUiModel>) {
         val bound = calculateBound(destination, users.map { it.geoLocation })
 
         val cameraUpdate = CameraUpdate.fitBounds(bound, MAP_OVERVIEW_PADDING)
@@ -35,7 +35,7 @@ class MapManager(val map: NaverMap) {
         map.moveCamera(cameraUpdate)
     }
 
-    fun overviewMemberLocation(destination: GeoLocation, users: List<User>) {
+    fun overviewMemberLocation(destination: GeoLocation, users: List<PromiseDetailUiModel>) {
         val bound = calculateBound(destination, users.map { it.geoLocation })
 
         val cameraUpdate =
@@ -45,22 +45,22 @@ class MapManager(val map: NaverMap) {
     }
 
     fun markDestination(location: GeoLocation, marker: Marker) {
-        marker.also {
-            it.position = location.toLatLng()
-            it.map = map
-            it.icon = OverlayImage.fromResource(R.drawable.ic_destination_marker)
-            it.globalZIndex = DESTINATION_MARKER_Z_INDEX
+        marker.apply {
+            position = location.toLatLng()
+            map = this@MapManager.map
+            icon = OverlayImage.fromResource(R.drawable.ic_destination_marker)
+            globalZIndex = DESTINATION_MARKER_Z_INDEX
         }
     }
 
     fun markMemberLocation(userName: String, location: GeoLocation, marker: Marker) {
-        marker.also {
-            it.position = location.toLatLng()
-            it.map = map
-            it.icon = OverlayImage.fromResource(R.drawable.ic_member_marker)
-            it.captionText = userName
-            it.captionTextSize = 15.0f
-            it.setCaptionAligns(Align.Top)
+        marker.apply {
+            position = location.toLatLng()
+            map = this@MapManager.map
+            icon = OverlayImage.fromResource(R.drawable.ic_member_marker)
+            captionText = userName
+            captionTextSize = 15.0f
+            setCaptionAligns(Align.Top)
         }
     }
 

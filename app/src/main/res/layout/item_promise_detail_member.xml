@@ -7,7 +7,7 @@
 
         <variable
             name="user"
-            type="com.boosters.promise.data.user.User" />
+            type="com.boosters.promise.ui.detail.model.PromiseDetailUiModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
