@@ -22,8 +22,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class NotificationService : FirebaseMessagingService() {
 
-    /*@Inject
-    lateinit var alarmDirector: AlarmDirector*/
+    @Inject
+    lateinit var alarmDirector: AlarmDirector
     private val coroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
@@ -37,16 +37,16 @@ class NotificationService : FirebaseMessagingService() {
         val promise = Gson().fromJson(remoteMessage.data[MESSAGE_BODY], Promise::class.java)
 
         val contentText = if (remoteMessage.data[MESSAGE_TITLE] == NOTIFICATION_EDIT) {
-            /*coroutineScope.launch {
+            coroutineScope.launch {
                 alarmDirector.removeAlarm(promise.promiseId, true)
                 alarmDirector.registerAlarm(promise)
-            }*/
+            }
             String.format(getString(R.string.notification_edit), promise.date)
         } else if (remoteMessage.data[MESSAGE_TITLE] == NOTIFICATION_ADD) {
-            //alarmDirector.registerAlarm(promise)
+            alarmDirector.registerAlarm(promise)
             String.format(getString(R.string.notification_add), promise.date)
         } else {
-            //alarmDirector.removeAlarm(promise.promiseId)
+            alarmDirector.removeAlarm(promise.promiseId)
             String.format(getString(R.string.notification_delete), promise.date)
         }
 
