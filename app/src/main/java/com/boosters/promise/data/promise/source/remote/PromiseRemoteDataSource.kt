@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface PromiseRemoteDataSource {
 
-    fun addPromise(promise: PromiseBody): Flow<Boolean>
+    fun addPromise(promise: PromiseBody): Flow<Result<String>>
 
     fun removePromise(promiseId: String): Flow<Boolean>
 

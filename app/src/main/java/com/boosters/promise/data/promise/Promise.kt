@@ -14,7 +14,7 @@ data class Promise(
     val destinationGeoLocation: GeoLocation = GeoLocation(),
     val date: String = "",
     val time: String = "",
-    val members: List<User> = listOf()
+    val members: List<User> = emptyList()
 ) : Parcelable
 
 fun Promise.toPromiseBody() =
@@ -25,5 +25,5 @@ fun Promise.toPromiseBody() =
         destinationGeoLocation = destinationGeoLocation,
         date = date,
         time = time,
-        members = members
+        members = members.map { it.userCode }
     )
