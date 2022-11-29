@@ -37,8 +37,8 @@ class PromiseRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getPromiseList(user: User, date: String): Flow<List<Promise>> {
-        return promiseRemoteDataSource.getPromiseList(user, date).map { promiseList ->
+    override fun getPromiseList(user: User): Flow<List<Promise>> {
+        return promiseRemoteDataSource.getPromiseList(user).map { promiseList ->
             promiseList.mapNotNull { promiseBody ->
                 try {
                     promiseBody.toPromise(userRepository.getUserList(promiseBody.members).first())

@@ -11,6 +11,6 @@ interface PromiseRemoteDataSource {
 
     fun getPromise(promiseId: String): Flow<PromiseBody>
 
-    fun getPromiseList(user: User, date: String): Flow<List<PromiseBody>>
+    fun getPromiseList(user: User): Flow<List<PromiseBody>>
 
 }
