@@ -84,5 +84,7 @@
     <!-- 알림 -->
     <string name="notification_add">[%s] 새로운 약속이 추가되었습니다.</string>
     <string name="notification_edit">[%s] 약속이 수정되었습니다.</string>
+    <string name="notification_delete">[%s] 약속이 삭제되었습니다.</string>
+    <string name="notification_request">약속시간이 다가옵니다! 위치 공유를 켜주세요.</string>
 
 </resources>

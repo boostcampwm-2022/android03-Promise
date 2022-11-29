@@ -17,13 +17,15 @@ class PromiseRepositoryImpl @Inject constructor(
     private val memberRepository: MemberRepository
 ) : PromiseRepository {
 
-    override suspend fun addPromise(promise: Promise): Flow<Boolean> {
+    override suspend fun addPromise(promise: Promise): Flow<String> {
         return promiseRemoteDataSource.addPromise(promise.toPromiseBody()).map { result ->
+            var id = ""
             result.onSuccess { promiseId ->
+                id = promiseId
                 memberRepository.initMember(promiseId, promise.members.map { member -> member.userCode })
                 memberRepository.addIsAcceptLocation(promiseId)
             }
-            result.isSuccess
+            id
         }
     }
 

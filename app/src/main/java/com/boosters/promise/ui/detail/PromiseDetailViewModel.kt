@@ -8,9 +8,12 @@ import com.boosters.promise.data.location.LocationRepository
 import com.boosters.promise.data.location.UserGeoLocation
 import com.boosters.promise.data.member.Member
 import com.boosters.promise.data.member.MemberRepository
+import com.boosters.promise.data.notification.NotificationRepository
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
+import com.boosters.promise.data.promise.ServerKeyRepository
 import com.boosters.promise.data.user.UserRepository
+import com.boosters.promise.ui.notification.NotificationService
 import com.naver.maps.map.overlay.Marker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,8 +27,10 @@ class PromiseDetailViewModel @Inject constructor(
     private val promiseRepository: PromiseRepository,
     private val userRepository: UserRepository,
     private val memberRepository: MemberRepository,
-    private val locationRepository: LocationRepository
-) : ViewModel() {
+    private val locationRepository: LocationRepository,
+    private val serverKeyRepository: ServerKeyRepository,
+    private val notificationRepository: NotificationRepository
+    ) : ViewModel() {
 
     private val _promiseInfo = MutableStateFlow<Promise?>(null)
     val promiseInfo: StateFlow<Promise?> get() = _promiseInfo.asStateFlow()
@@ -70,7 +75,11 @@ class PromiseDetailViewModel @Inject constructor(
             promiseInfo.value.let { promise ->
                 if (promise != null) {
                     promiseRepository.removePromise(promise.promiseId).collectLatest { isDeleted ->
-                        _isDeleted.value = isDeleted
+                        if (isDeleted) {
+                            sendNotification()
+                        } else {
+                            _isDeleted.value = isDeleted
+                        }
                         cancel()
                     }
                 }
@@ -96,6 +105,39 @@ class PromiseDetailViewModel @Inject constructor(
                 }
             } catch (e: IllegalStateException) {
                 cancel()
+            }
+        }
+    }
+
+    private fun sendNotification() {
+        viewModelScope.launch {
+            userRepository.getMyInfo().first().onSuccess { myInfo ->
+                val userCodeList =
+                    _promiseInfo.value?.members?.filter { it.userCode != myInfo.userCode }
+                        ?.map { it.userCode }
+                if (userCodeList != null) {
+                    if (userCodeList.isEmpty()) {
+                        return@launch
+                    }
+                }
+
+                val key = serverKeyRepository.getServerKey()
+
+                if (userCodeList != null) {
+                    userRepository.getUserList(userCodeList).collectLatest {
+                        it.forEach { user ->
+                            _promiseInfo.value?.let { promise ->
+                                notificationRepository.sendNotification(
+                                    NotificationService.NOTIFICATION_DELETE,
+                                    promise,
+                                    user.userToken,
+                                    key
+                                )
+                            }
+                        }
+                    }
+                }
+                _isDeleted.value = true
             }
         }
     }
