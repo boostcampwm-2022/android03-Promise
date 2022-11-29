@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface PromiseRepository {
 
-    suspend fun addPromise(promise: Promise): Flow<String>
+    suspend fun addPromise(promise: Promise): Flow<Boolean>
 
     fun removePromise(promiseId: String): Flow<Boolean>
 
