@@ -118,6 +118,9 @@ class PromiseCalendarActivity : AppCompatActivity() {
             theme.resolveAttribute(colorPrimary, it, true)
         }.data
 
+        val promiseDayList = arrayListOf<CalendarDay>()
+
+        val promiseContainDecorator = PromiseContainDecorator(promiseDayList, primaryColor)
         val promiseDayAfterDecorator = PromiseDayAfterDecorator()
         val promiseSaturdayDecorator = PromiseSaturdayDecorator()
         val promiseSundayDecorator = PromiseSundayDecorator()
@@ -138,7 +141,8 @@ class PromiseCalendarActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 promiseCalendarViewModel.myPromiseList.collectLatest {
                     if (it is PromiseListUiState.Success) {
-                        val promiseDayList = it.data.map { promise ->
+                        promiseDayList.clear()
+                        promiseDayList.addAll(it.data.map { promise ->
                             CalendarDay.from(
                                 Calendar.getInstance().apply {
                                     time = dateFormatter.parse(promise.date)
@@ -146,11 +150,10 @@ class PromiseCalendarActivity : AppCompatActivity() {
                             )
                         }.filter { date ->
                             date.isAfter(CalendarDay.today())
-                        }
+                        })
 
-                        binding.materialCalendarViewPromiseCalendar.addDecorator(
-                            PromiseContainDecorator(promiseDayList, primaryColor)
-                        )
+                        binding.materialCalendarViewPromiseCalendar.removeDecorator(promiseContainDecorator)
+                        binding.materialCalendarViewPromiseCalendar.addDecorator(promiseContainDecorator)
                     }
                 }
             }
