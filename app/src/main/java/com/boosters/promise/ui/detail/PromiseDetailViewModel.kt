@@ -11,7 +11,6 @@ import com.boosters.promise.data.member.MemberRepository
 import com.boosters.promise.data.notification.NotificationRepository
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
-import com.boosters.promise.data.promise.ServerKeyRepository
 import com.boosters.promise.data.user.UserRepository
 import com.boosters.promise.ui.notification.AlarmDirector
 import com.boosters.promise.ui.notification.NotificationService
@@ -29,7 +28,6 @@ class PromiseDetailViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val memberRepository: MemberRepository,
     private val locationRepository: LocationRepository,
-    private val serverKeyRepository: ServerKeyRepository,
     private val notificationRepository: NotificationRepository
     ) : ViewModel() {
 
@@ -126,8 +124,6 @@ class PromiseDetailViewModel @Inject constructor(
                     }
                 }
 
-                val key = serverKeyRepository.getServerKey()
-
                 if (userCodeList != null) {
                     userRepository.getUserList(userCodeList).collectLatest {
                         it.forEach { user ->
@@ -136,7 +132,6 @@ class PromiseDetailViewModel @Inject constructor(
                                     NotificationService.NOTIFICATION_DELETE,
                                     promise,
                                     user.userToken,
-                                    key
                                 )
                             }
                         }

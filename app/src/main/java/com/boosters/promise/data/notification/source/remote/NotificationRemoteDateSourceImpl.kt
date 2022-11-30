@@ -12,12 +12,11 @@ class NotificationRemoteDateSourceImpl @Inject constructor(
         title: String,
         message: Promise,
         token: String,
-        key: String
     ) {
         val notification =
             NotificationRequestBody(token, data = NotificationRequestData(title, message))
         try {
-            cloudMessagingService.sendNotification(key, notification)
+            cloudMessagingService.sendNotification(notification)
         } catch (e: Exception) {
             return
         }

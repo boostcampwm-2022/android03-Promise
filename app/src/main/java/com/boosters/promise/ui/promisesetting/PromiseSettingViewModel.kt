@@ -7,7 +7,6 @@ import com.boosters.promise.R
 import com.boosters.promise.data.notification.NotificationRepository
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
-import com.boosters.promise.data.promise.ServerKeyRepository
 import com.boosters.promise.data.user.User
 import com.boosters.promise.data.user.UserRepository
 import com.boosters.promise.ui.invite.model.UserUiModel
@@ -28,7 +27,6 @@ class PromiseSettingViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository,
     private val promiseRepository: PromiseRepository,
     private val userRepository: UserRepository,
-    private val serverKeyRepository: ServerKeyRepository
 ) : ViewModel() {
 
     @Inject
@@ -160,8 +158,6 @@ class PromiseSettingViewModel @Inject constructor(
                 return@launch
             }
 
-            val key = serverKeyRepository.getServerKey()
-
             userRepository.getUserList(userCodeList + currentMembers).collectLatest {
                 it.forEach { user ->
                     val title = if (!userCodeList.contains(user.userCode)) {
@@ -175,7 +171,7 @@ class PromiseSettingViewModel @Inject constructor(
                         NotificationService.NOTIFICATION_ADD
                     }
                     notificationRepository.sendNotification(
-                        title, _promiseUiState.value.copy(promiseId = this@PromiseSettingViewModel.promiseId), user.userToken, key
+                        title, _promiseUiState.value.copy(promiseId = this@PromiseSettingViewModel.promiseId), user.userToken
                     )
                 }
 
