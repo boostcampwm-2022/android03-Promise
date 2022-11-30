@@ -31,7 +31,7 @@ import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.data.user.toPromiseDetailUiModel
 import com.boosters.promise.service.locationupload.LocationUploadForegroundService
 import com.boosters.promise.service.locationupload.LocationUploadServiceConnection
-import com.boosters.promise.ui.util.MapManager
+import com.boosters.promise.ui.detail.util.MapManager
 
 @AndroidEntryPoint
 class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {

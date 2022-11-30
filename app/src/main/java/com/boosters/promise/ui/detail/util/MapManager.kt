@@ -1,4 +1,4 @@
-package com.boosters.promise.ui.util
+package com.boosters.promise.ui.detail.util
 
 import com.boosters.promise.R
 import com.boosters.promise.data.location.GeoLocation
