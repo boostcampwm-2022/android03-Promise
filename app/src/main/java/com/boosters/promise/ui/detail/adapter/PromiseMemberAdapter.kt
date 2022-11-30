@@ -9,9 +9,7 @@ import com.boosters.promise.databinding.ItemPromiseDetailMemberBinding
 import com.boosters.promise.ui.detail.model.MemberUiModel
 
 class PromiseMemberAdapter :
-    ListAdapter<MemberUiModel, PromiseMemberAdapter.PromiseMemberViewHolder>(
-        diffUtil
-    ) {
+    ListAdapter<MemberUiModel, PromiseMemberAdapter.PromiseMemberViewHolder>(diffUtil) {
 
     private var onItemClickListener: OnItemClickListener? = null
 

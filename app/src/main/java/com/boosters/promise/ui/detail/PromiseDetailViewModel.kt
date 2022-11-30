@@ -9,6 +9,7 @@ import com.boosters.promise.data.location.toLatLng
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.user.UserRepository
+import com.boosters.promise.data.user.toMemberUiModel
 import com.boosters.promise.ui.detail.model.MemberUiModel
 import com.naver.maps.map.overlay.Marker
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,11 +37,7 @@ class PromiseDetailViewModel @Inject constructor(
         userRepository.getUserList(promise.members.map { user -> user.userCode })
     }.map {
         it.map { user ->
-            MemberUiModel(
-                user.userCode,
-                user.userName,
-                user.geoLocation
-            )
+            user.toMemberUiModel()
         }
     }
 

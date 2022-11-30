@@ -28,7 +28,7 @@ fun User.toFriendEntity() =
         userCode = userCode
     )
 
-fun User.toPromiseDetailUiModel() =
+fun User.toMemberUiModel() =
     MemberUiModel(
         userCode = userCode,
         userName = userName,
