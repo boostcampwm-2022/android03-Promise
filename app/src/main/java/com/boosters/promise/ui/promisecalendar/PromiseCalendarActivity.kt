@@ -22,7 +22,10 @@ import com.boosters.promise.databinding.ActivityPromiseCalendarBinding
 import com.boosters.promise.ui.detail.PromiseDetailActivity
 import com.boosters.promise.ui.friend.FriendActivity
 import com.boosters.promise.ui.promisecalendar.adapter.PromiseDailyListAdapter
-import com.boosters.promise.ui.promisecalendar.decorator.*
+import com.boosters.promise.ui.promisecalendar.decorator.PromiseContainDecorator
+import com.boosters.promise.ui.promisecalendar.decorator.PromiseSaturdayDecorator
+import com.boosters.promise.ui.promisecalendar.decorator.PromiseSundayDecorator
+import com.boosters.promise.ui.promisecalendar.decorator.PromiseTodayDecorator
 import com.boosters.promise.ui.promisecalendar.model.PromiseListUiState
 import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
 import com.google.android.material.snackbar.Snackbar
@@ -69,7 +72,11 @@ class PromiseCalendarActivity : AppCompatActivity() {
         when (requestCode) {
             PromiseSettingActivity.PERMISSIONS_REQUEST -> {
                 if (grantResults.isNotEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    Snackbar.make(binding.root, R.string.start_item_notification_permission, Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(
+                        binding.root,
+                        R.string.start_item_notification_permission,
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -121,7 +128,6 @@ class PromiseCalendarActivity : AppCompatActivity() {
         val promiseDayList = arrayListOf<CalendarDay>()
 
         val promiseContainDecorator = PromiseContainDecorator(promiseDayList, primaryColor)
-        val promiseDayAfterDecorator = PromiseDayAfterDecorator()
         val promiseSaturdayDecorator = PromiseSaturdayDecorator()
         val promiseSundayDecorator = PromiseSundayDecorator()
         val promiseTodayCalendarDecorator = PromiseTodayDecorator(
@@ -133,8 +139,7 @@ class PromiseCalendarActivity : AppCompatActivity() {
         binding.materialCalendarViewPromiseCalendar.addDecorators(
             promiseTodayCalendarDecorator,
             promiseSaturdayDecorator,
-            promiseSundayDecorator,
-            promiseDayAfterDecorator
+            promiseSundayDecorator
         )
 
         lifecycleScope.launch {
@@ -142,18 +147,22 @@ class PromiseCalendarActivity : AppCompatActivity() {
                 promiseCalendarViewModel.myPromiseList.collectLatest {
                     if (it is PromiseListUiState.Success) {
                         promiseDayList.clear()
-                        promiseDayList.addAll(it.data.map { promise ->
-                            CalendarDay.from(
-                                Calendar.getInstance().apply {
-                                    time = dateFormatter.parse(promise.date)
-                                }
-                            )
-                        }.filter { date ->
-                            date.isAfter(CalendarDay.today())
-                        })
+                        promiseDayList.addAll(
+                            it.data.map { promise ->
+                                CalendarDay.from(
+                                    Calendar.getInstance().apply {
+                                        time = dateFormatter.parse(promise.date)
+                                    }
+                                )
+                            }
+                        )
 
-                        binding.materialCalendarViewPromiseCalendar.removeDecorator(promiseContainDecorator)
-                        binding.materialCalendarViewPromiseCalendar.addDecorator(promiseContainDecorator)
+                        binding.materialCalendarViewPromiseCalendar.removeDecorator(
+                            promiseContainDecorator
+                        )
+                        binding.materialCalendarViewPromiseCalendar.addDecorator(
+                            promiseContainDecorator
+                        )
                     }
                 }
             }
