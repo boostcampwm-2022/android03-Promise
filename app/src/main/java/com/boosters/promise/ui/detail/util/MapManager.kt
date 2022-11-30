@@ -26,22 +26,26 @@ class MapManager(val map: NaverMap) {
         map.moveCamera(cameraUpdate)
     }
 
-    fun moveToLocation(location: GeoLocation) {
-        val cameraUpdate =
-            CameraUpdate.scrollAndZoomTo(location.toLatLng(), LOCATION_ZOOM_LEVEL).animate(
-                CameraAnimation.Easing, MAP_ANIMATION_DURATION
-            )
+    fun moveToLocation(location: GeoLocation?) {
+        if (location != null) {
+            val cameraUpdate =
+                CameraUpdate.scrollAndZoomTo(location.toLatLng(), LOCATION_ZOOM_LEVEL).animate(
+                    CameraAnimation.Easing, MAP_ANIMATION_DURATION
+                )
 
-        map.moveCamera(cameraUpdate)
+            map.moveCamera(cameraUpdate)
+        }
     }
 
-    fun overviewMemberLocation(destination: GeoLocation, users: List<MemberUiModel>) {
-        val bound = calculateBound(destination, users.map { it.geoLocation })
+    fun overviewMemberLocation(destination: GeoLocation?, users: List<MemberUiModel>) {
+        if (destination != null) {
+            val bound = calculateBound(destination, users.map { it.geoLocation })
 
-        val cameraUpdate =
-            CameraUpdate.fitBounds(bound, MAP_OVERVIEW_PADDING)
-                .animate(CameraAnimation.Easing, MAP_ANIMATION_DURATION)
-        map.moveCamera(cameraUpdate)
+            val cameraUpdate =
+                CameraUpdate.fitBounds(bound, MAP_OVERVIEW_PADDING)
+                    .animate(CameraAnimation.Easing, MAP_ANIMATION_DURATION)
+            map.moveCamera(cameraUpdate)
+        }
     }
 
     fun markDestination(location: GeoLocation, marker: Marker) {
