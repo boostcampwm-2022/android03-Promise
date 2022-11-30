@@ -53,7 +53,7 @@ class LocationRemoteDataSource @Inject constructor(
 
     fun getGeoLocations(userCodes: List<String>): Flow<List<UserGeoLocationBody>> =
         locationCollectionReference
-            .whereEqualTo(USER_CODE_KEY, userCodes)
+            .whereIn(USER_CODE_KEY, userCodes)
             .snapshots()
             .map {
                 it.toObjects(UserGeoLocationBody::class.java)
@@ -63,4 +63,5 @@ class LocationRemoteDataSource @Inject constructor(
         const val USER_CODE_KEY = "userCode"
         const val GEO_LOCATION_FIELD = "geoLocation"
     }
+
 }

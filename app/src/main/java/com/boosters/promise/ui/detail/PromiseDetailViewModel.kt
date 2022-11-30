@@ -4,13 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boosters.promise.data.location.GeoLocation
+import com.boosters.promise.data.location.toLatLng
 import com.boosters.promise.data.location.LocationRepository
-import com.boosters.promise.data.location.UserGeoLocation
 import com.boosters.promise.data.member.Member
 import com.boosters.promise.data.member.MemberRepository
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.user.UserRepository
+import com.boosters.promise.ui.detail.model.MemberUiModel
 import com.naver.maps.map.overlay.Marker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -38,17 +40,32 @@ class PromiseDetailViewModel @Inject constructor(
     val isAcceptLocationSharing = MutableStateFlow(false)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val memberLocations: Flow<List<UserGeoLocation?>?> = promiseInfo.flatMapLatest { promise ->
+    val memberLocations: Flow<List<MemberUiModel>?> = promiseInfo.flatMapLatest { promise ->
         if (promise != null) {
+            val users = promise.members
+
             memberRepository.getMembers(promise.promiseId).flatMapLatest { members ->
-                locationRepository.getGeoLocations(
-                    members.filter { member ->
-                        member.isAcceptLocation
-                    }.map { member -> member.userCode }
+                val geoLocations = locationRepository.getGeoLocations(
+                    members.map { member ->
+                        member.userCode
+                    }
                 )
+
+                geoLocations.map { userGeoLocations ->
+                    userGeoLocations.map { userGeoLocation ->
+                        MemberUiModel(
+                            userGeoLocation.userCode,
+                            users.find { user ->
+                                user.userCode == userGeoLocation.userCode
+                            }?.userName ?: "",
+                            userGeoLocation.geoLocation
+                        )
+                    }
+                }
             }
+
         } else {
-            flow<List<UserGeoLocation?>?> { emit(null) }
+            flow { emit(null) }
         }
     }
 
@@ -58,7 +75,8 @@ class PromiseDetailViewModel @Inject constructor(
             promiseInfo.collectLatest { promise ->
                 if (promise != null) {
                     memberMarkers = List(promise.members.size) { Marker() }
-                    isAcceptLocationSharing.value = memberRepository.getIsAcceptLocation(promiseId).first().getOrElse { false }
+                    isAcceptLocationSharing.value =
+                        memberRepository.getIsAcceptLocation(promiseId).first().getOrElse { false }
                     cancel()
                 }
             }
@@ -81,7 +99,8 @@ class PromiseDetailViewModel @Inject constructor(
     fun updateLocationSharingPermission(isAcceptLocationSharing: Boolean) {
         viewModelScope.launch {
             try {
-                val userCode = userRepository.getMyInfo().first().getOrElse { throw IllegalStateException() }.userCode
+                val userCode = userRepository.getMyInfo().first()
+                    .getOrElse { throw IllegalStateException() }.userCode
                 promiseInfo.collectLatest { promise ->
                     if (promise != null) {
                         memberRepository.updateIsAcceptLocation(
@@ -98,6 +117,29 @@ class PromiseDetailViewModel @Inject constructor(
                 cancel()
             }
         }
+    }
+
+    fun checkArrival(destination: GeoLocation, members: List<MemberUiModel>) =
+        members.map { member ->
+            if (member.geoLocation != null) {
+                val distance = calculateDistance(destination, member.geoLocation)
+
+                if (distance < MINIMUM_ARRIVE_DISTANCE) {
+                    member.copy(isArrived = true)
+                } else {
+                    member.copy(isArrived = false)
+                }
+            } else {
+                member.copy(isArrived = false)
+            }
+        }
+
+    private fun calculateDistance(location1: GeoLocation, location2: GeoLocation): Double {
+        return location1.toLatLng().distanceTo(location2.toLatLng())
+    }
+
+    companion object {
+        private const val MINIMUM_ARRIVE_DISTANCE = 50
     }
 
 }

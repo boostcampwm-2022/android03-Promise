@@ -38,7 +38,7 @@ class PromiseMemberListAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: UserUiModel) {
-            binding.userUiState = item
+            binding.userUiModel = item
         }
 
     }

@@ -40,7 +40,7 @@ class InviteMemberAdapter : ListAdapter<UserUiModel, InviteMemberAdapter.InviteM
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(userUiModel: UserUiModel) {
-            binding.user = userUiModel
+            binding.userUiModel = userUiModel
         }
     }
 

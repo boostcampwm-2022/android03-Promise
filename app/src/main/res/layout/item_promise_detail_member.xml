@@ -1,24 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
-            name="user"
-            type="com.boosters.promise.data.user.User" />
+            name="memberUiModel"
+            type="com.boosters.promise.ui.detail.model.MemberUiModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp">
 
         <ImageView
             android:id="@+id/imageView_promiseMemberItem_memberImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:contentDescription="@string/promiseDetail_member"
             android:src="@drawable/ic_profile_image"
             app:layout_constraintBottom_toTopOf="@+id/textView_promiseMemberItem_memberName"
@@ -28,15 +30,27 @@
 
         <TextView
             android:id="@+id/textView_promiseMemberItem_memberName"
-            style="@style/Promise.TextAppearance.SmallBold"
+            style="@style/Promise.TextAppearance.MiddleBold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@{user.userName}"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="@{memberUiModel.userName}"
+            app:layout_constraintBottom_toTopOf="@+id/textView_promiseMemberItem_arrive"
             app:layout_constraintEnd_toEndOf="@+id/imageView_promiseMemberItem_memberImage"
             app:layout_constraintStart_toStartOf="@+id/imageView_promiseMemberItem_memberImage"
             app:layout_constraintTop_toBottomOf="@+id/imageView_promiseMemberItem_memberImage"
             tools:text="홍길동" />
+
+        <TextView
+            android:id="@+id/textView_promiseMemberItem_arrive"
+            style="@style/Promise.TextAppearance.MiddleBlue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/promiseDetail_arrive"
+            android:visibility="@{memberUiModel.arrived ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_promiseMemberItem_memberName" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

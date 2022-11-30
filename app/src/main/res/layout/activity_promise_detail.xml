@@ -10,163 +10,198 @@
             type="com.boosters.promise.ui.detail.PromiseDetailViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.detail.PromiseDetailActivity">
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_promiseDetail"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:elevation="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            tools:context=".ui.detail.PromiseDetailActivity">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_promiseDetail_left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.05" />
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_promiseDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:elevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_promiseDetail_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.95" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_promiseDetail_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.05" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_promiseDetail_bottom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.95" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_promiseDetail_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.95" />
 
-        <TextView
-            android:id="@+id/textView_promiseDetail_promiseTitle"
-            style="@style/Promise.TextAppearance.LargeBold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{viewModel.promiseInfo.title}"
-            app:layout_constraintBottom_toTopOf="@+id/textView_promiseDetail_location"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toStartOf="@+id/guideline_promiseDetail_left"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar_promiseDetail"
-            app:layout_constraintVertical_bias="0"
-            app:layout_constraintVertical_chainStyle="packed"
-            tools:text="부스터즈 모각코" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_promiseDetail_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.95" />
 
-        <TextView
-            android:id="@+id/textView_promiseDetail_location"
-            style="@style/Promise.TextAppearance.MiddleBold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/promiseDetail_location"
-            app:layout_constraintBottom_toTopOf="@+id/textView_promiseDetail_date"
-            app:layout_constraintEnd_toStartOf="@+id/textView_promiseDetail_promiseLocation"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="@+id/textView_promiseDetail_promiseTitle"
-            app:layout_constraintTop_toBottomOf="@+id/textView_promiseDetail_promiseTitle" />
+            <TextView
+                android:id="@+id/textView_promiseDetail_promiseTitle"
+                style="@style/Promise.TextAppearance.LargeBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.promiseInfo.title}"
+                app:layout_constraintBottom_toTopOf="@+id/textView_promiseDetail_location"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="@+id/guideline_promiseDetail_left"
+                app:layout_constraintTop_toBottomOf="@+id/toolbar_promiseDetail"
+                app:layout_constraintVertical_bias="0"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="부스터즈 모각코" />
 
-        <TextView
-            android:id="@+id/textView_promiseDetail_promiseLocation"
-            style="@style/Promise.TextAppearance.MiddleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="@{viewModel.promiseInfo.destinationName}"
-            app:layout_constraintBottom_toBottomOf="@+id/textView_promiseDetail_location"
-            app:layout_constraintEnd_toStartOf="@id/switch_promiseDetail_locationSharing"
-            app:layout_constraintStart_toEndOf="@+id/textView_promiseDetail_location"
-            app:layout_constraintTop_toTopOf="@+id/textView_promiseDetail_location"
-            tools:text="홍대입구역 90번 출구" />
+            <TextView
+                android:id="@+id/textView_promiseDetail_location"
+                style="@style/Promise.TextAppearance.MiddleBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/promiseDetail_location"
+                app:layout_constraintBottom_toTopOf="@+id/textView_promiseDetail_date"
+                app:layout_constraintEnd_toStartOf="@+id/textView_promiseDetail_promiseLocation"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="@+id/textView_promiseDetail_promiseTitle"
+                app:layout_constraintTop_toBottomOf="@+id/textView_promiseDetail_promiseTitle" />
 
-        <TextView
-            android:id="@+id/textView_promiseDetail_date"
-            style="@style/Promise.TextAppearance.MiddleBold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="@string/promiseDetail_date"
-            app:layout_constraintBottom_toTopOf="@+id/fragment_promiseDetail_map"
-            app:layout_constraintEnd_toStartOf="@+id/textView_promiseDetail_promiseDate"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="@+id/textView_promiseDetail_promiseTitle"
-            app:layout_constraintTop_toBottomOf="@+id/textView_promiseDetail_location" />
+            <TextView
+                android:id="@+id/textView_promiseDetail_promiseLocation"
+                style="@style/Promise.TextAppearance.MiddleNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@{viewModel.promiseInfo.destinationName}"
+                app:layout_constraintBottom_toBottomOf="@+id/textView_promiseDetail_location"
+                app:layout_constraintEnd_toStartOf="@id/switch_promiseDetail_locationSharing"
+                app:layout_constraintStart_toEndOf="@+id/textView_promiseDetail_location"
+                app:layout_constraintTop_toTopOf="@+id/textView_promiseDetail_location"
+                tools:text="홍대입구역 90번 출구" />
 
-        <TextView
-            android:id="@+id/textView_promiseDetail_promiseDate"
-            style="@style/Promise.TextAppearance.MiddleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="@{@string/promiseDetail_date_format(viewModel.promiseInfo.date, viewModel.promiseInfo.time)}"
-            app:layout_constraintBottom_toBottomOf="@+id/textView_promiseDetail_date"
-            app:layout_constraintEnd_toStartOf="@id/switch_promiseDetail_locationSharing"
-            app:layout_constraintStart_toEndOf="@+id/textView_promiseDetail_date"
-            app:layout_constraintTop_toTopOf="@+id/textView_promiseDetail_date"
-            tools:text="2022/11/23 17:00" />
+            <TextView
+                android:id="@+id/textView_promiseDetail_date"
+                style="@style/Promise.TextAppearance.MiddleBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/promiseDetail_date"
+                app:layout_constraintBottom_toTopOf="@+id/fragment_promiseDetail_map"
+                app:layout_constraintEnd_toStartOf="@+id/textView_promiseDetail_promiseDate"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="@+id/textView_promiseDetail_promiseTitle"
+                app:layout_constraintTop_toBottomOf="@+id/textView_promiseDetail_location" />
 
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier_promiseDetail_promiseDataAndLocationEnd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="end"
-            app:constraint_referenced_ids="textView_promiseDetail_promiseLocation, textView_promiseDetail_promiseDate" />
+            <TextView
+                android:id="@+id/textView_promiseDetail_promiseDate"
+                style="@style/Promise.TextAppearance.MiddleNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@{@string/promiseDetail_date_format(viewModel.promiseInfo.date, viewModel.promiseInfo.time)}"
+                app:layout_constraintBottom_toBottomOf="@+id/textView_promiseDetail_date"
+                app:layout_constraintEnd_toStartOf="@id/switch_promiseDetail_locationSharing"
+                app:layout_constraintStart_toEndOf="@+id/textView_promiseDetail_date"
+                app:layout_constraintTop_toTopOf="@+id/textView_promiseDetail_date"
+                tools:text="2022/11/23 17:00" />
 
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier_promiseDetail_dateBottom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="textView_promiseDetail_date, textView_promiseDetail_promiseDate" />
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_promiseDetail_promiseDataAndLocationEnd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="end"
+                app:constraint_referenced_ids="textView_promiseDetail_promiseLocation, textView_promiseDetail_promiseDate" />
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/switch_promiseDetail_locationSharing"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/promiseDetail_location_sharing_permission"
-            android:checked="@={viewModel.isAcceptLocationSharing}"
-            android:onCheckedChanged="@{(buttonView, isChecked) -> viewModel.updateLocationSharingPermission(isChecked)}"
-            app:layout_constraintBottom_toTopOf="@id/barrier_promiseDetail_dateBottom"
-            app:layout_constraintEnd_toEndOf="@id/guideline_promiseDetail_right"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@id/barrier_promiseDetail_promiseDataAndLocationEnd"
-            app:layout_constraintTop_toBottomOf="@id/textView_promiseDetail_promiseTitle"
-            app:layout_constraintVertical_bias="1.0" />
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_promiseDetail_dateBottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="textView_promiseDetail_date, textView_promiseDetail_promiseDate" />
 
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragment_promiseDetail_map"
-            android:name="com.naver.maps.map.MapFragment"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            app:layout_constraintBottom_toTopOf="@+id/recyclerView_promiseDetail_memberList"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toStartOf="@+id/guideline_promiseDetail_right"
-            app:layout_constraintStart_toStartOf="@+id/guideline_promiseDetail_left"
-            app:layout_constraintTop_toBottomOf="@+id/barrier_promiseDetail_dateBottom"
-            tools:background="@color/azure_radiance"
-            tools:layout="@layout/activity_start" />
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switch_promiseDetail_locationSharing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="@={viewModel.isAcceptLocationSharing}"
+                android:onCheckedChanged="@{(buttonView, isChecked) -> viewModel.updateLocationSharingPermission(isChecked)}"
+                android:text="@string/promiseDetail_location_sharing_permission"
+                app:layout_constraintBottom_toTopOf="@id/barrier_promiseDetail_dateBottom"
+                app:layout_constraintEnd_toEndOf="@id/guideline_promiseDetail_right"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@id/barrier_promiseDetail_promiseDataAndLocationEnd"
+                app:layout_constraintTop_toBottomOf="@id/textView_promiseDetail_promiseTitle"
+                app:layout_constraintVertical_bias="1.0" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_promiseDetail_memberList"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@id/guideline_promiseDetail_bottom"
-            app:layout_constraintEnd_toStartOf="@+id/guideline_promiseDetail_right"
-            app:layout_constraintStart_toStartOf="@+id/guideline_promiseDetail_left"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_promiseDetail_map"
-            tools:listitem="@layout/item_promise_detail_member" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragment_promiseDetail_map"
+                android:name="com.naver.maps.map.MapFragment"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                app:layout_constraintBottom_toTopOf="@+id/recyclerView_promiseDetail_memberList"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_promiseDetail_right"
+                app:layout_constraintStart_toStartOf="@+id/guideline_promiseDetail_left"
+                app:layout_constraintTop_toBottomOf="@+id/barrier_promiseDetail_dateBottom"
+                tools:background="@color/silver_gray" />
+
+            <ImageButton
+                android:id="@+id/imageButton_promiseDetail_mapOverView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_map_control"
+                android:contentDescription="@string/promiseDetail_overview"
+                android:elevation="5dp"
+                android:padding="5dp"
+                android:src="@drawable/ic_map_overview"
+                app:layout_constraintBottom_toBottomOf="@+id/imageButton_promiseDetail_destination"
+                app:layout_constraintEnd_toStartOf="@+id/imageButton_promiseDetail_destination"
+                app:layout_constraintHorizontal_bias="0.95"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="@+id/guideline_promiseDetail_left"
+                app:layout_constraintTop_toTopOf="@+id/imageButton_promiseDetail_destination" />
+
+            <ImageButton
+                android:id="@+id/imageButton_promiseDetail_destination"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_map_control"
+                android:contentDescription="@string/promiseDetail_destination"
+                android:elevation="5dp"
+                android:padding="5dp"
+                android:src="@drawable/ic_destination_flag"
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_promiseDetail_map"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_promiseDetail_right"
+                app:layout_constraintStart_toEndOf="@+id/imageButton_promiseDetail_mapOverView"
+                app:layout_constraintTop_toTopOf="@+id/fragment_promiseDetail_map"
+                app:layout_constraintVertical_bias="0.95" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView_promiseDetail_memberList"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toTopOf="@id/guideline_promiseDetail_bottom"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_promiseDetail_right"
+                app:layout_constraintStart_toStartOf="@+id/guideline_promiseDetail_left"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_promiseDetail_map"
+                tools:listitem="@layout/item_promise_detail_member" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </layout>

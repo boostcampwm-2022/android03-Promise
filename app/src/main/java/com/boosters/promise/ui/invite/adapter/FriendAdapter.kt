@@ -41,7 +41,7 @@ class FriendAdapter : ListAdapter<UserUiModel, FriendAdapter.FriendViewHolder>(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(userUiModel: UserUiModel) {
-            binding.user = userUiModel
+            binding.userUiModel = userUiModel
 
             if (userUiModel.isSelected) {
                 binding.textViewInviteUserName.setTextAppearance(R.style.Promise_TextAppearance_MiddleGray)
