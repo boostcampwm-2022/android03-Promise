@@ -13,11 +13,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.boosters.promise.R
+import com.boosters.promise.data.location.toLatLng
 import com.boosters.promise.databinding.ActivityPromiseDetailBinding
 import com.boosters.promise.ui.detail.adapter.PromiseMemberAdapter
 import com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity
 import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
 import com.google.android.material.snackbar.Snackbar
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
@@ -27,11 +30,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import android.Manifest.permission
 import android.content.pm.PackageManager
-import com.boosters.promise.data.location.GeoLocation
-import com.boosters.promise.data.user.toMemberUiModel
 import com.boosters.promise.service.locationupload.LocationUploadForegroundService
 import com.boosters.promise.service.locationupload.LocationUploadServiceConnection
-import com.boosters.promise.ui.detail.util.MapManager
+import android.graphics.Color
 
 @AndroidEntryPoint
 class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -47,22 +48,15 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         permission.ACCESS_FINE_LOCATION
     )
     private val requestLocationPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-            val locationPermissionCheckResult = locationPermissions.map {
-                permissions.getOrDefault(it, false)
-            }
-            if (isLocationPermissionGranted(locationPermissionCheckResult)) {
-                startLocationUploadService()
-            }
-        }
-
-    private val locationUploadServiceConnection = LocationUploadServiceConnection()
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_promise_detail)
         setBinding()
+
+        if (checkLocationPermission().not()) requestPermission()
 
         initMap()
         setPromiseInfo()
@@ -81,16 +75,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 showStateSnackbar(R.string.promiseDetail_delete_ask)
             }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        if (checkLocationPermission()) startLocationUploadService() else requestPermission()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        unbindService(locationUploadServiceConnection)
     }
 
     override fun onMapReady(map: NaverMap) {
@@ -179,43 +163,41 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 promiseDetailViewModel.promiseInfo.collectLatest { promise ->
                     launch {
-                        promiseMemberAdapter.submitList(promise.members.map { it.toMemberUiModel() })
+                        promiseMemberAdapter.submitList(promise?.members)
                     }
 
                     launch {
-                        val destinationLocation = promise.destinationGeoLocation
+                        if (promise != null) {
+                            val destinationLocation = promise.destinationGeoLocation.toLatLng()
 
-                        mapManager.markDestination(destinationLocation, destinationMarker)
-                        markUsersLocationOnMap()
-                        initCameraPosition(destinationLocation)
-                        checkArrival(destinationLocation)
+                            mapManager.markDestination(destinationLocation, destinationMarker)
+                            markUsersLocationOnMap()
+                            initCameraPosition(destinationLocation)
+                            checkArrival(destinationLocation)
+                        }
                     }
                 }
             }
         }
     }
 
-    private fun initCameraPosition(destination: GeoLocation) {
-        lifecycleScope.launch {
-            promiseDetailViewModel.memberLocations.collectLatest {
-                mapManager.initCameraPosition(destination, it)
-            }
-        }
+    private fun moveCameraToDestination(location: LatLng, map: NaverMap) {
+        val cameraUpdate = CameraUpdate.scrollTo(location)
+        map.moveCamera(cameraUpdate)
     }
 
-    private fun overviewMemberLocation(destination: GeoLocation) {
-        lifecycleScope.launch {
-            promiseDetailViewModel.memberLocations.collectLatest { memberUiModel ->
-                mapManager.overviewMemberLocation(destination, memberUiModel)
-            }
+    private fun markDestinationOnMap(location: LatLng, map: NaverMap) {
+        destinationMarker.apply {
+            position = location
+            this.map = map
         }
     }
 
     private suspend fun markUsersLocationOnMap() {
         lifecycleScope.launch {
             promiseDetailViewModel.memberLocations.collectLatest {
-                it.forEachIndexed { idx, memberUiModel ->
-                    if (memberUiModel.geoLocation != null) {
+                it?.forEachIndexed { idx, memberUiModel ->
+                    if (memberUiModel?.geoLocation != null) {
                         promiseDetailViewModel.memberMarkers[idx].apply {
                             mapManager.markMemberLocation(
                                 memberUiModel.userName,
@@ -258,13 +240,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             .show()
     }
 
-    private fun startLocationUploadService() {
-        val intent = Intent(this, LocationUploadForegroundService::class.java).apply {
-            putExtra(LocationUploadForegroundService.END_TIME_KEY, DEFAULT_LOCATION_UPLOAD_END_TIME)
-        }
-        bindService(intent, locationUploadServiceConnection, BIND_AUTO_CREATE)
-    }
-
     private fun checkLocationPermission(): Boolean {
         val locationPermissionCheckResult = locationPermissions.map {
             checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
@@ -284,7 +259,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     companion object {
         const val PROMISE_ID_KEY = "promiseId"
-        private const val DEFAULT_LOCATION_UPLOAD_END_TIME = 90_000L
     }
 
 }

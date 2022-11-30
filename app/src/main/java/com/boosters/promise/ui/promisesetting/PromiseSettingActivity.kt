@@ -1,7 +1,6 @@
 package com.boosters.promise.ui.promisesetting
 
 import android.content.Intent
-import android.os.Build
 import android.os.Build.VERSION
 import android.os.Bundle
 import android.text.format.DateFormat

@@ -11,10 +11,10 @@ data class PromiseBody(
     val destinationGeoLocation: GeoLocation = GeoLocation(),
     val date: String = "",
     val time: String = "",
-    val members: List<User> = listOf()
+    val members: List<String> = emptyList()
 )
 
-fun PromiseBody.toPromise() =
+fun PromiseBody.toPromise(members: List<User>) =
     Promise(
         promiseId = promiseId,
         title = title,
