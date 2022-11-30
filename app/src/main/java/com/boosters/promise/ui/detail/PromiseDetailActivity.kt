@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 import android.Manifest.permission
 import android.content.pm.PackageManager
 import com.boosters.promise.data.location.GeoLocation
-import com.boosters.promise.data.user.toPromiseDetailUiModel
+import com.boosters.promise.data.user.toMemberUiModel
 import com.boosters.promise.service.locationupload.LocationUploadForegroundService
 import com.boosters.promise.service.locationupload.LocationUploadServiceConnection
 import com.boosters.promise.ui.detail.util.MapManager
@@ -70,8 +70,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         setSupportActionBar(binding.toolbarPromiseDetail)
         supportActionBar?.apply {
-            setDisplayShowCustomEnabled(true)
             setDisplayShowTitleEnabled(false)
+            setDisplayHomeAsUpEnabled(true)
         }
 
         promiseDetailViewModel.isDeleted.observe(this) {
@@ -179,7 +179,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 promiseDetailViewModel.promiseInfo.collectLatest { promise ->
                     launch {
-                        promiseMemberAdapter.submitList(promise.members.map { it.toPromiseDetailUiModel() })
+                        promiseMemberAdapter.submitList(promise.members.map { it.toMemberUiModel() })
                     }
 
                     launch {
