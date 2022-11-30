@@ -9,10 +9,9 @@ import retrofit2.http.POST
 
 interface CloudMessagingService {
 
-    @Headers("Content-Type: application/json")
     @POST("fcm/send")
     suspend fun sendNotification(
-        @Header("Authorization") key: String,
+        //@Header("Authorization") key: String,
         @Body notification: NotificationRequestBody
     ): Result<ResponseBody>
 

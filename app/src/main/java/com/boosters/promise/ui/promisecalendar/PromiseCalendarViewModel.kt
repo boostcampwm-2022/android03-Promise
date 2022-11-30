@@ -1,7 +1,9 @@
 package com.boosters.promise.ui.promisecalendar
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boosters.promise.data.alarm.AlarmRepository
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.user.UserRepository
@@ -15,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class PromiseCalendarViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val promiseRepository: PromiseRepository
+    private val promiseRepository: PromiseRepository,
+    private val alarmRepository: AlarmRepository
 ) : ViewModel() {
 
     private val _myInfo: MutableStateFlow<UserUiState> = MutableStateFlow(UserUiState.Loading)

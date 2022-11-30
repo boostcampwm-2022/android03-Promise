@@ -8,8 +8,12 @@ class AlarmRepositoryImpl @Inject constructor(
     private val alarmLocalDataSource: AlarmLocalDataSource
 ) : AlarmRepository {
 
-    override suspend fun getAlarm(promiseId: String): Alarm {
-        return alarmLocalDataSource.getAlarm(promiseId).toAlarm()
+    override suspend fun getAlarm(promiseId: String): Result<Alarm> {
+        return alarmLocalDataSource.getAlarm(promiseId).mapCatching { it.toAlarm() }
+    }
+
+    override suspend fun getAlarms(): List<Alarm> {
+        return alarmLocalDataSource.getAlarms().map { it.toAlarm() }
     }
 
     override suspend fun getAlarmCount(): Int {

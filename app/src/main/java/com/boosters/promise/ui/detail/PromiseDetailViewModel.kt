@@ -13,6 +13,7 @@ import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.promise.ServerKeyRepository
 import com.boosters.promise.data.user.UserRepository
+import com.boosters.promise.ui.notification.AlarmDirector
 import com.boosters.promise.ui.notification.NotificationService
 import com.naver.maps.map.overlay.Marker
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,6 +32,9 @@ class PromiseDetailViewModel @Inject constructor(
     private val serverKeyRepository: ServerKeyRepository,
     private val notificationRepository: NotificationRepository
     ) : ViewModel() {
+
+    @Inject
+    lateinit var alarmDirector: AlarmDirector
 
     private val _promiseInfo = MutableStateFlow<Promise?>(null)
     val promiseInfo: StateFlow<Promise?> get() = _promiseInfo.asStateFlow()
@@ -76,6 +80,7 @@ class PromiseDetailViewModel @Inject constructor(
                 if (promise != null) {
                     promiseRepository.removePromise(promise.promiseId).collectLatest { isDeleted ->
                         if (isDeleted) {
+                            alarmDirector.removeAlarm(promise.promiseId)
                             sendNotification()
                         } else {
                             _isDeleted.value = isDeleted

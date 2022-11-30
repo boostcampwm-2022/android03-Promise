@@ -13,10 +13,6 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -24,7 +20,6 @@ class NotificationService : FirebaseMessagingService() {
 
     @Inject
     lateinit var alarmDirector: AlarmDirector
-    private val coroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         if (remoteMessage.data.isNotEmpty()) {
@@ -37,10 +32,7 @@ class NotificationService : FirebaseMessagingService() {
         val promise = Gson().fromJson(remoteMessage.data[MESSAGE_BODY], Promise::class.java)
 
         val contentText = if (remoteMessage.data[MESSAGE_TITLE] == NOTIFICATION_EDIT) {
-            coroutineScope.launch {
-                alarmDirector.removeAlarm(promise.promiseId, true)
-                alarmDirector.registerAlarm(promise)
-            }
+            alarmDirector.updateAlarm(promise)
             String.format(getString(R.string.notification_edit), promise.date)
         } else if (remoteMessage.data[MESSAGE_TITLE] == NOTIFICATION_ADD) {
             alarmDirector.registerAlarm(promise)

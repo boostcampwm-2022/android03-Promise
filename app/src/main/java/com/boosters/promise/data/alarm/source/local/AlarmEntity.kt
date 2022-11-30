@@ -8,11 +8,17 @@ import com.boosters.promise.data.alarm.Alarm
 @Entity
 data class AlarmEntity(
     @PrimaryKey val promiseId: String,
-    @ColumnInfo(name = "requestCode") val requestCode: Int
+    @ColumnInfo(name = "requestCode") val requestCode: Int,
+    @ColumnInfo(name = "promiseTitle") val promiseTitle: String,
+    @ColumnInfo(name = "promiseDate") val promiseDate: String,
+    @ColumnInfo(name = "promiseTime") val promiseTime: String
 )
 
 fun AlarmEntity.toAlarm() = Alarm(
     promiseId = promiseId,
-    requestCode = requestCode
+    requestCode = requestCode,
+    promiseTitle = promiseTitle,
+    promiseDate = promiseDate,
+    promiseTime = promiseTime
 )
 

@@ -1,6 +1,5 @@
 package com.boosters.promise.ui.promisesetting
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.location.GeoLocation
@@ -13,6 +12,7 @@ import com.boosters.promise.data.user.User
 import com.boosters.promise.data.user.UserRepository
 import com.boosters.promise.ui.invite.model.UserUiModel
 import com.boosters.promise.ui.invite.model.toUser
+import com.boosters.promise.ui.notification.AlarmDirector
 import com.boosters.promise.ui.notification.NotificationService
 import com.boosters.promise.ui.promisesetting.model.PromiseSettingEvent
 import com.boosters.promise.ui.promisesetting.model.PromiseSettingUiState
@@ -30,6 +30,9 @@ class PromiseSettingViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val serverKeyRepository: ServerKeyRepository
 ) : ViewModel() {
+
+    @Inject
+    lateinit var alarmDirector: AlarmDirector
 
     private val _dialogEventFlow = MutableSharedFlow<PromiseSettingEvent>()
     val dialogEventFlow: SharedFlow<PromiseSettingEvent> = _dialogEventFlow.asSharedFlow()
@@ -143,8 +146,13 @@ class PromiseSettingViewModel @Inject constructor(
     }
 
     private fun sendNotification() {
+        if (_promiseUiState.value.promiseId.isNotEmpty()) {
+            alarmDirector.updateAlarm(_promiseUiState.value.copy(promiseId = this@PromiseSettingViewModel.promiseId))
+        } else {
+            alarmDirector.registerAlarm(_promiseUiState.value.copy(promiseId = this@PromiseSettingViewModel.promiseId))
+        }
         viewModelScope.launch {
-            val userCodeList =
+           val userCodeList =
                 _promiseUiState.value.members.filter { it.userCode != myInfo.userCode }
                     .map { it.userCode }
             if ((userCodeList + currentMembers).isEmpty()) {
@@ -155,8 +163,6 @@ class PromiseSettingViewModel @Inject constructor(
             val key = serverKeyRepository.getServerKey()
 
             userRepository.getUserList(userCodeList + currentMembers).collectLatest {
-                Log.d("delete", "${userCodeList}")
-                Log.d("delete", "${it}")
                 it.forEach { user ->
                     val title = if (!userCodeList.contains(user.userCode)) {
                         NotificationService.NOTIFICATION_DELETE
@@ -172,6 +178,7 @@ class PromiseSettingViewModel @Inject constructor(
                         title, _promiseUiState.value.copy(promiseId = this@PromiseSettingViewModel.promiseId), user.userToken, key
                     )
                 }
+
                 changeUiState(PromiseSettingUiState.Success)
             }
         }

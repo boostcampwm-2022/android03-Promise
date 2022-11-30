@@ -5,14 +5,10 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Context.ALARM_SERVICE
 import android.content.Intent
-import android.util.Log
 import com.boosters.promise.data.alarm.Alarm
 import com.boosters.promise.data.alarm.AlarmRepository
 import com.boosters.promise.data.promise.Promise
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
 
 class AlarmDirector(
@@ -33,13 +29,29 @@ class AlarmDirector(
         cal.set(Calendar.HOUR_OF_DAY, time[0])
         cal.set(Calendar.MINUTE, time[1])
 
+        if (Calendar.getInstance() >= cal) {
+            coroutineScope.launch {
+                async {
+                    alarmRepository.getAlarm(promise.promiseId)
+                }.await().onSuccess {
+                    alarmRepository.deleteAlarm(promise.promiseId)
+                }
+                cancel()
+            }
+            return
+        }
+
         val requestCode = (date.joinToString("").substring(3) + time.joinToString("")).toInt()
         coroutineScope.launch {
             launch {
                 alarmRepository.addAlarm(Alarm(
                     promise.promiseId,
-                    requestCode
+                    requestCode,
+                    promise.title,
+                    promise.date,
+                    promise.time
                 ))
+                cancel()
             }
         }
 
@@ -52,27 +64,43 @@ class AlarmDirector(
             context, requestCode, intent,
             PendingIntent.FLAG_IMMUTABLE)
 
-        Log.d("register", "등록 ${requestCode}")
         alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP, // 절전 모드일 때도 알람 발생
-            cal.timeInMillis,
+            AlarmManager.RTC_WAKEUP,
+            cal.timeInMillis - ONE_HOUR_IN_Millis,
             pendingIntent
         )
     }
 
-    fun removeAlarm(promiseId: String, isUpdate: Boolean = false) {
+    fun removeAlarm(promiseId: String) {
         val intent = Intent(context, AlarmReceiver::class.java)
         coroutineScope.launch {
-            val requestCode = async {
+            async {
                 alarmRepository.getAlarm(promiseId)
-            }.await().requestCode
-            val pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_IMMUTABLE)
-            alarmManager.cancel(pendingIntent)
-            Log.d("register", "취소 ${requestCode}")
-            if (!isUpdate) {
+            }.await().onSuccess { alarm ->
+                val pendingIntent = PendingIntent.getBroadcast(context, alarm.requestCode, intent, PendingIntent.FLAG_IMMUTABLE)
+                alarmManager.cancel(pendingIntent)
                 alarmRepository.deleteAlarm(promiseId)
             }
+            cancel()
         }
+    }
+
+    fun updateAlarm(promise: Promise) {
+        val intent = Intent(context, AlarmReceiver::class.java)
+        coroutineScope.launch {
+            async {
+                alarmRepository.getAlarm(promise.promiseId)
+            }.await().onSuccess { alarm ->
+                val pendingIntent = PendingIntent.getBroadcast(context, alarm.requestCode, intent, PendingIntent.FLAG_IMMUTABLE)
+                alarmManager.cancel(pendingIntent)
+                registerAlarm(promise)
+            }
+            cancel()
+        }
+    }
+
+    companion object {
+        private const val ONE_HOUR_IN_Millis = 3600000
     }
 
 }
