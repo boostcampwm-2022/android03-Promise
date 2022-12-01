@@ -1,6 +1,5 @@
 package com.boosters.promise.ui.promisecalendar
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.alarm.AlarmRepository

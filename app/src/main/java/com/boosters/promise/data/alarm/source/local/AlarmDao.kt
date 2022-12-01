@@ -14,13 +14,10 @@ interface AlarmDao {
     @Query("SELECT * FROM AlarmEntity")
     suspend fun getAlarms(): List<AlarmEntity>
 
-    @Query("SELECT COUNT(*) FROM AlarmEntity")
-    suspend fun getAlarmCount(): Int
-
     @Insert(onConflict = REPLACE)
-    suspend fun insertAlarm(alarm: AlarmEntity): Long
+    suspend fun insertAlarm(alarm: AlarmEntity)
 
     @Query("DELETE FROM AlarmEntity WHERE promiseId = :promiseId")
-    suspend fun deleteAlarm(promiseId: String): Int
+    suspend fun deleteAlarm(promiseId: String)
 
 }

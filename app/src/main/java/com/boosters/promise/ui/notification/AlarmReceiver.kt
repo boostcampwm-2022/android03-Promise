@@ -27,51 +27,59 @@ class AlarmReceiver : BroadcastReceiver() {
         val pendingResult = goAsync()
 
         if (intent.action.equals("android.intent.action.BOOT_COMPLETED")) {
-            coroutineScope.launch {
-                val alarms = async {
-                    alarmRepository.getAlarms()
-                }.await()
-                alarms.forEach {
-                    alarmDirector.registerAlarm(
-                        Promise(
-                            promiseId = it.promiseId,
-                            date = it.promiseDate,
-                            time = it.promiseTime,
-                            title = it.promiseTitle,
-                        )
-                    )
-                }
-                cancel()
-            }
+            callAlarm()
         } else {
-            val promiseId = intent.getStringExtra("promiseId") ?: return
-            val promiseTitle = intent.getStringExtra("promiseTitle")
-            val promiseDate = intent.getStringExtra("promiseDate")
+            val promiseId = intent.getStringExtra(AlarmDirector.PROMISE_ID) ?: return
+            val promiseTitle = intent.getStringExtra(AlarmDirector.PROMISE_TITLE)
+            val promiseDate = intent.getStringExtra(AlarmDirector.PROMISE_DATE)
 
             coroutineScope.launch {
                 alarmRepository.deleteAlarm(promiseId)
                 cancel()
             }
 
-            val notificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(createChannel())
-            val builder = NotificationCompat.Builder(context, NotificationService.CHANNEL_ID)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(promiseTitle)
-                .setContentText(
-                    String.format(
-                        context.getString(R.string.notification_request),
-                        promiseDate
-                    )
-                )
-                .setAutoCancel(true)
-                .setCategory(Notification.CATEGORY_MESSAGE)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-            notificationManager.notify(System.currentTimeMillis().toInt(), builder.build())
+            showNotification(context, promiseTitle, promiseDate)
         }
 
         pendingResult.finish()
+    }
+
+    private fun callAlarm() {
+        coroutineScope.launch {
+            val alarms = async {
+                alarmRepository.getAlarms()
+            }.await()
+            alarms.forEach {
+                alarmDirector.registerAlarm(
+                    Promise(
+                        promiseId = it.promiseId,
+                        date = it.promiseDate,
+                        time = it.promiseTime,
+                        title = it.promiseTitle,
+                    )
+                )
+            }
+            cancel()
+        }
+    }
+
+    private fun showNotification(context: Context, promiseTitle: String?, promiseDate: String?) {
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(createChannel())
+        val builder = NotificationCompat.Builder(context, NotificationService.CHANNEL_ID)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentTitle(promiseTitle)
+            .setContentText(
+                String.format(
+                    context.getString(R.string.notification_request),
+                    promiseDate
+                )
+            )
+            .setAutoCancel(true)
+            .setCategory(Notification.CATEGORY_MESSAGE)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+        notificationManager.notify(System.currentTimeMillis().toInt(), builder.build())
     }
 
     private fun createChannel(): NotificationChannel {

@@ -30,27 +30,8 @@ class NotificationService : FirebaseMessagingService() {
     private fun sendNotification(remoteMessage: RemoteMessage) {
         val uniId = System.currentTimeMillis().toInt()
         val promise = Gson().fromJson(remoteMessage.data[MESSAGE_BODY], Promise::class.java)
-
-        val contentText = if (remoteMessage.data[MESSAGE_TITLE] == NOTIFICATION_EDIT) {
-            alarmDirector.updateAlarm(promise)
-            String.format(getString(R.string.notification_edit), promise.date)
-        } else if (remoteMessage.data[MESSAGE_TITLE] == NOTIFICATION_ADD) {
-            alarmDirector.registerAlarm(promise)
-            String.format(getString(R.string.notification_add), promise.date)
-        } else {
-            alarmDirector.removeAlarm(promise.promiseId)
-            String.format(getString(R.string.notification_delete), promise.date)
-        }
-
-        val intent = if (remoteMessage.data[MESSAGE_TITLE] == NOTIFICATION_DELETE) {
-            Intent(this, PromiseCalendarActivity::class.java)
-        } else {
-            Intent(this, PromiseDetailActivity::class.java).putExtra(PromiseCalendarActivity.PROMISE_ID_KEY, promise.promiseId)
-        }
-        val pendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
-            addNextIntentWithParentStack(intent)
-            getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
-        }
+        val contentText = getContentText(remoteMessage.data[MESSAGE_TITLE], promise)
+        val pendingIntent = getPendingIntent(remoteMessage.data[MESSAGE_TITLE], promise.promiseId)
 
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -64,6 +45,36 @@ class NotificationService : FirebaseMessagingService() {
             .setCategory(Notification.CATEGORY_MESSAGE)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
         notificationManager.notify(uniId, builder.build())
+    }
+
+    private fun getPendingIntent(title: String?, promiseId: String): PendingIntent? {
+        val intent = if (title == NOTIFICATION_DELETE) {
+            Intent(this, PromiseCalendarActivity::class.java)
+        } else {
+            Intent(this, PromiseDetailActivity::class.java).putExtra(PromiseCalendarActivity.PROMISE_ID_KEY, promiseId)
+        }
+        val pendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
+            addNextIntentWithParentStack(intent)
+            getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+        return pendingIntent
+    }
+
+    private fun getContentText(title: String?, promise: Promise): String {
+        return when (title) {
+            NOTIFICATION_EDIT -> {
+                alarmDirector.updateAlarm(promise)
+                String.format(getString(R.string.notification_edit), promise.date)
+            }
+            NOTIFICATION_ADD -> {
+                alarmDirector.registerAlarm(promise)
+                String.format(getString(R.string.notification_add), promise.date)
+            }
+            else -> {
+                alarmDirector.removeAlarm(promise.promiseId)
+                String.format(getString(R.string.notification_delete), promise.date)
+            }
+        }
     }
 
     private fun createChannel(): NotificationChannel {

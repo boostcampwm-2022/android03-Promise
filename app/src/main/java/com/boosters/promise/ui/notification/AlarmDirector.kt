@@ -20,15 +20,10 @@ class AlarmDirector(
     private val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
 
     fun registerAlarm(promise: Promise) {
-        val date = promise.date.split("/").map { it.toInt() }
-        val time = promise.time.split(":").map { it.toInt() }
-        val cal = Calendar.getInstance()
-        cal.set(Calendar.YEAR, date[0])
-        cal.set(Calendar.MONTH, date[1] - 1)
-        cal.set(Calendar.DAY_OF_MONTH, date[2])
-        cal.set(Calendar.HOUR_OF_DAY, time[0])
-        cal.set(Calendar.MINUTE, time[1])
+        val date = promise.date.split(DATE_SPLIT).map { it.toInt() }
+        val time = promise.time.split(TIME_SPLIT).map { it.toInt() }
 
+        val cal = transferToCalendar(date, time)
         if (Calendar.getInstance() >= cal) {
             coroutineScope.launch {
                 async {
@@ -42,6 +37,15 @@ class AlarmDirector(
         }
 
         val requestCode = (date.joinToString("").substring(3) + time.joinToString("")).toInt()
+        addAlarm(promise, requestCode)
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            cal.timeInMillis - ONE_HOUR_IN_MILLIS,
+            getPendingIntent(promise, requestCode)
+        )
+    }
+
+    private fun addAlarm(promise: Promise, requestCode: Int) {
         coroutineScope.launch {
             launch {
                 alarmRepository.addAlarm(Alarm(
@@ -54,20 +58,16 @@ class AlarmDirector(
                 cancel()
             }
         }
-
+    }
+    private fun getPendingIntent(promise: Promise, requestCode: Int): PendingIntent {
         val intent = Intent(context, AlarmReceiver::class.java)
-            .putExtra("promiseId", promise.promiseId)
-            .putExtra("promiseTitle", promise.title)
-            .putExtra("promiseDate", promise.date)
+            .putExtra(PROMISE_ID, promise.promiseId)
+            .putExtra(PROMISE_TITLE, promise.title)
+            .putExtra(PROMISE_DATE, promise.date)
 
-        val pendingIntent = PendingIntent.getBroadcast(
+        return PendingIntent.getBroadcast(
             context, requestCode, intent,
-            PendingIntent.FLAG_IMMUTABLE)
-
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            cal.timeInMillis - ONE_HOUR_IN_Millis,
-            pendingIntent
+            PendingIntent.FLAG_IMMUTABLE
         )
     }
 
@@ -99,8 +99,24 @@ class AlarmDirector(
         }
     }
 
+    private fun transferToCalendar(date: List<Int>, time: List<Int>): Calendar {
+        val cal = Calendar.getInstance()
+        cal.set(Calendar.YEAR, date[0])
+        cal.set(Calendar.MONTH, date[1] - 1)
+        cal.set(Calendar.DAY_OF_MONTH, date[2])
+        cal.set(Calendar.HOUR_OF_DAY, time[0])
+        cal.set(Calendar.MINUTE, time[1])
+
+        return cal
+    }
+
     companion object {
-        private const val ONE_HOUR_IN_Millis = 3600000
+        private const val ONE_HOUR_IN_MILLIS = 3_600_000
+        private const val DATE_SPLIT = "/"
+        private const val TIME_SPLIT = ":"
+        const val PROMISE_ID = "promiseId"
+        const val PROMISE_TITLE = "promiseTitle"
+        const val PROMISE_DATE = "promiseDate"
     }
 
 }

@@ -89,7 +89,7 @@ class PromiseSettingActivity : AppCompatActivity() {
                             Intent(this@PromiseSettingActivity, PromiseDetailActivity::class.java)
                         intent.putExtra(
                             PromiseCalendarActivity.PROMISE_ID_KEY,
-                            promiseSettingViewModel.promiseUiState.value
+                            promiseSettingViewModel.promiseUiState.value.promiseId
                         )
                         startActivity(intent)
                         finish()

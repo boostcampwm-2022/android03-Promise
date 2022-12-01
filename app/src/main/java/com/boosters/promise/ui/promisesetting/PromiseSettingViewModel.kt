@@ -85,12 +85,14 @@ class PromiseSettingViewModel @Inject constructor(
         viewModelScope.launch {
             val members = promise.members.toMutableList()
             members.add(myInfo.copy(userToken = ""))
-            promiseRepository.addPromise(promise.copy(members = members)).collect { promiseId ->
-                if (promiseId.isEmpty()) {
-                    changeUiState(PromiseSettingUiState.Fail(R.string.promiseSetting_fail))
-                } else {
-                    this@PromiseSettingViewModel.promiseId = promiseId
-                    sendNotification()
+            promiseRepository.addPromise(promise.copy(members = members)).collect { result ->
+                result.onSuccess { id ->
+                    if (id.isEmpty()) {
+                        changeUiState(PromiseSettingUiState.Fail(R.string.promiseSetting_fail))
+                    } else {
+                        promiseId = id
+                        sendNotification()
+                    }
                 }
             }
         }
@@ -144,16 +146,20 @@ class PromiseSettingViewModel @Inject constructor(
     }
 
     private fun sendNotification() {
+        val alarmPromise = _promiseUiState.value.copy(promiseId = promiseId)
         if (_promiseUiState.value.promiseId.isNotEmpty()) {
-            alarmDirector.updateAlarm(_promiseUiState.value.copy(promiseId = this@PromiseSettingViewModel.promiseId))
+            alarmDirector.updateAlarm(alarmPromise)
         } else {
-            alarmDirector.registerAlarm(_promiseUiState.value.copy(promiseId = this@PromiseSettingViewModel.promiseId))
+            alarmDirector.registerAlarm(alarmPromise)
         }
         viewModelScope.launch {
            val userCodeList =
                 _promiseUiState.value.members.filter { it.userCode != myInfo.userCode }
                     .map { it.userCode }
             if ((userCodeList + currentMembers).isEmpty()) {
+                _promiseUiState.update { 
+                    alarmPromise
+                }
                 changeUiState(PromiseSettingUiState.Success)
                 return@launch
             }
@@ -171,10 +177,12 @@ class PromiseSettingViewModel @Inject constructor(
                         NotificationService.NOTIFICATION_ADD
                     }
                     notificationRepository.sendNotification(
-                        title, _promiseUiState.value.copy(promiseId = this@PromiseSettingViewModel.promiseId), user.userToken
+                        title, _promiseUiState.value.copy(promiseId = promiseId), user.userToken
                     )
                 }
-
+                _promiseUiState.update {
+                    alarmPromise
+                }
                 changeUiState(PromiseSettingUiState.Success)
             }
         }

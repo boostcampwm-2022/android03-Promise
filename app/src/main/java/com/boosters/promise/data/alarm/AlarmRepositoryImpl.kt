@@ -16,15 +16,11 @@ class AlarmRepositoryImpl @Inject constructor(
         return alarmLocalDataSource.getAlarms().map { it.toAlarm() }
     }
 
-    override suspend fun getAlarmCount(): Int {
-        return alarmLocalDataSource.getAlarmCount()
-    }
-
-    override suspend fun addAlarm(alarm: Alarm): Long {
+    override suspend fun addAlarm(alarm: Alarm) {
         return alarmLocalDataSource.insertAlarm(alarm.toAlarmEntity())
     }
 
-    override suspend fun deleteAlarm(promiseId: String): Int {
+    override suspend fun deleteAlarm(promiseId: String) {
         return alarmLocalDataSource.deleteAlarm(promiseId)
     }
 

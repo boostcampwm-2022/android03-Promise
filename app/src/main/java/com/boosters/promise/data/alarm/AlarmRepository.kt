@@ -6,10 +6,8 @@ interface AlarmRepository {
 
     suspend fun getAlarms(): List<Alarm>
 
-    suspend fun getAlarmCount(): Int
+    suspend fun addAlarm(alarm: Alarm)
 
-    suspend fun addAlarm(alarm: Alarm): Long
-
-    suspend fun deleteAlarm(promiseId: String): Int
+    suspend fun deleteAlarm(promiseId: String)
 
 }

@@ -118,10 +118,8 @@ class PromiseDetailViewModel @Inject constructor(
                 val userCodeList =
                     _promiseInfo.value?.members?.filter { it.userCode != myInfo.userCode }
                         ?.map { it.userCode }
-                if (userCodeList != null) {
-                    if (userCodeList.isEmpty()) {
-                        return@launch
-                    }
+                if (userCodeList != null && userCodeList.isEmpty()) {
+                    return@launch
                 }
 
                 if (userCodeList != null) {

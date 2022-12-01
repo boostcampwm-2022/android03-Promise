@@ -6,10 +6,8 @@ interface AlarmLocalDataSource {
 
     suspend fun getAlarms(): List<AlarmEntity>
 
-    suspend fun getAlarmCount(): Int
+    suspend fun insertAlarm(alarm: AlarmEntity)
 
-    suspend fun insertAlarm(alarm: AlarmEntity): Long
-
-    suspend fun deleteAlarm(promiseId: String): Int
+    suspend fun deleteAlarm(promiseId: String)
 
 }

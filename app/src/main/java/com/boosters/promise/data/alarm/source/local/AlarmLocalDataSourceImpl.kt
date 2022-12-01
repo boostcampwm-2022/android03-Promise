@@ -16,16 +16,12 @@ class AlarmLocalDataSourceImpl @Inject constructor(
         return alarmDao.getAlarms()
     }
 
-    override suspend fun getAlarmCount(): Int {
-        return alarmDao.getAlarmCount()
+    override suspend fun insertAlarm(alarm: AlarmEntity) {
+        alarmDao.insertAlarm(alarm)
     }
 
-    override suspend fun insertAlarm(alarm: AlarmEntity): Long {
-        return alarmDao.insertAlarm(alarm)
-    }
-
-    override suspend fun deleteAlarm(promiseId: String): Int {
-        return alarmDao.deleteAlarm(promiseId)
+    override suspend fun deleteAlarm(promiseId: String) {
+        alarmDao.deleteAlarm(promiseId)
     }
 
 }
