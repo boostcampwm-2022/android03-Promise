@@ -42,7 +42,7 @@ class PromiseSettingViewModel @Inject constructor(
 
     private val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT)
     private lateinit var myInfo: User
-    private var currentMembers = listOf<String>()
+    private var currentMemberCodeList = listOf<String>()
     private var promiseId = ""
 
     init {
@@ -134,7 +134,7 @@ class PromiseSettingViewModel @Inject constructor(
             val members = promise.members.filter { user -> user.userCode != myInfo.userCode }
             promise.copy(members = members)
         }
-        currentMembers = _promiseUiState.value.members.map { it.userCode }
+        currentMemberCodeList = _promiseUiState.value.members.map { it.userCode }
     }
 
     private fun changeUiState(state: PromiseSettingUiState) {
@@ -154,7 +154,7 @@ class PromiseSettingViewModel @Inject constructor(
            val userCodeList =
                 _promiseUiState.value.members.filter { it.userCode != myInfo.userCode }
                     .map { it.userCode }
-            if ((userCodeList + currentMembers).isEmpty()) {
+            if ((userCodeList + currentMemberCodeList).isEmpty()) {
                 _promiseUiState.update {
                     alarmPromise
                 }
@@ -162,12 +162,12 @@ class PromiseSettingViewModel @Inject constructor(
                 return@launch
             }
 
-            userRepository.getUserList(userCodeList + currentMembers).collectLatest {
+            userRepository.getUserList(userCodeList + currentMemberCodeList).collectLatest {
                 it.forEach { user ->
                     val title = if (!userCodeList.contains(user.userCode)) {
                         NotificationService.NOTIFICATION_DELETE
                     } else if (userCodeList.contains(user.userCode)
-                        && currentMembers.contains(user.userCode)
+                        && currentMemberCodeList.contains(user.userCode)
                         && _promiseUiState.value.promiseId.isNotEmpty()
                     ) {
                         NotificationService.NOTIFICATION_EDIT
