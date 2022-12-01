@@ -8,11 +8,11 @@ class NotiHeaderInterceptor : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Authorization", "key=${BuildConfig.SERVER_KEY}")
-                .build()
+            .addHeader("Content-Type", "application/json")
+            .addHeader("Authorization", "key=${BuildConfig.SERVER_KEY}")
+            .build()
 
         return chain.proceed(request)
-
     }
+
 }

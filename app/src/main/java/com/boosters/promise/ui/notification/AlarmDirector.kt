@@ -8,7 +8,9 @@ import android.content.Intent
 import com.boosters.promise.data.alarm.Alarm
 import com.boosters.promise.data.alarm.AlarmRepository
 import com.boosters.promise.data.promise.Promise
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 
 class AlarmDirector(
@@ -44,15 +46,18 @@ class AlarmDirector(
 
     private fun addAlarm(promise: Promise, requestCode: Int) {
         coroutineScope.launch {
-            alarmRepository.addAlarm(Alarm(
-                promise.promiseId,
-                requestCode,
-                promise.title,
-                promise.date,
-                promise.time
-            ))
+            alarmRepository.addAlarm(
+                Alarm(
+                    promise.promiseId,
+                    requestCode,
+                    promise.title,
+                    promise.date,
+                    promise.time
+                )
+            )
         }
     }
+
     private fun getPendingIntent(promise: Promise, requestCode: Int): PendingIntent {
         val intent = Intent(context, AlarmReceiver::class.java)
             .putExtra(PROMISE_ID, promise.promiseId)
@@ -69,7 +74,12 @@ class AlarmDirector(
         val intent = Intent(context, AlarmReceiver::class.java)
         coroutineScope.launch {
             alarmRepository.getAlarm(promiseId).onSuccess { alarm ->
-                val pendingIntent = PendingIntent.getBroadcast(context, alarm.requestCode, intent, PendingIntent.FLAG_IMMUTABLE)
+                val pendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    alarm.requestCode,
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE
+                )
                 alarmManager.cancel(pendingIntent)
                 alarmRepository.deleteAlarm(promiseId)
             }
@@ -80,7 +90,12 @@ class AlarmDirector(
         val intent = Intent(context, AlarmReceiver::class.java)
         coroutineScope.launch {
             alarmRepository.getAlarm(promise.promiseId).onSuccess { alarm ->
-                val pendingIntent = PendingIntent.getBroadcast(context, alarm.requestCode, intent, PendingIntent.FLAG_IMMUTABLE)
+                val pendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    alarm.requestCode,
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE
+                )
                 alarmManager.cancel(pendingIntent)
                 registerAlarm(promise)
             }

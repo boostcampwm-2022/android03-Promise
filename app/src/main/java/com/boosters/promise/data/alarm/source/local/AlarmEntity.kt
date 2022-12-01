@@ -21,4 +21,3 @@ fun AlarmEntity.toAlarm() = Alarm(
     promiseDate = promiseDate,
     promiseTime = promiseTime
 )
-

@@ -1,7 +1,6 @@
 package com.boosters.promise.data.notification.di
 
 import com.boosters.promise.data.network.CloudMessagingService
-import com.boosters.promise.data.network.HeaderInterceptor
 import com.boosters.promise.data.network.NotiHeaderInterceptor
 import dagger.Module
 import dagger.Provides
