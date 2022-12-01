@@ -32,7 +32,7 @@ import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.data.user.toMemberUiModel
 import com.boosters.promise.ui.detail.util.MapManager
 import com.boosters.promise.receiver.LocationUploadReceiver
-import com.boosters.promise.ui.detail.model.PromiseUploadState
+import com.boosters.promise.ui.detail.model.PromiseUploadUiState
 
 @AndroidEntryPoint
 class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -294,22 +294,22 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun sendPromiseUploadInfoToReceiver() {
         lifecycleScope.launch {
-            promiseDetailViewModel.promiseUploadState.collectLatest promiseUploadStateCollect@{ promiseUploadState ->
-                if (promiseUploadState == null) return@promiseUploadStateCollect
-                val intent = when (promiseUploadState) {
-                    is PromiseUploadState.Accept -> {
+            promiseDetailViewModel.promiseUploadUiState.collectLatest promiseUploadStateCollect@{ promiseUploadUiState ->
+                if (promiseUploadUiState == null) return@promiseUploadStateCollect
+                val intent = when (promiseUploadUiState) {
+                    is PromiseUploadUiState.Accept -> {
                         if (checkLocationPermission().not()) {
                             requestPermission().also { if (checkLocationPermission().not()) return@promiseUploadStateCollect }
                         }
                         Intent(LocationUploadReceiver.ACTION_LOCATION_UPLOAD_SERVICE_START).apply {
-                            putExtra(LocationUploadReceiver.PROMISE_DATE_TIME_KEY, promiseUploadState.dateAndTime)
+                            putExtra(LocationUploadReceiver.PROMISE_DATE_TIME_KEY, promiseUploadUiState.dateAndTime)
                         }
                     }
-                    is PromiseUploadState.Denied -> {
+                    is PromiseUploadUiState.Denied -> {
                         Intent(LocationUploadReceiver.ACTION_LOCATION_UPLOAD_SERVICE_STOP)
                     }
                 }.apply {
-                    putExtra(LocationUploadReceiver.PROMISE_ID_KEY, promiseUploadState.id)
+                    putExtra(LocationUploadReceiver.PROMISE_ID_KEY, promiseUploadUiState.id)
                 }
                 sendOrderedBroadcast(intent, null)
             }

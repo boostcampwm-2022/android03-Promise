@@ -16,7 +16,7 @@ import com.boosters.promise.data.user.UserRepository
 import com.boosters.promise.ui.notification.AlarmDirector
 import com.boosters.promise.ui.notification.NotificationService
 import com.boosters.promise.ui.detail.model.MemberUiModel
-import com.boosters.promise.ui.detail.model.PromiseUploadState
+import com.boosters.promise.ui.detail.model.PromiseUploadUiState
 import com.naver.maps.map.overlay.Marker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -47,8 +47,8 @@ class PromiseDetailViewModel @Inject constructor(
 
     val isAcceptLocationSharing = MutableStateFlow(false)
 
-    private val _promiseUploadState = MutableStateFlow<PromiseUploadState?>(null)
-    val promiseUploadState = _promiseUploadState.asStateFlow()
+    private val _promiseUploadUiState = MutableStateFlow<PromiseUploadUiState?>(null)
+    val promiseUploadUiState = _promiseUploadUiState.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val memberLocations: Flow<List<MemberUiModel>?> = promiseInfo.flatMapLatest { promise ->
@@ -118,13 +118,13 @@ class PromiseDetailViewModel @Inject constructor(
                     .getOrElse { throw IllegalStateException() }.userCode
                 promiseInfo.collectLatest { promise ->
                     if (promise != null) {
-                        _promiseUploadState.value = if (isAcceptLocationSharing) {
-                            PromiseUploadState.Accept(
+                        _promiseUploadUiState.value = if (isAcceptLocationSharing) {
+                            PromiseUploadUiState.Accept(
                                 id = promise.promiseId,
                                 dateAndTime = "${promise.date} ${promise.time}"
                             )
                         } else {
-                            PromiseUploadState.Denied(
+                            PromiseUploadUiState.Denied(
                                 id = promise.promiseId,
                             )
                         }
