@@ -31,11 +31,7 @@ class InviteViewModel @Inject constructor(
                 user.toUserUiModel()
             }
             val inviteCheckedItems = allFriendItems?.map { user ->
-                if (currentMemberItems.value?.contains(user) == true) {
-                    user.copy(isSelected = true)
-                } else {
-                    user
-                }
+                currentMemberItems.value?.find { it.userCode == user.userCode }?.copy(isSelected = true) ?: user
             }
             _currentFriendItems.value = inviteCheckedItems
         }
