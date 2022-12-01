@@ -92,6 +92,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     promiseDetailViewModel.promiseInfo.value
                 )
                 startActivity(intent)
+                finish()
             }
             R.id.item_detail_delete -> {
                 showDeleteDialog()

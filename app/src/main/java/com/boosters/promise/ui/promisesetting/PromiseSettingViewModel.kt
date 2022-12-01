@@ -7,11 +7,12 @@ import com.boosters.promise.R
 import com.boosters.promise.data.notification.NotificationRepository
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
-import com.boosters.promise.data.promise.ServerKeyRepository
 import com.boosters.promise.data.user.User
 import com.boosters.promise.data.user.UserRepository
 import com.boosters.promise.ui.invite.model.UserUiModel
 import com.boosters.promise.ui.invite.model.toUser
+import com.boosters.promise.ui.notification.AlarmDirector
+import com.boosters.promise.ui.notification.NotificationService
 import com.boosters.promise.ui.promisesetting.model.PromiseSettingEvent
 import com.boosters.promise.ui.promisesetting.model.PromiseSettingUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +27,7 @@ class PromiseSettingViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository,
     private val promiseRepository: PromiseRepository,
     private val userRepository: UserRepository,
-    private val serverKeyRepository: ServerKeyRepository
+    private val alarmDirector: AlarmDirector
 ) : ViewModel() {
 
     private val _dialogEventFlow = MutableSharedFlow<PromiseSettingEvent>()
@@ -41,6 +42,8 @@ class PromiseSettingViewModel @Inject constructor(
 
     private val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT)
     private lateinit var myInfo: User
+    private var currentMemberCodeList = listOf<String>()
+    private var promiseId = ""
 
     init {
         viewModelScope.launch {
@@ -80,10 +83,14 @@ class PromiseSettingViewModel @Inject constructor(
         viewModelScope.launch {
             val members = promise.members.toMutableList()
             members.add(myInfo.copy(userToken = ""))
-            promiseRepository.addPromise(promise.copy(members = members)).collect {
-                when (it) {
-                    true -> sendNotification()
-                    false -> changeUiState(PromiseSettingUiState.Fail(R.string.promiseSetting_fail))
+            promiseRepository.addPromise(promise.copy(members = members)).collect { result ->
+                result.onSuccess { id ->
+                    if (id.isEmpty()) {
+                        changeUiState(PromiseSettingUiState.Fail(R.string.promiseSetting_fail))
+                    } else {
+                        promiseId = id
+                        sendNotification()
+                    }
                 }
             }
         }
@@ -127,6 +134,7 @@ class PromiseSettingViewModel @Inject constructor(
             val members = promise.members.filter { user -> user.userCode != myInfo.userCode }
             promise.copy(members = members)
         }
+        currentMemberCodeList = _promiseUiState.value.members.map { it.userCode }
     }
 
     private fun changeUiState(state: PromiseSettingUiState) {
@@ -136,30 +144,42 @@ class PromiseSettingViewModel @Inject constructor(
     }
 
     private fun sendNotification() {
+        val alarmPromise = _promiseUiState.value.copy(promiseId = promiseId)
+        if (_promiseUiState.value.promiseId.isNotEmpty()) {
+            alarmDirector.updateAlarm(alarmPromise)
+        } else {
+            alarmDirector.registerAlarm(alarmPromise)
+        }
         viewModelScope.launch {
-            val userCodeList =
+           val userCodeList =
                 _promiseUiState.value.members.filter { it.userCode != myInfo.userCode }
                     .map { it.userCode }
-            if (userCodeList.isEmpty()) {
+            if ((userCodeList + currentMemberCodeList).isEmpty()) {
+                _promiseUiState.update {
+                    alarmPromise
+                }
                 changeUiState(PromiseSettingUiState.Success)
                 return@launch
             }
-            val key = serverKeyRepository.getServerKey()
 
-            val title = if (_promiseUiState.value.promiseId.isEmpty()) {
-                NOTIFICATION_ADD
-            } else {
-                NOTIFICATION_EDIT
-            }
-
-            userRepository.getUserList(userCodeList).collectLatest {
+            userRepository.getUserList(userCodeList + currentMemberCodeList).collectLatest {
                 it.forEach { user ->
+                    val title = if (!userCodeList.contains(user.userCode)) {
+                        NotificationService.NOTIFICATION_DELETE
+                    } else if (userCodeList.contains(user.userCode)
+                        && currentMemberCodeList.contains(user.userCode)
+                        && _promiseUiState.value.promiseId.isNotEmpty()
+                    ) {
+                        NotificationService.NOTIFICATION_EDIT
+                    } else {
+                        NotificationService.NOTIFICATION_ADD
+                    }
                     notificationRepository.sendNotification(
-                        title,
-                        _promiseUiState.value,
-                        user.userToken,
-                        key
+                        title, _promiseUiState.value.copy(promiseId = promiseId), user.userToken
                     )
+                }
+                _promiseUiState.update {
+                    alarmPromise
                 }
                 changeUiState(PromiseSettingUiState.Success)
             }
@@ -167,9 +187,7 @@ class PromiseSettingViewModel @Inject constructor(
     }
 
     companion object {
-        private const val DATE_FORMAT = "yyyy/MM/dd HH:mm"
-        private const val NOTIFICATION_EDIT = "0"
-        private const val NOTIFICATION_ADD = "1"
+        const val DATE_FORMAT = "yyyy/MM/dd HH:mm"
     }
 
 }

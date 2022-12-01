@@ -12,9 +12,8 @@ class NotificationRepositoryImpl @Inject constructor(
         title: String,
         message: Promise,
         token: String,
-        key: String
     ) {
-        notificationRemoteDataSource.sendNotification(title, message, token, key)
+        notificationRemoteDataSource.sendNotification(title, message, token)
     }
 
 }

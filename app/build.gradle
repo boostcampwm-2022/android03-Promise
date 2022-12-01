@@ -26,6 +26,7 @@ android {
         buildConfigField "String", "SEARCH_API_ID", properties['search_api.client_id']
         buildConfigField "String", "SEARCH_API_SECRET", properties['search_api.client_secret']
         manifestPlaceholders = [MAP_API_ID: properties['map_api.client_id']]
+        buildConfigField "String", "SERVER_KEY", properties['server.key']
     }
 
     buildTypes {

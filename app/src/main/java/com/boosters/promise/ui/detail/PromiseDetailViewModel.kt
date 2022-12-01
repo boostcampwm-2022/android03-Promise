@@ -9,9 +9,12 @@ import com.boosters.promise.data.location.toLatLng
 import com.boosters.promise.data.location.LocationRepository
 import com.boosters.promise.data.member.Member
 import com.boosters.promise.data.member.MemberRepository
+import com.boosters.promise.data.notification.NotificationRepository
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.user.UserRepository
+import com.boosters.promise.ui.notification.AlarmDirector
+import com.boosters.promise.ui.notification.NotificationService
 import com.boosters.promise.ui.detail.model.MemberUiModel
 import com.naver.maps.map.overlay.Marker
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,8 +29,12 @@ class PromiseDetailViewModel @Inject constructor(
     private val promiseRepository: PromiseRepository,
     private val userRepository: UserRepository,
     private val memberRepository: MemberRepository,
-    private val locationRepository: LocationRepository
-) : ViewModel() {
+    private val locationRepository: LocationRepository,
+    private val notificationRepository: NotificationRepository
+    ) : ViewModel() {
+
+    @Inject
+    lateinit var alarmDirector: AlarmDirector
 
     private val _promiseInfo = MutableStateFlow<Promise?>(null)
     val promiseInfo: StateFlow<Promise?> get() = _promiseInfo.asStateFlow()
@@ -88,7 +95,12 @@ class PromiseDetailViewModel @Inject constructor(
             promiseInfo.value.let { promise ->
                 if (promise != null) {
                     promiseRepository.removePromise(promise.promiseId).collectLatest { isDeleted ->
-                        _isDeleted.value = isDeleted
+                        if (isDeleted) {
+                            alarmDirector.removeAlarm(promise.promiseId)
+                            sendNotification()
+                        } else {
+                            _isDeleted.value = isDeleted
+                        }
                         cancel()
                     }
                 }
@@ -118,6 +130,33 @@ class PromiseDetailViewModel @Inject constructor(
             }
         }
     }
+
+    private fun sendNotification() {
+        viewModelScope.launch {
+            userRepository.getMyInfo().first().onSuccess { myInfo ->
+                val userCodeList =
+                    _promiseInfo.value?.members?.filter { it.userCode != myInfo.userCode }
+                        ?.map { it.userCode }
+                if (userCodeList != null && userCodeList.isEmpty()) {
+                    return@launch
+                }
+
+                if (userCodeList != null) {
+                    userRepository.getUserList(userCodeList).collectLatest {
+                        it.forEach { user ->
+                            _promiseInfo.value?.let { promise ->
+                                notificationRepository.sendNotification(
+                                    NotificationService.NOTIFICATION_DELETE,
+                                    promise,
+                                    user.userToken,
+                                )
+                            }
+                        }
+                    }
+                }
+                _isDeleted.value = true
+            }
+        }
 
     fun checkArrival(destination: GeoLocation, members: List<MemberUiModel>) =
         members.map { member ->
