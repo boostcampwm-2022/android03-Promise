@@ -2,8 +2,8 @@ package com.boosters.promise.ui.detail.util
 
 import com.boosters.promise.R
 import com.boosters.promise.data.location.GeoLocation
+import com.boosters.promise.data.location.UserGeoLocation
 import com.boosters.promise.data.location.toLatLng
-import com.boosters.promise.ui.detail.model.MemberUiModel
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraAnimation
@@ -19,7 +19,7 @@ class MapManager(val map: NaverMap) {
         map.maxZoom = MAP_MAX_ZOOM_LEVEL
     }
 
-    fun initCameraPosition(destination: GeoLocation, users: List<MemberUiModel>) {
+    fun initCameraPosition(destination: GeoLocation, users: List<UserGeoLocation>) {
         val bound = calculateBound(destination, users.map { it.geoLocation })
 
         val cameraUpdate = CameraUpdate.fitBounds(bound, MAP_OVERVIEW_PADDING)
@@ -37,7 +37,7 @@ class MapManager(val map: NaverMap) {
         }
     }
 
-    fun overviewMemberLocation(destination: GeoLocation?, users: List<MemberUiModel>) {
+    fun overviewMemberLocation(destination: GeoLocation?, users: List<UserGeoLocation>) {
         if (destination != null) {
             val bound = calculateBound(destination, users.map { it.geoLocation })
 
