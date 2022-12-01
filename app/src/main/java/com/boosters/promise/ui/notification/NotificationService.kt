@@ -51,7 +51,10 @@ class NotificationService : FirebaseMessagingService() {
         val intent = if (title == NOTIFICATION_DELETE) {
             Intent(this, PromiseCalendarActivity::class.java)
         } else {
-            Intent(this, PromiseDetailActivity::class.java).putExtra(PromiseCalendarActivity.PROMISE_ID_KEY, promiseId)
+            Intent(
+                this,
+                PromiseDetailActivity::class.java
+            ).putExtra(PromiseCalendarActivity.PROMISE_ID_KEY, promiseId)
         }
         val pendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
             addNextIntentWithParentStack(intent)

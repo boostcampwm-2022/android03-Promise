@@ -8,60 +8,30 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.boosters.promise.R
-import com.boosters.promise.data.alarm.AlarmRepository
-import com.boosters.promise.data.promise.Promise
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class AlarmReceiver : BroadcastReceiver() {
 
     @Inject
-    lateinit var alarmRepository: AlarmRepository
-
-    @Inject
     lateinit var alarmDirector: AlarmDirector
-    private val coroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
 
     override fun onReceive(context: Context, intent: Intent) {
         val pendingResult = goAsync()
 
         if (intent.action.equals("android.intent.action.BOOT_COMPLETED")) {
-            callAlarm()
+            context.startService(Intent(context, BootService::class.java))
         } else {
             val promiseId = intent.getStringExtra(AlarmDirector.PROMISE_ID) ?: return
             val promiseTitle = intent.getStringExtra(AlarmDirector.PROMISE_TITLE)
             val promiseDate = intent.getStringExtra(AlarmDirector.PROMISE_DATE)
 
-            coroutineScope.launch {
-                alarmRepository.deleteAlarm(promiseId)
-                cancel()
-            }
-
+            alarmDirector.removeLocalAlarm(promiseId)
             showNotification(context, promiseTitle, promiseDate)
         }
 
         pendingResult.finish()
-    }
-
-    private fun callAlarm() {
-        coroutineScope.launch {
-            val alarms = async {
-                alarmRepository.getAlarms()
-            }.await()
-            alarms.forEach {
-                alarmDirector.registerAlarm(
-                    Promise(
-                        promiseId = it.promiseId,
-                        date = it.promiseDate,
-                        time = it.promiseTime,
-                        title = it.promiseTitle,
-                    )
-                )
-            }
-            cancel()
-        }
     }
 
     private fun showNotification(context: Context, promiseTitle: String?, promiseDate: String?) {

@@ -24,4 +24,8 @@ class AlarmRepositoryImpl @Inject constructor(
         return alarmLocalDataSource.deleteAlarm(promiseId)
     }
 
+    override suspend fun deleteAll() {
+        alarmLocalDataSource.deleteAll()
+    }
+
 }

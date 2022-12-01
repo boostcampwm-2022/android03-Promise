@@ -24,4 +24,8 @@ class AlarmLocalDataSourceImpl @Inject constructor(
         alarmDao.deleteAlarm(promiseId)
     }
 
+    override suspend fun deleteAll() {
+        alarmDao.deleteAll()
+    }
+
 }

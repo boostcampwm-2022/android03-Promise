@@ -10,4 +10,6 @@ interface AlarmLocalDataSource {
 
     suspend fun deleteAlarm(promiseId: String)
 
+    suspend fun deleteAll()
+
 }

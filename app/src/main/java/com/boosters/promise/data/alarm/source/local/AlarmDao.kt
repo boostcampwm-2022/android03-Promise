@@ -20,4 +20,7 @@ interface AlarmDao {
     @Query("DELETE FROM AlarmEntity WHERE promiseId = :promiseId")
     suspend fun deleteAlarm(promiseId: String)
 
+    @Query("DELETE FROM AlarmEntity")
+    suspend fun deleteAll()
+
 }

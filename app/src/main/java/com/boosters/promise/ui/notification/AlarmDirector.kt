@@ -102,6 +102,18 @@ class AlarmDirector(
         }
     }
 
+    fun removeLocalAllAlarm() {
+        coroutineScope.launch {
+            alarmRepository.deleteAll()
+        }
+    }
+
+    fun removeLocalAlarm(promiseId: String) {
+        coroutineScope.launch {
+            alarmRepository.deleteAlarm(promiseId)
+        }
+    }
+
     private fun transferToCalendar(date: List<Int>, time: List<Int>): Calendar {
         val cal = Calendar.getInstance()
         cal.set(Calendar.YEAR, date[0])
