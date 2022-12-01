@@ -1,6 +1,8 @@
 package com.boosters.promise.ui.notification
 
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -21,7 +23,6 @@ class AlarmReceiver : BroadcastReceiver() {
     @Inject
     lateinit var alarmDirector: AlarmDirector
     private val coroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
-
 
     override fun onReceive(context: Context, intent: Intent) {
         val pendingResult = goAsync()

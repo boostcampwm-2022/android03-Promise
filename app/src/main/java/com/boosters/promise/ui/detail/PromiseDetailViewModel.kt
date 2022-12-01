@@ -5,18 +5,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.location.GeoLocation
-import com.boosters.promise.data.location.toLatLng
 import com.boosters.promise.data.location.LocationRepository
+import com.boosters.promise.data.location.toLatLng
 import com.boosters.promise.data.member.Member
 import com.boosters.promise.data.member.MemberRepository
 import com.boosters.promise.data.notification.NotificationRepository
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.user.UserRepository
-import com.boosters.promise.ui.notification.AlarmDirector
-import com.boosters.promise.ui.notification.NotificationService
 import com.boosters.promise.ui.detail.model.MemberUiModel
 import com.boosters.promise.ui.detail.model.PromiseUploadUiState
+import com.boosters.promise.ui.notification.AlarmDirector
+import com.boosters.promise.ui.notification.NotificationService
 import com.naver.maps.map.overlay.Marker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,7 +32,7 @@ class PromiseDetailViewModel @Inject constructor(
     private val memberRepository: MemberRepository,
     private val locationRepository: LocationRepository,
     private val notificationRepository: NotificationRepository
-    ) : ViewModel() {
+) : ViewModel() {
 
     @Inject
     lateinit var alarmDirector: AlarmDirector
@@ -171,6 +171,7 @@ class PromiseDetailViewModel @Inject constructor(
                 _isDeleted.value = true
             }
         }
+    }
 
     fun checkArrival(destination: GeoLocation, members: List<MemberUiModel>) =
         members.map { member ->

@@ -2,11 +2,13 @@ package com.boosters.promise.ui.invite
 
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.boosters.promise.R
+import com.boosters.promise.data.user.User
+import com.boosters.promise.data.user.toUserUiModel
 import com.boosters.promise.databinding.ActivityInviteBinding
 import com.boosters.promise.ui.invite.adapter.FriendAdapter
 import com.boosters.promise.ui.invite.adapter.InviteMemberAdapter
@@ -87,10 +89,10 @@ class InviteActivity : AppCompatActivity() {
         val memberItems = if (Build.VERSION.SDK_INT < 33) {
             intent.getParcelableArrayListExtra(MEMBER_LIST_KEY)
         } else {
-            intent.getParcelableArrayListExtra(MEMBER_LIST_KEY, UserUiModel::class.java)
+            intent.getParcelableArrayListExtra(MEMBER_LIST_KEY, User::class.java)
         }
 
-        inviteViewModel.initMemberItems(memberItems)
+        inviteViewModel.initMemberItems(memberItems?.map { it.toUserUiModel() })
     }
 
     companion object {

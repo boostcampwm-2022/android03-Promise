@@ -2,8 +2,8 @@ package com.boosters.promise.ui.promisesetting
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.R
+import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.data.notification.NotificationRepository
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
@@ -151,7 +151,7 @@ class PromiseSettingViewModel @Inject constructor(
             alarmDirector.registerAlarm(alarmPromise)
         }
         viewModelScope.launch {
-           val userCodeList =
+            val userCodeList =
                 _promiseUiState.value.members.filter { it.userCode != myInfo.userCode }
                     .map { it.userCode }
             if ((userCodeList + currentMemberCodeList).isEmpty()) {
@@ -166,9 +166,9 @@ class PromiseSettingViewModel @Inject constructor(
                 it.forEach { user ->
                     val title = if (!userCodeList.contains(user.userCode)) {
                         NotificationService.NOTIFICATION_DELETE
-                    } else if (userCodeList.contains(user.userCode)
-                        && currentMemberCodeList.contains(user.userCode)
-                        && _promiseUiState.value.promiseId.isNotEmpty()
+                    } else if (userCodeList.contains(user.userCode) &&
+                        currentMemberCodeList.contains(user.userCode) &&
+                        _promiseUiState.value.promiseId.isNotEmpty()
                     ) {
                         NotificationService.NOTIFICATION_EDIT
                     } else {

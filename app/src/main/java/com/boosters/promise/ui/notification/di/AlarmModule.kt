@@ -1,10 +1,7 @@
 package com.boosters.promise.ui.notification.di
 
 import android.content.Context
-import androidx.room.Room
 import com.boosters.promise.data.alarm.AlarmRepository
-import com.boosters.promise.data.alarm.di.AlarmDataModule
-import com.boosters.promise.data.database.AlarmDataBase
 import com.boosters.promise.ui.notification.AlarmDirector
 import dagger.Module
 import dagger.Provides
