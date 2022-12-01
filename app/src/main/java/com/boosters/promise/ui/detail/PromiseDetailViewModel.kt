@@ -87,7 +87,7 @@ class PromiseDetailViewModel @Inject constructor(
         if (locationSharingAcceptMembers.isNotEmpty()) {
             locationRepository.getGeoLocations(locationSharingAcceptMembers)
         } else {
-            flow { }
+            flow { emit(emptyList()) }
         }
     }.shareIn(viewModelScope, SharingStarted.Eagerly, 1)
 

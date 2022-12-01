@@ -32,6 +32,7 @@ import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.data.user.toMemberUiModel
 import com.boosters.promise.ui.detail.util.MapManager
 import com.boosters.promise.receiver.LocationUploadReceiver
+import com.boosters.promise.ui.detail.model.MemberUiModel
 import com.boosters.promise.ui.detail.model.PromiseUploadUiState
 import kotlinx.coroutines.flow.first
 
@@ -141,7 +142,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun setListener() {
         binding.imageButtonPromiseDetailDestination.setOnClickListener {
             lifecycleScope.launch {
-                promiseDetailViewModel.promise.collectLatest { promise ->
+                promiseDetailViewModel.promise.first().let { promise ->
                     mapManager.moveToLocation(promise.destinationGeoLocation)
                 }
             }
@@ -149,20 +150,20 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         binding.imageButtonPromiseDetailMapOverView.setOnClickListener {
             lifecycleScope.launch {
-                promiseDetailViewModel.promise.collectLatest { promise ->
+                promiseDetailViewModel.promise.first().let { promise ->
                     overviewMemberLocation(promise.destinationGeoLocation)
                 }
             }
         }
 
         promiseMemberAdapter.setOnItemClickListener(object : PromiseMemberAdapter.OnItemClickListener {
-            override fun onItemClick(position: Int) {
+            override fun onItemClick(memberUiModel: MemberUiModel) {
                 lifecycleScope.launch {
-                    promiseDetailViewModel.userGeoLocations.collectLatest {
-                        val selectedMember = it[position]
+                    promiseDetailViewModel.userGeoLocations.first().let { userGeoLocation ->
+                        val selectedMemberLocation = userGeoLocation.find { it.userCode == memberUiModel.userCode }?.geoLocation
 
-                        if (selectedMember.geoLocation != null) {
-                            mapManager.moveToLocation(selectedMember.geoLocation)
+                        if (selectedMemberLocation != null) {
+                            mapManager.moveToLocation(selectedMemberLocation)
                         } else {
                             showStateSnackbar(R.string.promiseDetail_memberLocation_null)
                         }
@@ -199,7 +200,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun initCameraPosition(destination: GeoLocation) {
         lifecycleScope.launch {
-            promiseDetailViewModel.userGeoLocations.collectLatest {
+            promiseDetailViewModel.userGeoLocations.first().let {
                 mapManager.initCameraPosition(destination, it)
             }
         }
@@ -207,7 +208,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun overviewMemberLocation(destination: GeoLocation?) {
         lifecycleScope.launch {
-            promiseDetailViewModel.userGeoLocations.collectLatest { userGeoLocation ->
+            promiseDetailViewModel.userGeoLocations.first().let { userGeoLocation ->
                 mapManager.overviewMemberLocation(destination, userGeoLocation)
             }
         }
@@ -219,13 +220,15 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 userGeoLocations.forEachIndexed { idx, memberUiModel ->
                     if (memberUiModel.geoLocation != null) {
                         lifecycleScope.launch {
-                            val marker = promiseDetailViewModel.memberMarkers[idx] // TODO: 멤버 버릴시 오류
-                            promiseDetailViewModel.memberUiModels.first()?.find { it.userCode == memberUiModel.userCode }?.userName?.let {
-                                mapManager.markMemberLocation(
-                                    it,
-                                    memberUiModel.geoLocation,
-                                    marker
-                                )
+                            if(promiseDetailViewModel.memberMarkers.isNotEmpty()) {
+                                val marker = promiseDetailViewModel.memberMarkers[idx]
+                                promiseDetailViewModel.memberUiModels.first()?.find { it.userCode == memberUiModel.userCode }?.userName?.let {
+                                    mapManager.markMemberLocation(
+                                        it,
+                                        memberUiModel.geoLocation,
+                                        marker
+                                    )
+                                }
                             }
                         }
                     }
