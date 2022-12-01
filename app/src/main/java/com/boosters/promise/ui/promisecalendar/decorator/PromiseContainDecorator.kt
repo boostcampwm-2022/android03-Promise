@@ -1,11 +1,11 @@
-package com.boosters.promise.ui.promisecalendar
+package com.boosters.promise.ui.promisecalendar.decorator
 
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 import com.prolificinteractive.materialcalendarview.spans.DotSpan
 
-class PromiseContainCalendarDecorator(
+class PromiseContainDecorator(
     private val dates: List<CalendarDay>,
     private val color: Int
 ) : DayViewDecorator {
