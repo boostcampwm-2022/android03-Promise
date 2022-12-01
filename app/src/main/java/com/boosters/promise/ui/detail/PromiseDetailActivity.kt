@@ -139,8 +139,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
-        promiseMemberAdapter.setOnItemClickListener(object :
-            PromiseMemberAdapter.OnItemClickListener {
+        promiseMemberAdapter.setOnItemClickListener(object : PromiseMemberAdapter.OnItemClickListener {
             override fun onItemClick(position: Int) {
                 lifecycleScope.launch {
                     promiseDetailViewModel.memberLocations.collectLatest {
@@ -163,9 +162,11 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 promiseDetailViewModel.promiseInfo.collect { promise ->
                     launch {
                         if (promise != null) {
-                            promiseMemberAdapter.submitList(promise.members.map {
-                                it.toMemberUiModel()
-                            })
+                            promiseMemberAdapter.submitList(
+                                promise.members.map {
+                                    it.toMemberUiModel()
+                                }
+                            )
                         }
                     }
 
