@@ -74,6 +74,11 @@
     <string name="promiseDetail_delete_ask">삭제하시겠습니까?</string>
     <string name="promiseDetail_dialog_yes">YES</string>
     <string name="promiseDetail_dialog_no">NO</string>
+    <string name="promiseDetail_destination">목적지</string>
+    <string name="promiseDetail_arrive">도착</string>
+    <string name="promiseDetail_memberSelect">멤버 선택</string>
+    <string name="promiseDetail_memberLocation_null">위치를 찾을 수 없습니다.</string>
+    <string name="promiseDetail_overview">한 눈에 보기</string>
     <string name="promiseDetail_location_sharing_permission">위치 공유</string>
 
     <!-- LocationService 알림 -->

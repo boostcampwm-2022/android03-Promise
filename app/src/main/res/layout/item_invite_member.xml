@@ -4,7 +4,7 @@
     <data>
 
         <variable
-            name="user"
+            name="userUiModel"
             type="com.boosters.promise.ui.invite.model.UserUiModel" />
     </data>
 
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@{user.userName}"
+            android:text="@{userUiModel.userName}"
             app:layout_constraintBottom_toTopOf="@+id/textView_inviteMemberItem_memberCode"
             app:layout_constraintEnd_toEndOf="@+id/imageView_inviteMemberItem_memberImage"
             app:layout_constraintStart_toStartOf="@+id/imageView_inviteMemberItem_memberImage"
@@ -44,7 +44,7 @@
             style="@style/Promise.TextAppearance.SmallNormal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{user.userCode}"
+            android:text="@{userUiModel.userCode}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/imageView_inviteMemberItem_memberImage"
             app:layout_constraintStart_toStartOf="@+id/imageView_inviteMemberItem_memberImage"

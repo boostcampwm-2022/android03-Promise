@@ -13,14 +13,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.boosters.promise.R
-import com.boosters.promise.data.location.toLatLng
 import com.boosters.promise.databinding.ActivityPromiseDetailBinding
 import com.boosters.promise.ui.detail.adapter.PromiseMemberAdapter
 import com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity
 import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
 import com.google.android.material.snackbar.Snackbar
-import com.naver.maps.geometry.LatLng
-import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
@@ -30,7 +27,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import android.Manifest.permission
 import android.content.pm.PackageManager
-import android.graphics.Color
+import com.boosters.promise.data.location.GeoLocation
+import com.boosters.promise.data.user.toMemberUiModel
+import com.boosters.promise.ui.detail.util.MapManager
 
 @AndroidEntryPoint
 class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -38,7 +37,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityPromiseDetailBinding
     private val promiseDetailViewModel: PromiseDetailViewModel by viewModels()
     private val promiseMemberAdapter = PromiseMemberAdapter()
-
+    private lateinit var mapManager: MapManager
     private val destinationMarker = Marker()
 
     private val locationPermissions = arrayOf(
@@ -58,11 +57,12 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         initMap()
         setPromiseInfo()
+        setListener()
 
         setSupportActionBar(binding.toolbarPromiseDetail)
         supportActionBar?.apply {
-            setDisplayShowCustomEnabled(true)
             setDisplayShowTitleEnabled(false)
+            setDisplayHomeAsUpEnabled(true)
         }
 
         promiseDetailViewModel.isDeleted.observe(this) {
@@ -75,7 +75,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onMapReady(map: NaverMap) {
-        setObserver(map)
+        mapManager = MapManager(map)
+        setObserver()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -121,21 +122,61 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
     }
 
-    private fun setObserver(map: NaverMap) {
+    private fun setListener() {
+        binding.imageButtonPromiseDetailDestination.setOnClickListener {
+            lifecycleScope.launch {
+                promiseDetailViewModel.promiseInfo.collectLatest { promise ->
+                    mapManager.moveToLocation(promise?.destinationGeoLocation)
+                }
+            }
+        }
+
+        binding.imageButtonPromiseDetailMapOverView.setOnClickListener {
+            lifecycleScope.launch {
+                promiseDetailViewModel.promiseInfo.collectLatest { promise ->
+                    overviewMemberLocation(promise?.destinationGeoLocation)
+                }
+            }
+        }
+
+        promiseMemberAdapter.setOnItemClickListener(object :
+            PromiseMemberAdapter.OnItemClickListener {
+            override fun onItemClick(position: Int) {
+                lifecycleScope.launch {
+                    promiseDetailViewModel.memberLocations.collectLatest {
+                        val selectedMember = it?.get(position)
+
+                        if (selectedMember?.geoLocation != null) {
+                            mapManager.moveToLocation(selectedMember.geoLocation)
+                        } else {
+                            showStateSnackbar(R.string.promiseDetail_memberLocation_null)
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    private fun setObserver() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                promiseDetailViewModel.promiseInfo.collectLatest { promise ->
+                promiseDetailViewModel.promiseInfo.collect { promise ->
                     launch {
-                        promiseMemberAdapter.submitList(promise?.members)
+                        if (promise != null) {
+                            promiseMemberAdapter.submitList(promise.members.map {
+                                it.toMemberUiModel()
+                            })
+                        }
                     }
 
                     launch {
                         if (promise != null) {
-                            val destinationLocation = promise.destinationGeoLocation.toLatLng()
+                            val destinationLocation = promise.destinationGeoLocation
 
-                            moveCameraToDestination(destinationLocation, map)
-                            markDestinationOnMap(destinationLocation, map)
-                            markUserLocationOnMap(map)
+                            mapManager.markDestination(destinationLocation, destinationMarker)
+                            markUsersLocationOnMap()
+                            initCameraPosition(destinationLocation)
+                            checkArrival(destinationLocation)
                         }
                     }
                 }
@@ -143,29 +184,50 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun moveCameraToDestination(location: LatLng, map: NaverMap) {
-        val cameraUpdate = CameraUpdate.scrollTo(location)
-        map.moveCamera(cameraUpdate)
-    }
-
-    private fun markDestinationOnMap(location: LatLng, map: NaverMap) {
-        destinationMarker.apply {
-            position = location
-            this.map = map
+    private fun initCameraPosition(destination: GeoLocation) {
+        lifecycleScope.launch {
+            promiseDetailViewModel.memberLocations.collectLatest {
+                if (it != null) {
+                    mapManager.initCameraPosition(destination, it)
+                }
+            }
         }
     }
 
-    private suspend fun markUserLocationOnMap(map: NaverMap) {
+    private fun overviewMemberLocation(destination: GeoLocation?) {
+        lifecycleScope.launch {
+            promiseDetailViewModel.memberLocations.collectLatest { memberUiModel ->
+                if (memberUiModel != null) {
+                    mapManager.overviewMemberLocation(destination, memberUiModel)
+                }
+            }
+        }
+    }
+
+    private suspend fun markUsersLocationOnMap() {
         lifecycleScope.launch {
             promiseDetailViewModel.memberLocations.collectLatest {
-                it?.forEachIndexed { idx, memberLocation ->
-                    if (memberLocation?.geoLocation != null) {
+                it?.forEachIndexed { idx, memberUiModel ->
+                    if (memberUiModel.geoLocation != null) {
                         promiseDetailViewModel.memberMarkers[idx].apply {
-                            iconTintColor = Color.BLUE
-                            position = memberLocation.geoLocation.toLatLng()
-                            this.map = map
+                            mapManager.markMemberLocation(
+                                memberUiModel.userName,
+                                memberUiModel.geoLocation,
+                                this
+                            )
                         }
                     }
+                }
+            }
+        }
+    }
+
+    private fun checkArrival(destination: GeoLocation) {
+        lifecycleScope.launch {
+            promiseDetailViewModel.memberLocations.collectLatest {
+                if (it != null) {
+                    val arriveCheckedList = promiseDetailViewModel.checkArrival(destination, it)
+                    promiseMemberAdapter.submitList(arriveCheckedList)
                 }
             }
         }

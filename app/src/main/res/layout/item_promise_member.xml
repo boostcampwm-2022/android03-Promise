@@ -4,7 +4,7 @@
 
     <data>
         <variable
-            name="userUiState"
+            name="userUiModel"
             type="com.boosters.promise.ui.invite.model.UserUiModel" />
     </data>
 
@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="2dp"
-        android:text="@{userUiState.userName}"
+        android:text="@{userUiModel.userName}"
         android:checkable="false"
         app:closeIconEnabled="true" />
 

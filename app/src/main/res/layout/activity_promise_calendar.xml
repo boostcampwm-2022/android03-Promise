@@ -54,7 +54,8 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView_promiseCalendar_header"
                 app:layout_constraintBottom_toTopOf="@+id/textView_promiseCalendar_dailyListLabel"
                 app:mcv_calendarMode="month"
-                app:mcv_showOtherDates="all" />
+                app:mcv_showOtherDates="decorated_disabled"
+                app:mcv_headerTextAppearance="@style/Promise.TextAppearance.BigBold"/>
 
             <TextView
                 android:id="@+id/textView_promiseCalendar_dailyListLabel"
