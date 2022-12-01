@@ -26,10 +26,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import android.Manifest.permission
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.data.user.toMemberUiModel
 import com.boosters.promise.ui.detail.util.MapManager
+import com.boosters.promise.receiver.LocationUploadReceiver
+import com.boosters.promise.ui.detail.model.PromiseUploadUiState
 
 @AndroidEntryPoint
 class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -37,8 +40,11 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityPromiseDetailBinding
     private val promiseDetailViewModel: PromiseDetailViewModel by viewModels()
     private val promiseMemberAdapter = PromiseMemberAdapter()
+
     private lateinit var mapManager: MapManager
     private val destinationMarker = Marker()
+
+    private val locationUploadReceiver = LocationUploadReceiver()
 
     private val locationPermissions = arrayOf(
         permission.ACCESS_COARSE_LOCATION,
@@ -54,6 +60,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         setBinding()
 
         if (checkLocationPermission().not()) requestPermission()
+        registerLocationUploadReceiver()
+        sendPromiseUploadInfoToReceiver()
 
         initMap()
         setPromiseInfo()
@@ -72,6 +80,11 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 showStateSnackbar(R.string.promiseDetail_delete_ask)
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(locationUploadReceiver)
     }
 
     override fun onMapReady(map: NaverMap) {
@@ -139,8 +152,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
-        promiseMemberAdapter.setOnItemClickListener(object :
-            PromiseMemberAdapter.OnItemClickListener {
+        promiseMemberAdapter.setOnItemClickListener(object : PromiseMemberAdapter.OnItemClickListener {
             override fun onItemClick(position: Int) {
                 lifecycleScope.launch {
                     promiseDetailViewModel.memberLocations.collectLatest {
@@ -163,9 +175,11 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 promiseDetailViewModel.promiseInfo.collect { promise ->
                     launch {
                         if (promise != null) {
-                            promiseMemberAdapter.submitList(promise.members.map {
-                                it.toMemberUiModel()
-                            })
+                            promiseMemberAdapter.submitList(
+                                promise.members.map {
+                                    it.toMemberUiModel()
+                                }
+                            )
                         }
                     }
 
@@ -267,6 +281,38 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun isLocationPermissionGranted(permissionCheckResult: List<Boolean>): Boolean {
         return permissionCheckResult.fold(false) { acc, locationPermission ->
             acc || locationPermission
+        }
+    }
+
+    private fun registerLocationUploadReceiver() {
+        val intentFilter = IntentFilter().apply {
+            addAction(LocationUploadReceiver.ACTION_LOCATION_UPLOAD_SERVICE_START)
+            addAction(LocationUploadReceiver.ACTION_LOCATION_UPLOAD_SERVICE_STOP)
+        }
+        registerReceiver(locationUploadReceiver, intentFilter)
+    }
+
+    private fun sendPromiseUploadInfoToReceiver() {
+        lifecycleScope.launch {
+            promiseDetailViewModel.promiseUploadUiState.collectLatest promiseUploadStateCollect@{ promiseUploadUiState ->
+                if (promiseUploadUiState == null) return@promiseUploadStateCollect
+                val intent = when (promiseUploadUiState) {
+                    is PromiseUploadUiState.Accept -> {
+                        if (checkLocationPermission().not()) {
+                            requestPermission().also { if (checkLocationPermission().not()) return@promiseUploadStateCollect }
+                        }
+                        Intent(LocationUploadReceiver.ACTION_LOCATION_UPLOAD_SERVICE_START).apply {
+                            putExtra(LocationUploadReceiver.PROMISE_DATE_TIME_KEY, promiseUploadUiState.dateAndTime)
+                        }
+                    }
+                    is PromiseUploadUiState.Denied -> {
+                        Intent(LocationUploadReceiver.ACTION_LOCATION_UPLOAD_SERVICE_STOP)
+                    }
+                }.apply {
+                    putExtra(LocationUploadReceiver.PROMISE_ID_KEY, promiseUploadUiState.id)
+                }
+                sendOrderedBroadcast(intent, null)
+            }
         }
     }
 
