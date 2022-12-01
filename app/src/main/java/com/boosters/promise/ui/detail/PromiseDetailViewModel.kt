@@ -79,14 +79,16 @@ class PromiseDetailViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val userGeoLocations: SharedFlow<List<UserGeoLocation>> = members.flatMapLatest { members ->
-        locationRepository.getGeoLocations(
-            members.filter { member ->
-//                member.isAcceptLocation todo: 위치 공유 허락한 멤버만 위치 받아오게 수정
-                true
-            }.map { member ->
-                member.userCode
-            }
-        )
+        val locationSharingAcceptMembers = members.filter { member ->
+            member.isAcceptLocation
+        }.map { member ->
+            member.userCode
+        }
+        if (locationSharingAcceptMembers.isNotEmpty()) {
+            locationRepository.getGeoLocations(locationSharingAcceptMembers)
+        } else {
+            flow { }
+        }
     }.shareIn(viewModelScope, SharingStarted.Eagerly, 1)
 
     fun setPromiseInfo(promiseId: String) {
