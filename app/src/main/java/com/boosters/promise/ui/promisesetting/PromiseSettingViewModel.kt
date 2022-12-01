@@ -27,10 +27,8 @@ class PromiseSettingViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository,
     private val promiseRepository: PromiseRepository,
     private val userRepository: UserRepository,
+    private val alarmDirector: AlarmDirector
 ) : ViewModel() {
-
-    @Inject
-    lateinit var alarmDirector: AlarmDirector
 
     private val _dialogEventFlow = MutableSharedFlow<PromiseSettingEvent>()
     val dialogEventFlow: SharedFlow<PromiseSettingEvent> = _dialogEventFlow.asSharedFlow()
