@@ -6,7 +6,7 @@ import com.prolificinteractive.materialcalendarview.DayViewFacade
 import com.prolificinteractive.materialcalendarview.spans.DotSpan
 
 class PromiseContainDecorator(
-    private var dates: List<CalendarDay>,
+    private val dates: List<CalendarDay>,
     private val color: Int
 ) : DayViewDecorator {
 
