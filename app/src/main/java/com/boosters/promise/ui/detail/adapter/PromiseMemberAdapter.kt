@@ -21,7 +21,7 @@ class PromiseMemberAdapter :
         binding.root.setOnClickListener {
             val position = holder.adapterPosition
             if (position != RecyclerView.NO_POSITION) {
-                onItemClickListener?.onItemClick(position)
+                onItemClickListener?.onItemClick(getItem(position))
             }
         }
 
@@ -47,7 +47,7 @@ class PromiseMemberAdapter :
     }
 
     interface OnItemClickListener {
-        fun onItemClick(position: Int)
+        fun onItemClick(memberUiModel: MemberUiModel)
     }
 
     companion object {
