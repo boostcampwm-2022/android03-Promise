@@ -31,6 +31,5 @@ fun User.toFriendEntity() =
 fun User.toMemberUiModel() =
     MemberUiModel(
         userCode = userCode,
-        userName = userName,
-        geoLocation = geoLocation
+        userName = userName
     )
