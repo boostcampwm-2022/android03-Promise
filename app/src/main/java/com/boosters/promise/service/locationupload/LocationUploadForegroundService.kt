@@ -113,6 +113,9 @@ class LocationUploadForegroundService : LifecycleService(), LocationUploadServic
     }
 
     companion object {
+        const val ACTION_LOCATION_UPLOAD_SERVICE_START = "com.boosters.promise.action.LOCATION_UPLOAD_SERVICE_START"
+        const val ACTION_LOCATION_UPLOAD_SERVICE_STOP = "com.boosters.promise.action.LOCATION_UPLOAD_SERVICE_STOP"
+
         private const val ALARM_HANDLER_NAME = "alarmHandlerName"
         private const val DEFAULT_SERVICE_END_DELAY = 60_000L
         private const val SERVICE_END_TOKEN = "serviceEndToken"
@@ -120,7 +123,8 @@ class LocationUploadForegroundService : LifecycleService(), LocationUploadServic
         private const val FOREGROUND_NOTIFICATION_ID = 5138
         private const val FOREGROUND_CHANNEL_ID = "foregroundChannelId"
 
-        const val END_TIME_KEY = "endTimeKey"
+        const val ID_KEY = "idKey"
+        const val DELAY_UNTIL_END_TIME_KEY = "delayUntilEndTimeKey"
     }
 
 }
