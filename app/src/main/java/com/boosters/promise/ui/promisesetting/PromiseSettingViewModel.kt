@@ -157,7 +157,7 @@ class PromiseSettingViewModel @Inject constructor(
                 _promiseUiState.value.members.filter { it.userCode != myInfo.userCode }
                     .map { it.userCode }
             if ((userCodeList + currentMembers).isEmpty()) {
-                _promiseUiState.update { 
+                _promiseUiState.update {
                     alarmPromise
                 }
                 changeUiState(PromiseSettingUiState.Success)
