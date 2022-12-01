@@ -89,16 +89,14 @@ class LocationUploadForegroundService : LifecycleService() {
     }
 
     private fun modifyUploadRequest(id: String, delay: Long) {
-        val newServiceEndTime = SystemClock.uptimeMillis() + delay
-        uploadRequests.replace(id, newServiceEndTime)
+        uploadRequests.replace(id, SystemClock.uptimeMillis() + delay)
 
-        if (id == uploadRequests.maxBy { it.value }.key) {
-            if (delay < MIN_DELAY) {
-                stopSelf()
-                return
-            }
-            setEndSchedule(newServiceEndTime)
+        val maxEndTimeUploadRequest = uploadRequests.maxBy { it.value }
+        if (maxEndTimeUploadRequest.value - SystemClock.uptimeMillis() < MIN_DELAY) {
+            stopSelf()
+            return
         }
+        setEndSchedule(maxEndTimeUploadRequest.value)
     }
 
     private fun removeUploadRequest(id: String) {
