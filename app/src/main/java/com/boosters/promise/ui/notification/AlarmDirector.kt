@@ -26,17 +26,14 @@ class AlarmDirector(
         val cal = transferToCalendar(date, time)
         if (Calendar.getInstance() >= cal) {
             coroutineScope.launch {
-                async {
-                    alarmRepository.getAlarm(promise.promiseId)
-                }.await().onSuccess {
+                alarmRepository.getAlarm(promise.promiseId).onSuccess {
                     alarmRepository.deleteAlarm(promise.promiseId)
                 }
-                cancel()
             }
             return
         }
 
-        val requestCode = (date.joinToString("").substring(3) + time.joinToString("")).toInt()
+        val requestCode = promise.promiseId.hashCode()
         addAlarm(promise, requestCode)
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
@@ -47,16 +44,13 @@ class AlarmDirector(
 
     private fun addAlarm(promise: Promise, requestCode: Int) {
         coroutineScope.launch {
-            launch {
-                alarmRepository.addAlarm(Alarm(
-                    promise.promiseId,
-                    requestCode,
-                    promise.title,
-                    promise.date,
-                    promise.time
-                ))
-                cancel()
-            }
+            alarmRepository.addAlarm(Alarm(
+                promise.promiseId,
+                requestCode,
+                promise.title,
+                promise.date,
+                promise.time
+            ))
         }
     }
     private fun getPendingIntent(promise: Promise, requestCode: Int): PendingIntent {
@@ -74,28 +68,22 @@ class AlarmDirector(
     fun removeAlarm(promiseId: String) {
         val intent = Intent(context, AlarmReceiver::class.java)
         coroutineScope.launch {
-            async {
-                alarmRepository.getAlarm(promiseId)
-            }.await().onSuccess { alarm ->
+            alarmRepository.getAlarm(promiseId).onSuccess { alarm ->
                 val pendingIntent = PendingIntent.getBroadcast(context, alarm.requestCode, intent, PendingIntent.FLAG_IMMUTABLE)
                 alarmManager.cancel(pendingIntent)
                 alarmRepository.deleteAlarm(promiseId)
             }
-            cancel()
         }
     }
 
     fun updateAlarm(promise: Promise) {
         val intent = Intent(context, AlarmReceiver::class.java)
         coroutineScope.launch {
-            async {
-                alarmRepository.getAlarm(promise.promiseId)
-            }.await().onSuccess { alarm ->
+            alarmRepository.getAlarm(promise.promiseId).onSuccess { alarm ->
                 val pendingIntent = PendingIntent.getBroadcast(context, alarm.requestCode, intent, PendingIntent.FLAG_IMMUTABLE)
                 alarmManager.cancel(pendingIntent)
                 registerAlarm(promise)
             }
-            cancel()
         }
     }
 
