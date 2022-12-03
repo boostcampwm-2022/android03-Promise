@@ -7,12 +7,7 @@ import android.content.Context.ALARM_SERVICE
 import android.content.Intent
 import android.os.SystemClock
 import android.util.Log
-import com.boosters.promise.data.alarm.Alarm
-import com.boosters.promise.data.alarm.AlarmRepository
 import com.boosters.promise.data.promise.Promise
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.*
 
 class AlarmDirector(
