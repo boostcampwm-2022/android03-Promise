@@ -25,7 +25,6 @@ class BootService : LifecycleService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         lifecycleScope.launch {
-            alarmDirector.removeLocalAllAlarm()
             userRepository.getMyInfo().first().onSuccess { myInfo ->
                 promiseRepository.getPromiseList(myInfo).first().forEach { promise ->
                     alarmDirector.registerAlarm(promise)

@@ -66,7 +66,7 @@ class NotificationService : FirebaseMessagingService() {
     private fun getContentText(title: String?, promise: Promise): String {
         return when (title) {
             NOTIFICATION_EDIT -> {
-                alarmDirector.updateAlarm(promise)
+                alarmDirector.registerAlarm(promise)
                 String.format(getString(R.string.notification_edit), promise.date)
             }
             NOTIFICATION_ADD -> {
