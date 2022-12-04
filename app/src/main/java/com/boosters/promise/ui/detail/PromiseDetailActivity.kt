@@ -15,7 +15,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ActivityPromiseDetailBinding
 import com.boosters.promise.ui.detail.adapter.PromiseMemberAdapter
-import com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity
 import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
 import com.google.android.material.snackbar.Snackbar
 import com.naver.maps.map.MapFragment
@@ -87,14 +86,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         supportActionBar?.apply {
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true)
-        }
-
-        promiseDetailViewModel.isDeleted.observe(this) {
-            if (it) {
-                finish()
-            } else {
-                showStateSnackbar(R.string.promiseDetail_delete_ask)
-            }
         }
     }
 
@@ -193,24 +184,22 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 promiseDetailViewModel.promise.collect { promise ->
-                    launch {
-                        promiseMemberAdapter.submitList(
-                            promise.members.map {
-                                it.toMemberUiModel()
-                            }
-                        )
-                    }
+                    promiseMemberAdapter.submitList(
+                        promise.members.map {
+                            it.toMemberUiModel()
+                        }
+                    )
+                    val destinationLocation = promise.destinationGeoLocation
 
-                    launch {
-                        val destinationLocation = promise.destinationGeoLocation
-
-                        mapManager.markDestination(destinationLocation, destinationMarker)
-                        markUsersLocationOnMap()
-                        initCameraPosition(destinationLocation)
-                        checkArrival()
-                    }
+                    mapManager.markDestination(destinationLocation, destinationMarker)
+                    markUsersLocationOnMap()
+                    initCameraPosition(destinationLocation)
+                    checkArrival()
                 }
             }
+        }
+        promiseDetailViewModel.isDeleted.observe(this) { isDeleted ->
+            if (isDeleted) finish() else showStateSnackbar(R.string.promiseDetail_delete_ask)
         }
     }
 
@@ -270,9 +259,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             .setMessage(R.string.promiseDetail_delete_ask)
             .setPositiveButton(R.string.promiseDetail_dialog_yes) { _, _ ->
                 promiseDetailViewModel.removePromise()
-                startActivity(
-                    Intent(this, PromiseCalendarActivity::class.java)
-                ).also { finish() }
             }
             .setNegativeButton(R.string.promiseDetail_dialog_no) { _, _ ->
                 return@setNegativeButton

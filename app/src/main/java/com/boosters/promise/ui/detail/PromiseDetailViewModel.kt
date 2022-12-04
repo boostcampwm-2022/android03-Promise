@@ -95,14 +95,27 @@ class PromiseDetailViewModel @AssistedInject constructor(
 
     fun removePromise() {
         viewModelScope.launch {
-            val promiseId = promise.first().promiseId
-            promiseRepository.removePromise(promiseId).collectLatest { isDeleted ->
-                if (isDeleted) {
-                    alarmDirector.removeAlarm(promiseId)
-                    sendNotification()
-                } else {
-                    _isDeleted.value = false
-                }
+            val promise = promise.first()
+            val isDeleteSuccess = promiseRepository.removePromise(promise.promiseId).first()
+            if (isDeleteSuccess) {
+                alarmDirector.removeAlarm(promise.promiseId)
+                sendDeleteNotification(promise)
+            }
+            _isDeleted.value = isDeleteSuccess
+        }
+    }
+
+    private suspend fun sendDeleteNotification(promise: Promise) {
+        userRepository.getMyInfo().first().onSuccess { myInfo ->
+            val users = promise.members.filter { it.userCode != myInfo.userCode }
+            if (users.isEmpty()) return
+
+            users.forEach { user ->
+                notificationRepository.sendNotification(
+                    NotificationService.NOTIFICATION_DELETE,
+                    promise,
+                    user.userToken,
+                )
             }
         }
     }
@@ -129,27 +142,6 @@ class PromiseDetailViewModel @AssistedInject constructor(
                     isAcceptLocation = isAcceptLocationSharing
                 )
             )
-        }
-    }
-
-    private fun sendNotification() {
-        viewModelScope.launch {
-            userRepository.getMyInfo().first().onSuccess { myInfo ->
-                val promise = promise.first()
-                val userCodeList = promise.members.filter { it.userCode != myInfo.userCode }.map { it.userCode }
-                if (userCodeList.isEmpty()) return@launch
-
-                userRepository.getUserList(userCodeList).collectLatest {
-                    it.forEach { user ->
-                        notificationRepository.sendNotification(
-                            NotificationService.NOTIFICATION_DELETE,
-                            promise,
-                            user.userToken,
-                        )
-                    }
-                }
-            }
-            _isDeleted.value = true
         }
     }
 
