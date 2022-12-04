@@ -28,6 +28,7 @@ import kotlinx.coroutines.launch
 import android.Manifest.permission
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.widget.CompoundButton.OnCheckedChangeListener
 import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.data.user.toMemberUiModel
 import com.boosters.promise.ui.detail.util.MapManager
@@ -35,13 +36,27 @@ import com.boosters.promise.receiver.LocationUploadReceiver
 import com.boosters.promise.ui.detail.model.MemberUiModel
 import com.boosters.promise.ui.detail.model.PromiseUploadUiState
 import kotlinx.coroutines.flow.first
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var binding: ActivityPromiseDetailBinding
-    private val promiseDetailViewModel: PromiseDetailViewModel by viewModels()
+
+    @Inject
+    lateinit var promiseDetailViewModelFactory: PromiseDetailViewModel.PromiseDetailViewModelFactory
+    private val promiseDetailViewModel: PromiseDetailViewModel by viewModels {
+        PromiseDetailViewModel.provideFactory(
+            promiseDetailViewModelFactory,
+            intent.getStringExtra(PROMISE_ID_KEY) ?: throw NullPointerException()
+        )
+    }
+
     private val promiseMemberAdapter = PromiseMemberAdapter()
+
+    private val onLocationSharingPermissionChanged: OnCheckedChangeListener = OnCheckedChangeListener { _, isChecked ->
+        promiseDetailViewModel.updateLocationSharingPermission(isChecked)
+    }
 
     private lateinit var mapManager: MapManager
     private val destinationMarker = Marker()
@@ -66,8 +81,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         sendPromiseUploadInfoToReceiver()
 
         initMap()
-        setPromiseInfo()
-        setListener()
+        setDestinationButtonClickListener()
 
         setSupportActionBar(binding.toolbarPromiseDetail)
         supportActionBar?.apply {
@@ -120,14 +134,16 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun setBinding() {
         binding.lifecycleOwner = this
-        binding.viewModel = promiseDetailViewModel
         binding.recyclerViewPromiseDetailMemberList.adapter = promiseMemberAdapter
-    }
-
-    private fun setPromiseInfo() {
-        intent.getStringExtra(PROMISE_ID_KEY)?.let { promiseId ->
-            promiseDetailViewModel.setPromiseInfo(promiseId)
+        lifecycleScope.launch {
+            launch {
+                promiseDetailViewModel.promise.collectLatest {
+                    binding.promise = it
+                }
+            }
+            binding.isAcceptLocationSharing = promiseDetailViewModel.isAcceptLocationSharing.first().getOrElse { false }
         }
+        binding.onLocationSharingPermissionChangedListener = onLocationSharingPermissionChanged
     }
 
     private fun initMap() {
@@ -139,7 +155,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
     }
 
-    private fun setListener() {
+    private fun setDestinationButtonClickListener() {
         binding.imageButtonPromiseDetailDestination.setOnClickListener {
             lifecycleScope.launch {
                 promiseDetailViewModel.promise.first().let { promise ->
@@ -220,7 +236,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 userGeoLocations.forEachIndexed { idx, memberUiModel ->
                     if (memberUiModel.geoLocation != null) {
                         lifecycleScope.launch {
-                            if(promiseDetailViewModel.memberMarkers.isNotEmpty()) {
+                            if (promiseDetailViewModel.memberMarkers.isNotEmpty()) {
                                 val marker = promiseDetailViewModel.memberMarkers[idx]
                                 promiseDetailViewModel.memberUiModels.first()?.find { it.userCode == memberUiModel.userCode }?.userName?.let {
                                     mapManager.markMemberLocation(

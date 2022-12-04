@@ -1,9 +1,6 @@
 package com.boosters.promise.ui.detail
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.data.location.LocationRepository
 import com.boosters.promise.data.location.UserGeoLocation
@@ -19,34 +16,32 @@ import com.boosters.promise.ui.detail.model.PromiseUploadUiState
 import com.boosters.promise.ui.notification.AlarmDirector
 import com.boosters.promise.ui.notification.NotificationService
 import com.naver.maps.map.overlay.Marker
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class PromiseDetailViewModel @Inject constructor(
+class PromiseDetailViewModel @AssistedInject constructor(
     private val promiseRepository: PromiseRepository,
     private val userRepository: UserRepository,
     private val memberRepository: MemberRepository,
     private val locationRepository: LocationRepository,
     private val notificationRepository: NotificationRepository,
-    private val alarmDirector: AlarmDirector
+    private val alarmDirector: AlarmDirector,
+    @Assisted promiseId: String
 ) : ViewModel() {
 
-    private val _promiseInfo = MutableStateFlow<Promise?>(null)
-    val promiseInfo: StateFlow<Promise?> get() = _promiseInfo.asStateFlow()
-
-    val promise: SharedFlow<Promise> = _promiseInfo.mapNotNull { it }.shareIn(viewModelScope, SharingStarted.Eagerly, 1)
+    val promise: SharedFlow<Promise> = promiseRepository.getPromise(promiseId).shareIn(viewModelScope, SharingStarted.Eagerly, 1)
 
     private val _isDeleted = MutableLiveData<Boolean>()
     val isDeleted: LiveData<Boolean> = _isDeleted
 
     lateinit var memberMarkers: List<Marker>
 
-    val isAcceptLocationSharing = MutableStateFlow(false)
+    val isAcceptLocationSharing = memberRepository.getIsAcceptLocation(promiseId)
 
     private val _promiseUploadUiState = MutableStateFlow<PromiseUploadUiState?>(null)
     val promiseUploadUiState = _promiseUploadUiState.asStateFlow()
@@ -91,12 +86,10 @@ class PromiseDetailViewModel @Inject constructor(
         }
     }.shareIn(viewModelScope, SharingStarted.Eagerly, 1)
 
-    fun setPromiseInfo(promiseId: String) {
+    init {
         viewModelScope.launch {
-            _promiseInfo.value = promiseRepository.getPromise(promiseId).first().copy()
             promise.collectLatest { promise ->
                 memberMarkers = List(promise.members.size) { Marker() } // TODO: marker
-                isAcceptLocationSharing.value = memberRepository.getIsAcceptLocation(promiseId).first().getOrElse { false }
             }
         }
     }
@@ -148,28 +141,21 @@ class PromiseDetailViewModel @Inject constructor(
     private fun sendNotification() {
         viewModelScope.launch {
             userRepository.getMyInfo().first().onSuccess { myInfo ->
-                val userCodeList =
-                    _promiseInfo.value?.members?.filter { it.userCode != myInfo.userCode }
-                        ?.map { it.userCode }
-                if (userCodeList != null && userCodeList.isEmpty()) {
-                    return@launch
-                }
+                val promise = promise.first()
+                val userCodeList = promise.members.filter { it.userCode != myInfo.userCode }.map { it.userCode }
+                if (userCodeList.isEmpty()) return@launch
 
-                if (userCodeList != null) {
-                    userRepository.getUserList(userCodeList).collectLatest {
-                        it.forEach { user ->
-                            _promiseInfo.value?.let { promise ->
-                                notificationRepository.sendNotification(
-                                    NotificationService.NOTIFICATION_DELETE,
-                                    promise,
-                                    user.userToken,
-                                )
-                            }
-                        }
+                userRepository.getUserList(userCodeList).collectLatest {
+                    it.forEach { user ->
+                        notificationRepository.sendNotification(
+                            NotificationService.NOTIFICATION_DELETE,
+                            promise,
+                            user.userToken,
+                        )
                     }
                 }
-                _isDeleted.value = true
             }
+            _isDeleted.value = true
         }
     }
 
@@ -187,6 +173,26 @@ class PromiseDetailViewModel @Inject constructor(
 
     companion object {
         private const val MINIMUM_ARRIVE_DISTANCE = 50
+
+        @Suppress("UNCHECKED_CAST")
+        fun provideFactory(
+            assistedFactory: PromiseDetailViewModelFactory,
+            promiseId: String
+        ) = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                if (modelClass.isAssignableFrom(PromiseDetailViewModel::class.java)) {
+                    return assistedFactory.create(promiseId) as T
+                }
+                throw IllegalArgumentException()
+            }
+        }
+    }
+
+    @AssistedFactory
+    interface PromiseDetailViewModelFactory {
+
+        fun create(promiseId: String): PromiseDetailViewModel
+
     }
 
 }

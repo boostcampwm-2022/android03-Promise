@@ -6,8 +6,16 @@
     <data>
 
         <variable
-            name="viewModel"
-            type="com.boosters.promise.ui.detail.PromiseDetailViewModel" />
+            name="onLocationSharingPermissionChangedListener"
+            type="android.widget.CompoundButton.OnCheckedChangeListener" />
+
+        <variable
+            name="promise"
+            type="com.boosters.promise.data.promise.Promise" />
+
+        <variable
+            name="isAcceptLocationSharing"
+            type="Boolean" />
     </data>
 
     <ScrollView
@@ -54,7 +62,7 @@
                 style="@style/Promise.TextAppearance.LargeBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{viewModel.promiseInfo.title}"
+                android:text="@{promise.title}"
                 app:layout_constraintBottom_toTopOf="@+id/textView_promiseDetail_location"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
@@ -84,7 +92,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="@{viewModel.promiseInfo.destinationName}"
+                android:text="@{promise.destinationName}"
                 app:layout_constraintBottom_toBottomOf="@+id/textView_promiseDetail_location"
                 app:layout_constraintEnd_toStartOf="@id/switch_promiseDetail_locationSharing"
                 app:layout_constraintStart_toEndOf="@+id/textView_promiseDetail_location"
@@ -111,7 +119,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="@{@string/promiseDetail_date_format(viewModel.promiseInfo.date, viewModel.promiseInfo.time)}"
+                android:text="@{@string/promiseDetail_date_format(promise.date, promise.time)}"
                 app:layout_constraintBottom_toBottomOf="@+id/textView_promiseDetail_date"
                 app:layout_constraintEnd_toStartOf="@id/switch_promiseDetail_locationSharing"
                 app:layout_constraintStart_toEndOf="@+id/textView_promiseDetail_date"
@@ -136,8 +144,8 @@
                 android:id="@+id/switch_promiseDetail_locationSharing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="@={viewModel.isAcceptLocationSharing}"
-                android:onCheckedChanged="@{(buttonView, isChecked) -> viewModel.updateLocationSharingPermission(isChecked)}"
+                android:checked="@={isAcceptLocationSharing}"
+                android:onCheckedChanged="@{onLocationSharingPermissionChangedListener}"
                 android:text="@string/promiseDetail_location_sharing_permission"
                 app:layout_constraintBottom_toTopOf="@id/barrier_promiseDetail_dateBottom"
                 app:layout_constraintEnd_toEndOf="@id/guideline_promiseDetail_right"
