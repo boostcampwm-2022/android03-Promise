@@ -20,7 +20,6 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -110,31 +109,26 @@ class PromiseDetailViewModel @AssistedInject constructor(
 
     fun updateLocationSharingPermission(isAcceptLocationSharing: Boolean) {
         viewModelScope.launch {
-            try {
-                val userCode = userRepository.getMyInfo().first().getOrElse { throw IllegalStateException() }.userCode
-                promise.collectLatest { promise ->
-                    _promiseUploadUiState.value = if (isAcceptLocationSharing) {
-                        PromiseUploadUiState.Accept(
-                            id = promise.promiseId,
-                            dateAndTime = "${promise.date} ${promise.time}"
-                        )
-                    } else {
-                        PromiseUploadUiState.Denied(
-                            id = promise.promiseId,
-                        )
-                    }
-
-                    memberRepository.updateIsAcceptLocation(
-                        Member(
-                            promiseId = promise.promiseId,
-                            userCode = userCode,
-                            isAcceptLocation = isAcceptLocationSharing
-                        )
-                    )
-                }
-            } catch (e: IllegalStateException) {
-                cancel()
+            val userCode = userRepository.getMyInfo().first().getOrElse { return@launch }.userCode
+            val promise = promise.first()
+            _promiseUploadUiState.value = if (isAcceptLocationSharing) {
+                PromiseUploadUiState.Accept(
+                    id = promise.promiseId,
+                    dateAndTime = "${promise.date} ${promise.time}"
+                )
+            } else {
+                PromiseUploadUiState.Denied(
+                    id = promise.promiseId,
+                )
             }
+
+            memberRepository.updateIsAcceptLocation(
+                Member(
+                    promiseId = promise.promiseId,
+                    userCode = userCode,
+                    isAcceptLocation = isAcceptLocationSharing
+                )
+            )
         }
     }
 
@@ -159,7 +153,7 @@ class PromiseDetailViewModel @AssistedInject constructor(
         }
     }
 
-    fun isArrival(destination: GeoLocation, userGeoLocation: UserGeoLocation?): Boolean {
+    private fun isArrival(destination: GeoLocation, userGeoLocation: UserGeoLocation?): Boolean {
         val distance = userGeoLocation?.geoLocation?.let { calculateDistance(destination, it) }
         if (distance != null) {
             return distance < MINIMUM_ARRIVE_DISTANCE
