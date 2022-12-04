@@ -11,11 +11,11 @@ import com.boosters.promise.data.notification.NotificationRepository
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.user.UserRepository
+import com.boosters.promise.ui.detail.model.MemberMarkerInfo
 import com.boosters.promise.ui.detail.model.MemberUiModel
 import com.boosters.promise.ui.detail.model.PromiseUploadUiState
 import com.boosters.promise.ui.notification.AlarmDirector
 import com.boosters.promise.ui.notification.NotificationService
-import com.naver.maps.map.overlay.Marker
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -37,8 +37,6 @@ class PromiseDetailViewModel @AssistedInject constructor(
 
     private val _isDeleted = MutableLiveData<Boolean>()
     val isDeleted: LiveData<Boolean> = _isDeleted
-
-    lateinit var memberMarkers: List<Marker>
 
     val isAcceptLocationSharing = memberRepository.getIsAcceptLocation(promiseId)
 
@@ -65,23 +63,18 @@ class PromiseDetailViewModel @AssistedInject constructor(
     }.shareIn(viewModelScope, SharingStarted.Eagerly, 1)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val memberUiModels: Flow<List<MemberUiModel>?> = members.flatMapLatest { members ->
-        userRepository.getUserList(members.map { user -> user.userCode }).flatMapLatest { users ->
-            userGeoLocations.flatMapLatest { userGeoLocations ->
-                flow<List<MemberUiModel>> {
-                    emit(
-                        users.map { user ->
-                            val userGeoLocation = userGeoLocations.find { it.userCode == user.userCode }
-                            val destination = promise.first().destinationGeoLocation
-                            MemberUiModel(
-                                userCode = user.userCode,
-                                userName = user.userName,
-                                isArrived = isArrival(destination, userGeoLocation)
-                            )
-                        }
-                    )
-                }
+    val memberUiModels: Flow<List<MemberUiModel>?> = userGeoLocations.flatMapLatest { userGeoLocations ->
+        flow<List<MemberUiModel>> {
+            val memberUiModel = promise.first().members.map { user ->
+                val userGeoLocation = userGeoLocations.find { it.userCode == user.userCode }
+                val destination = promise.first().destinationGeoLocation
+                MemberUiModel(
+                    userCode = user.userCode,
+                    userName = user.userName,
+                    isArrived = isArrival(destination, userGeoLocation)
+                )
             }
+            emit(memberUiModel)
         }
     }
 
