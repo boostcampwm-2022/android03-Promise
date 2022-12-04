@@ -4,6 +4,7 @@ import com.boosters.promise.R
 import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.data.location.UserGeoLocation
 import com.boosters.promise.data.location.toLatLng
+import com.boosters.promise.ui.detail.model.MemberMarkerInfo
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraAnimation
@@ -14,6 +15,8 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 
 class MapManager(val map: NaverMap) {
+
+    private val memberMarkerHashMap = HashMap<String, Marker>()
 
     init {
         map.maxZoom = MAP_MAX_ZOOM_LEVEL
@@ -57,12 +60,28 @@ class MapManager(val map: NaverMap) {
         }
     }
 
-    fun markMemberLocation(userName: String, location: GeoLocation, marker: Marker) {
-        marker.apply {
-            position = location.toLatLng()
+    fun updateMemberMarker(memberMarkerInfo: List<MemberMarkerInfo>) {
+        val memberMarkerIds = memberMarkerInfo.map { it.id }
+        memberMarkerHashMap.filterKeys { (it in memberMarkerIds).not() }.run {
+            keys.forEach {
+                memberMarkerHashMap[it]?.map = null
+                memberMarkerHashMap.remove(it)
+            }
+        }
+
+        memberMarkerInfo.forEach { memberMarker ->
+            memberMarkerHashMap[memberMarker.id]?.apply {
+                position = memberMarker.geoLocation.toLatLng()
+            } ?: addMemberMarker(memberMarker)
+        }
+    }
+
+    private fun addMemberMarker(memberMarkerInfo: MemberMarkerInfo) {
+        memberMarkerHashMap[memberMarkerInfo.id] = Marker().apply {
+            position = memberMarkerInfo.geoLocation.toLatLng()
             map = this@MapManager.map
             icon = OverlayImage.fromResource(R.drawable.ic_member_marker)
-            captionText = userName
+            captionText = memberMarkerInfo.name
             captionTextSize = 15.0f
             setCaptionAligns(Align.Top)
         }

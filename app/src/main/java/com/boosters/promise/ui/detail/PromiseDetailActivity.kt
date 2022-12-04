@@ -192,12 +192,13 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     val destinationLocation = promise.destinationGeoLocation
 
                     mapManager.markDestination(destinationLocation, destinationMarker)
-                    markUsersLocationOnMap()
                     initCameraPosition(destinationLocation)
                     checkArrival()
                 }
             }
         }
+        markUsersLocationOnMap()
+
         promiseDetailViewModel.isDeleted.observe(this) { isDeleted ->
             if (isDeleted) finish() else showStateSnackbar(R.string.promiseDetail_delete_ask)
         }
@@ -219,24 +220,11 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private suspend fun markUsersLocationOnMap() {
+    private fun markUsersLocationOnMap() {
         lifecycleScope.launch {
-            promiseDetailViewModel.userGeoLocations.collectLatest { userGeoLocations ->
-                userGeoLocations.forEachIndexed { idx, memberUiModel ->
-                    if (memberUiModel.geoLocation != null) {
-                        lifecycleScope.launch {
-                            if (promiseDetailViewModel.memberMarkers.isNotEmpty()) {
-                                val marker = promiseDetailViewModel.memberMarkers[idx]
-                                promiseDetailViewModel.memberUiModels.first()?.find { it.userCode == memberUiModel.userCode }?.userName?.let {
-                                    mapManager.markMemberLocation(
-                                        it,
-                                        memberUiModel.geoLocation,
-                                        marker
-                                    )
-                                }
-                            }
-                        }
-                    }
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                promiseDetailViewModel.memberMarkerInfo.collectLatest { memberMarkerInfo ->
+                    mapManager.updateMemberMarker(memberMarkerInfo)
                 }
             }
         }

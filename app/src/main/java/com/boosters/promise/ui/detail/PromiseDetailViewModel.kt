@@ -51,6 +51,20 @@ class PromiseDetailViewModel @AssistedInject constructor(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
+    val userGeoLocations: SharedFlow<List<UserGeoLocation>> = members.flatMapLatest { members ->
+        val locationSharingAcceptMembers = members.filter { member ->
+            member.isAcceptLocation
+        }.map { member ->
+            member.userCode
+        }
+        if (locationSharingAcceptMembers.isNotEmpty()) {
+            locationRepository.getGeoLocations(locationSharingAcceptMembers)
+        } else {
+            flow { emit(emptyList()) }
+        }
+    }.shareIn(viewModelScope, SharingStarted.Eagerly, 1)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     val memberUiModels: Flow<List<MemberUiModel>?> = members.flatMapLatest { members ->
         userRepository.getUserList(members.map { user -> user.userCode }).flatMapLatest { users ->
             userGeoLocations.flatMapLatest { userGeoLocations ->
@@ -72,26 +86,15 @@ class PromiseDetailViewModel @AssistedInject constructor(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val userGeoLocations: SharedFlow<List<UserGeoLocation>> = members.flatMapLatest { members ->
-        val locationSharingAcceptMembers = members.filter { member ->
-            member.isAcceptLocation
-        }.map { member ->
-            member.userCode
-        }
-        if (locationSharingAcceptMembers.isNotEmpty()) {
-            locationRepository.getGeoLocations(locationSharingAcceptMembers)
-        } else {
-            flow { emit(emptyList()) }
+    val memberMarkerInfo: SharedFlow<List<MemberMarkerInfo>> = userGeoLocations.mapLatest { userGeoLocations ->
+        userGeoLocations.mapNotNull { userGeoLocation ->
+            MemberMarkerInfo(
+                id = userGeoLocation.userCode,
+                name = promise.first().members.find { it.userCode == userGeoLocation.userCode }?.userName ?: "",
+                geoLocation = userGeoLocation.geoLocation ?: return@mapNotNull null
+            )
         }
     }.shareIn(viewModelScope, SharingStarted.Eagerly, 1)
-
-    init {
-        viewModelScope.launch {
-            promise.collectLatest { promise ->
-                memberMarkers = List(promise.members.size) { Marker() } // TODO: marker
-            }
-        }
-    }
 
     fun removePromise() {
         viewModelScope.launch {
