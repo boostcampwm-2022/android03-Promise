@@ -80,6 +80,7 @@
     <string name="promiseDetail_memberLocation_null">위치를 찾을 수 없습니다.</string>
     <string name="promiseDetail_overview">한 눈에 보기</string>
     <string name="promiseDetail_location_sharing_permission">위치 공유</string>
+    <string name="promiseDetail_myLocation">내 위치</string>
 
     <!-- LocationService 알림 -->
     <string name="locationService_notification_title">위치 공유중입니다.</string>

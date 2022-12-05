@@ -43,9 +43,18 @@ class PromiseDetailViewModel @AssistedInject constructor(
     private val _promiseUploadUiState = MutableStateFlow<PromiseUploadUiState?>(null)
     val promiseUploadUiState = _promiseUploadUiState.asStateFlow()
 
+    private val myInfo = userRepository.getMyInfo().shareIn(viewModelScope, SharingStarted.Eagerly, 1)
+    val myGeoLocation = locationRepository.lastGeoLocation
+
+    private val _isStartLocationUpdates = MutableStateFlow(false)
+    val isStartLocationUpdates: StateFlow<Boolean> = _isStartLocationUpdates.asStateFlow()
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val members: Flow<List<Member>> = promise.flatMapLatest { promise ->
-        memberRepository.getMembers(promise.promiseId)
+        val myInfoUserCode = myInfo.first().getOrElse { throw IllegalStateException() }.userCode
+        memberRepository.getMembers(promise.promiseId).map { members ->
+            members.filter { it.userCode != myInfoUserCode }
+        }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -64,8 +73,11 @@ class PromiseDetailViewModel @AssistedInject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val memberUiModels: Flow<List<MemberUiModel>?> = userGeoLocations.flatMapLatest { userGeoLocations ->
+        val myUserCode = myInfo.first().getOrElse { throw IllegalStateException() }.userCode
         flow<List<MemberUiModel>> {
-            val memberUiModel = promise.first().members.map { user ->
+            val memberUiModel = promise.first().members.filter {
+                it.userCode != myUserCode
+            }.map { user ->
                 val userGeoLocation = userGeoLocations.find { it.userCode == user.userCode }
                 val destination = promise.first().destinationGeoLocation
                 MemberUiModel(
@@ -101,21 +113,6 @@ class PromiseDetailViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun sendDeleteNotification(promise: Promise) {
-        userRepository.getMyInfo().first().onSuccess { myInfo ->
-            val users = promise.members.filter { it.userCode != myInfo.userCode }
-            if (users.isEmpty()) return
-
-            users.forEach { user ->
-                notificationRepository.sendNotification(
-                    NotificationService.NOTIFICATION_DELETE,
-                    promise,
-                    user.userToken,
-                )
-            }
-        }
-    }
-
     fun updateLocationSharingPermission(isAcceptLocationSharing: Boolean) {
         viewModelScope.launch {
             val userCode = userRepository.getMyInfo().first().getOrElse { return@launch }.userCode
@@ -138,6 +135,31 @@ class PromiseDetailViewModel @AssistedInject constructor(
                     isAcceptLocation = isAcceptLocationSharing
                 )
             )
+        }
+    }
+
+    fun startLocationUpdates() {
+        locationRepository.startLocationUpdates()
+        _isStartLocationUpdates.value = true
+    }
+
+    fun stopLocationUpdates() {
+        locationRepository.stopLocationUpdates()
+        _isStartLocationUpdates.value = false
+    }
+
+    private suspend fun sendDeleteNotification(promise: Promise) {
+        userRepository.getMyInfo().first().onSuccess { myInfo ->
+            val users = promise.members.filter { it.userCode != myInfo.userCode }
+            if (users.isEmpty()) return
+
+            users.forEach { user ->
+                notificationRepository.sendNotification(
+                    NotificationService.NOTIFICATION_DELETE,
+                    promise,
+                    user.userToken,
+                )
+            }
         }
     }
 

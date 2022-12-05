@@ -10,6 +10,10 @@
             type="android.widget.CompoundButton.OnCheckedChangeListener" />
 
         <variable
+            name="onCurrentLocationButtonClickListener"
+            type="android.view.View.OnClickListener" />
+
+        <variable
             name="promise"
             type="com.boosters.promise.data.promise.Promise" />
 
@@ -198,6 +202,25 @@
                 app:layout_constraintStart_toEndOf="@+id/imageButton_promiseDetail_mapOverView"
                 app:layout_constraintTop_toTopOf="@+id/fragment_promiseDetail_map"
                 app:layout_constraintVertical_bias="0.95" />
+
+            <ImageButton
+                android:id="@+id/imageButton_promiseDetail_currentLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_map_control"
+                android:contentDescription="@string/promiseDetail_myLocation"
+                android:elevation="5dp"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:onClickListener="@{onCurrentLocationButtonClickListener}"
+                android:padding="5dp"
+                android:src="@drawable/ic_map_my_location"
+                app:layout_constraintBottom_toBottomOf="@id/fragment_promiseDetail_map"
+                app:layout_constraintEnd_toStartOf="@id/imageButton_promiseDetail_mapOverView"
+                app:layout_constraintHorizontal_bias="0.05"
+                app:layout_constraintStart_toStartOf="@id/fragment_promiseDetail_map"
+                app:layout_constraintTop_toTopOf="@id/fragment_promiseDetail_map"
+                app:layout_constraintVertical_bias="0.85" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView_promiseDetail_memberList"

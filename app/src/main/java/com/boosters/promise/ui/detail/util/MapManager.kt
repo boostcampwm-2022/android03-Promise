@@ -31,23 +31,31 @@ class MapManager(val map: NaverMap) {
 
     fun moveToLocation(location: GeoLocation?) {
         if (location != null) {
-            val cameraUpdate =
-                CameraUpdate.scrollAndZoomTo(location.toLatLng(), LOCATION_ZOOM_LEVEL).animate(
-                    CameraAnimation.Easing, MAP_ANIMATION_DURATION
-                )
-
-            map.moveCamera(cameraUpdate)
+            moveCamera(location.toLatLng())
         }
     }
 
-    fun overviewMemberLocation(destination: GeoLocation?, users: List<UserGeoLocation>) {
+    fun moveCameraToCurrentLocation() {
+        moveCamera(map.locationOverlay.position)
+    }
+
+    fun overviewMemberLocation(destination: GeoLocation?, geoLocations: List<GeoLocation>) {
         if (destination != null) {
-            val bound = calculateBound(destination, users.map { it.geoLocation })
+            val bound = calculateBound(destination, geoLocations)
 
             val cameraUpdate =
                 CameraUpdate.fitBounds(bound, MAP_OVERVIEW_PADDING)
                     .animate(CameraAnimation.Easing, MAP_ANIMATION_DURATION)
             map.moveCamera(cameraUpdate)
+        }
+    }
+
+    fun setCurrentLocation(location: GeoLocation?) {
+        if (location == null) return
+        val coord = location.toLatLng()
+        map.locationOverlay.apply {
+            isVisible = true
+            position = coord
         }
     }
 
@@ -85,6 +93,12 @@ class MapManager(val map: NaverMap) {
             captionTextSize = 15.0f
             setCaptionAligns(Align.Top)
         }
+    }
+
+    private fun moveCamera(latLng: LatLng) {
+        val cameraUpdate = CameraUpdate.scrollAndZoomTo(latLng, LOCATION_ZOOM_LEVEL)
+            .animate(CameraAnimation.Easing, MAP_ANIMATION_DURATION)
+        map.moveCamera(cameraUpdate)
     }
 
     private fun calculateBound(
