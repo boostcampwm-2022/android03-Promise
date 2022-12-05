@@ -37,7 +37,12 @@ class AlarmReceiver : BroadcastReceiver() {
         pendingResult.finish()
     }
 
-    private fun showNotification(context: Context, promiseTitle: String?, promiseDate: String?, promiseId: String?) {
+    private fun showNotification(
+        context: Context,
+        promiseTitle: String?,
+        promiseDate: String?,
+        promiseId: String?
+    ) {
         val intent = Intent(
             context,
             PromiseDetailActivity::class.java

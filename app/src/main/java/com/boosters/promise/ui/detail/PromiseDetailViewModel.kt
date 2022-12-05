@@ -31,11 +31,9 @@ class PromiseDetailViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val memberRepository: MemberRepository,
     private val locationRepository: LocationRepository,
-    private val notificationRepository: NotificationRepository
+    private val notificationRepository: NotificationRepository,
+    private val alarmDirector: AlarmDirector
 ) : ViewModel() {
-
-    @Inject
-    lateinit var alarmDirector: AlarmDirector
 
     private val _promiseInfo = MutableStateFlow<Promise?>(null)
     val promiseInfo: StateFlow<Promise?> get() = _promiseInfo.asStateFlow()

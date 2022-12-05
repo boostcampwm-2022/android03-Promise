@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Context.ALARM_SERVICE
 import android.content.Intent
 import android.os.SystemClock
-import android.util.Log
 import com.boosters.promise.data.promise.Promise
 import java.util.*
 
@@ -24,12 +23,12 @@ class AlarmDirector(
         if (Calendar.getInstance() >= cal) {
             return
         }
-        val dis = SystemClock.elapsedRealtime() + (cal.timeInMillis - Calendar.getInstance().timeInMillis)
+        val delay =
+            SystemClock.elapsedRealtime() + (cal.timeInMillis - Calendar.getInstance().timeInMillis - ONE_HOUR_IN_MILLIS)
         val requestCode = promise.promiseId.hashCode()
-        Log.d("MainActivity", "등록 ${requestCode}")
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.ELAPSED_REALTIME_WAKEUP,
-            dis,
+            delay,
             getPendingIntent(promise, requestCode)
         )
     }
@@ -54,7 +53,6 @@ class AlarmDirector(
             intent,
             PendingIntent.FLAG_IMMUTABLE
         )
-        Log.d("MainActivity", "삭제 ${promiseId.hashCode()}")
         alarmManager.cancel(pendingIntent)
     }
 
