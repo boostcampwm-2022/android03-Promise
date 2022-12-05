@@ -35,10 +35,6 @@ class MapManager(val map: NaverMap) {
         }
     }
 
-    fun moveCameraToCurrentLocation() {
-        moveCamera(map.locationOverlay.position)
-    }
-
     fun overviewMemberLocation(destination: GeoLocation?, geoLocations: List<GeoLocation>) {
         if (destination != null) {
             val bound = calculateBound(destination, geoLocations)

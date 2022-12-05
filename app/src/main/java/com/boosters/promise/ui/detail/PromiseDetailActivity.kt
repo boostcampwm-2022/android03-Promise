@@ -58,7 +58,11 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private val onCurrentLocationButtonClickListener = View.OnClickListener {
-        mapManager.moveCameraToCurrentLocation()
+        if (checkLocationPermission()) {
+            mapManager.moveToLocation(promiseDetailViewModel.currentGeoLocation.value)
+            return@OnClickListener
+        }
+        showRequireLocationPermissionSnackBar()
     }
 
     private lateinit var mapManager: MapManager
@@ -217,7 +221,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                promiseDetailViewModel.myGeoLocation.collectLatest { geoLocation ->
+                promiseDetailViewModel.currentGeoLocation.collectLatest { geoLocation ->
                     mapManager.setCurrentLocation(geoLocation)
                 }
             }
@@ -238,7 +242,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun overviewMemberLocation(destination: GeoLocation?) {
         lifecycleScope.launch {
-            val myLocation = promiseDetailViewModel.myGeoLocation.first()
+            val myLocation = promiseDetailViewModel.currentGeoLocation.first()
             val userGeoLocations = promiseDetailViewModel.userGeoLocations.first().map { it.geoLocation }.plusElement(myLocation)
             mapManager.overviewMemberLocation(destination, userGeoLocations.filterNotNull())
         }
@@ -308,24 +312,43 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         lifecycleScope.launch {
             promiseDetailViewModel.promiseUploadUiState.collectLatest promiseUploadStateCollect@{ promiseUploadUiState ->
                 if (promiseUploadUiState == null) return@promiseUploadStateCollect
-                val intent = when (promiseUploadUiState) {
+
+                when (promiseUploadUiState) {
                     is PromiseUploadUiState.Accept -> {
-                        if (checkLocationPermission().not()) {
-                            requestPermission().also { if (checkLocationPermission().not()) return@promiseUploadStateCollect }
+                        if (checkLocationPermission()) {
+                            sendPromiseUploadUiStateAccept(promiseUploadUiState)
+                            return@promiseUploadStateCollect
                         }
-                        Intent(LocationUploadReceiver.ACTION_LOCATION_UPLOAD_SERVICE_START).apply {
-                            putExtra(LocationUploadReceiver.PROMISE_DATE_TIME_KEY, promiseUploadUiState.dateAndTime)
-                        }
+                        binding.switchPromiseDetailLocationSharing.isChecked = false
+                        promiseDetailViewModel.stopLocationUpdates()
+                        showRequireLocationPermissionSnackBar()
                     }
-                    is PromiseUploadUiState.Denied -> {
-                        Intent(LocationUploadReceiver.ACTION_LOCATION_UPLOAD_SERVICE_STOP)
-                    }
-                }.apply {
-                    putExtra(LocationUploadReceiver.PROMISE_ID_KEY, promiseUploadUiState.id)
+                    is PromiseUploadUiState.Denied -> sendPromiseUploadUiStateDenied(promiseUploadUiState)
                 }
-                sendOrderedBroadcast(intent, null)
             }
         }
+    }
+
+    private fun sendPromiseUploadUiStateAccept(promiseUploadUiState: PromiseUploadUiState.Accept) {
+        Intent(LocationUploadReceiver.ACTION_LOCATION_UPLOAD_SERVICE_START).apply {
+            putExtra(LocationUploadReceiver.PROMISE_DATE_TIME_KEY, promiseUploadUiState.dateAndTime)
+            putExtra(LocationUploadReceiver.PROMISE_ID_KEY, promiseUploadUiState.id)
+        }.let { intent ->
+            sendOrderedBroadcast(intent, null)
+        }
+
+    }
+
+    private fun sendPromiseUploadUiStateDenied(promiseUploadUiState: PromiseUploadUiState.Denied) {
+        Intent(LocationUploadReceiver.ACTION_LOCATION_UPLOAD_SERVICE_STOP).apply {
+            putExtra(LocationUploadReceiver.PROMISE_ID_KEY, promiseUploadUiState.id)
+        }.let { intent ->
+            sendOrderedBroadcast(intent, null)
+        }
+    }
+
+    private fun showRequireLocationPermissionSnackBar() {
+        Snackbar.make(binding.root, R.string.promiseDetail_require_location_permission, Snackbar.LENGTH_SHORT).show()
     }
 
     companion object {

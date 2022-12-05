@@ -44,7 +44,7 @@ class PromiseDetailViewModel @AssistedInject constructor(
     val promiseUploadUiState = _promiseUploadUiState.asStateFlow()
 
     private val myInfo = userRepository.getMyInfo().shareIn(viewModelScope, SharingStarted.Eagerly, 1)
-    val myGeoLocation = locationRepository.lastGeoLocation
+    val currentGeoLocation = locationRepository.lastGeoLocation
 
     private val _isStartLocationUpdates = MutableStateFlow(false)
     val isStartLocationUpdates: StateFlow<Boolean> = _isStartLocationUpdates.asStateFlow()
