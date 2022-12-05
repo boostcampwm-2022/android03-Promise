@@ -32,7 +32,9 @@ import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.data.user.toMemberUiModel
 import com.boosters.promise.ui.detail.util.MapManager
 import com.boosters.promise.receiver.LocationUploadReceiver
+import com.boosters.promise.ui.detail.model.MemberUiModel
 import com.boosters.promise.ui.detail.model.PromiseUploadUiState
+import kotlinx.coroutines.flow.first
 
 @AndroidEntryPoint
 class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -100,12 +102,14 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.item_detail_edit -> {
-                val intent = Intent(this, PromiseSettingActivity::class.java).putExtra(
-                    PromiseSettingActivity.PROMISE_KEY,
-                    promiseDetailViewModel.promiseInfo.value
-                )
-                startActivity(intent)
-                finish()
+                lifecycleScope.launch {
+                    val intent = Intent(this@PromiseDetailActivity, PromiseSettingActivity::class.java).putExtra(
+                        PromiseSettingActivity.PROMISE_KEY,
+                        promiseDetailViewModel.promise.first()
+                    )
+                    startActivity(intent)
+                    finish()
+                }
             }
             R.id.item_detail_delete -> {
                 showDeleteDialog()
@@ -138,28 +142,28 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun setListener() {
         binding.imageButtonPromiseDetailDestination.setOnClickListener {
             lifecycleScope.launch {
-                promiseDetailViewModel.promiseInfo.collectLatest { promise ->
-                    mapManager.moveToLocation(promise?.destinationGeoLocation)
+                promiseDetailViewModel.promise.first().let { promise ->
+                    mapManager.moveToLocation(promise.destinationGeoLocation)
                 }
             }
         }
 
         binding.imageButtonPromiseDetailMapOverView.setOnClickListener {
             lifecycleScope.launch {
-                promiseDetailViewModel.promiseInfo.collectLatest { promise ->
-                    overviewMemberLocation(promise?.destinationGeoLocation)
+                promiseDetailViewModel.promise.first().let { promise ->
+                    overviewMemberLocation(promise.destinationGeoLocation)
                 }
             }
         }
 
         promiseMemberAdapter.setOnItemClickListener(object : PromiseMemberAdapter.OnItemClickListener {
-            override fun onItemClick(position: Int) {
+            override fun onItemClick(memberUiModel: MemberUiModel) {
                 lifecycleScope.launch {
-                    promiseDetailViewModel.memberLocations.collectLatest {
-                        val selectedMember = it?.get(position)
+                    promiseDetailViewModel.userGeoLocations.first().let { userGeoLocation ->
+                        val selectedMemberLocation = userGeoLocation.find { it.userCode == memberUiModel.userCode }?.geoLocation
 
-                        if (selectedMember?.geoLocation != null) {
-                            mapManager.moveToLocation(selectedMember.geoLocation)
+                        if (selectedMemberLocation != null) {
+                            mapManager.moveToLocation(selectedMemberLocation)
                         } else {
                             showStateSnackbar(R.string.promiseDetail_memberLocation_null)
                         }
@@ -172,26 +176,22 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun setObserver() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                promiseDetailViewModel.promiseInfo.collect { promise ->
+                promiseDetailViewModel.promise.collect { promise ->
                     launch {
-                        if (promise != null) {
-                            promiseMemberAdapter.submitList(
-                                promise.members.map {
-                                    it.toMemberUiModel()
-                                }
-                            )
-                        }
+                        promiseMemberAdapter.submitList(
+                            promise.members.map {
+                                it.toMemberUiModel()
+                            }
+                        )
                     }
 
                     launch {
-                        if (promise != null) {
-                            val destinationLocation = promise.destinationGeoLocation
+                        val destinationLocation = promise.destinationGeoLocation
 
-                            mapManager.markDestination(destinationLocation, destinationMarker)
-                            markUsersLocationOnMap()
-                            initCameraPosition(destinationLocation)
-                            checkArrival(destinationLocation)
-                        }
+                        mapManager.markDestination(destinationLocation, destinationMarker)
+                        markUsersLocationOnMap()
+                        initCameraPosition(destinationLocation)
+                        checkArrival()
                     }
                 }
             }
@@ -200,35 +200,36 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun initCameraPosition(destination: GeoLocation) {
         lifecycleScope.launch {
-            promiseDetailViewModel.memberLocations.collectLatest {
-                if (it != null) {
-                    mapManager.initCameraPosition(destination, it)
-                }
+            promiseDetailViewModel.userGeoLocations.first().let {
+                mapManager.initCameraPosition(destination, it)
             }
         }
     }
 
     private fun overviewMemberLocation(destination: GeoLocation?) {
         lifecycleScope.launch {
-            promiseDetailViewModel.memberLocations.collectLatest { memberUiModel ->
-                if (memberUiModel != null) {
-                    mapManager.overviewMemberLocation(destination, memberUiModel)
-                }
+            promiseDetailViewModel.userGeoLocations.first().let { userGeoLocation ->
+                mapManager.overviewMemberLocation(destination, userGeoLocation)
             }
         }
     }
 
     private suspend fun markUsersLocationOnMap() {
         lifecycleScope.launch {
-            promiseDetailViewModel.memberLocations.collectLatest {
-                it?.forEachIndexed { idx, memberUiModel ->
+            promiseDetailViewModel.userGeoLocations.collectLatest { userGeoLocations ->
+                userGeoLocations.forEachIndexed { idx, memberUiModel ->
                     if (memberUiModel.geoLocation != null) {
-                        promiseDetailViewModel.memberMarkers[idx].apply {
-                            mapManager.markMemberLocation(
-                                memberUiModel.userName,
-                                memberUiModel.geoLocation,
-                                this
-                            )
+                        lifecycleScope.launch {
+                            if(promiseDetailViewModel.memberMarkers.isNotEmpty()) {
+                                val marker = promiseDetailViewModel.memberMarkers[idx]
+                                promiseDetailViewModel.memberUiModels.first()?.find { it.userCode == memberUiModel.userCode }?.userName?.let {
+                                    mapManager.markMemberLocation(
+                                        it,
+                                        memberUiModel.geoLocation,
+                                        marker
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -236,13 +237,10 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun checkArrival(destination: GeoLocation) {
+    private fun checkArrival() {
         lifecycleScope.launch {
-            promiseDetailViewModel.memberLocations.collectLatest {
-                if (it != null) {
-                    val arriveCheckedList = promiseDetailViewModel.checkArrival(destination, it)
-                    promiseMemberAdapter.submitList(arriveCheckedList)
-                }
+            promiseDetailViewModel.memberUiModels.collectLatest { memberUiModels ->
+                promiseMemberAdapter.submitList(memberUiModels)
             }
         }
     }
