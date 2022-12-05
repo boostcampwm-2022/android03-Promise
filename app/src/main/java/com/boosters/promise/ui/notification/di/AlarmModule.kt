@@ -1,7 +1,6 @@
 package com.boosters.promise.ui.notification.di
 
 import android.content.Context
-import com.boosters.promise.data.alarm.AlarmRepository
 import com.boosters.promise.ui.notification.AlarmDirector
 import dagger.Module
 import dagger.Provides
@@ -17,10 +16,9 @@ object AlarmModule {
     @Singleton
     @Provides
     fun provideAlarmDirector(
-        @ApplicationContext applicationContext: Context,
-        alarmRepository: AlarmRepository
+        @ApplicationContext applicationContext: Context
     ): AlarmDirector {
-        return AlarmDirector(applicationContext, alarmRepository)
+        return AlarmDirector(applicationContext)
     }
 
 }

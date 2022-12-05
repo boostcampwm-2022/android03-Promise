@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".PromiseApplication"
@@ -27,8 +27,8 @@
 
         <activity
             android:name=".ui.detail.PromiseDetailActivity"
-            android:parentActivityName=".ui.promisecalendar.PromiseCalendarActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".ui.promisecalendar.PromiseCalendarActivity" />
 
         <activity
             android:name=".ui.promisesetting.PromiseSettingActivity"
@@ -82,12 +82,16 @@
             android:exported="false"
             android:foregroundServiceType="location" />
 
-        <receiver android:name=".ui.notification.AlarmReceiver"
+        <service
+            android:name=".ui.notification.BootService"
+            android:exported="false" />
+
+        <receiver
+            android:name=".ui.notification.AlarmReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
-
         </receiver>
     </application>
 

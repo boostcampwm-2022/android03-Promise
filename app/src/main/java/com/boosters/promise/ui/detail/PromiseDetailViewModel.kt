@@ -36,8 +36,8 @@ class PromiseDetailViewModel @Inject constructor(
     private val alarmDirector: AlarmDirector
 ) : ViewModel() {
 
-    private val _promiseInfo = MutableStateFlow<Promise?>(null) //성공 , 실패
-    val promiseInfo: StateFlow<Promise?> = _promiseInfo.asStateFlow()
+    private val _promiseInfo = MutableStateFlow<Promise?>(null)
+    val promiseInfo: StateFlow<Promise?> get() = _promiseInfo.asStateFlow()
 
     val promise: SharedFlow<Promise> = _promiseInfo.mapNotNull { it }.shareIn(viewModelScope, SharingStarted.Eagerly, 1)
 

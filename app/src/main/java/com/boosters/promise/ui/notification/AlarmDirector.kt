@@ -5,20 +5,14 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Context.ALARM_SERVICE
 import android.content.Intent
-import com.boosters.promise.data.alarm.Alarm
-import com.boosters.promise.data.alarm.AlarmRepository
+import android.os.SystemClock
 import com.boosters.promise.data.promise.Promise
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.*
 
 class AlarmDirector(
-    private val context: Context,
-    private val alarmRepository: AlarmRepository
+    private val context: Context
 ) {
 
-    private val coroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
     private val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
 
     fun registerAlarm(promise: Promise) {
@@ -27,35 +21,16 @@ class AlarmDirector(
 
         val cal = transferToCalendar(date, time)
         if (Calendar.getInstance() >= cal) {
-            coroutineScope.launch {
-                alarmRepository.getAlarm(promise.promiseId).onSuccess {
-                    alarmRepository.deleteAlarm(promise.promiseId)
-                }
-            }
             return
         }
-
+        val delay =
+            SystemClock.elapsedRealtime() + (cal.timeInMillis - Calendar.getInstance().timeInMillis - ONE_HOUR_IN_MILLIS)
         val requestCode = promise.promiseId.hashCode()
-        addAlarm(promise, requestCode)
         alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            cal.timeInMillis - ONE_HOUR_IN_MILLIS,
+            AlarmManager.ELAPSED_REALTIME_WAKEUP,
+            delay,
             getPendingIntent(promise, requestCode)
         )
-    }
-
-    private fun addAlarm(promise: Promise, requestCode: Int) {
-        coroutineScope.launch {
-            alarmRepository.addAlarm(
-                Alarm(
-                    promise.promiseId,
-                    requestCode,
-                    promise.title,
-                    promise.date,
-                    promise.time
-                )
-            )
-        }
     }
 
     private fun getPendingIntent(promise: Promise, requestCode: Int): PendingIntent {
@@ -72,34 +47,13 @@ class AlarmDirector(
 
     fun removeAlarm(promiseId: String) {
         val intent = Intent(context, AlarmReceiver::class.java)
-        coroutineScope.launch {
-            alarmRepository.getAlarm(promiseId).onSuccess { alarm ->
-                val pendingIntent = PendingIntent.getBroadcast(
-                    context,
-                    alarm.requestCode,
-                    intent,
-                    PendingIntent.FLAG_IMMUTABLE
-                )
-                alarmManager.cancel(pendingIntent)
-                alarmRepository.deleteAlarm(promiseId)
-            }
-        }
-    }
-
-    fun updateAlarm(promise: Promise) {
-        val intent = Intent(context, AlarmReceiver::class.java)
-        coroutineScope.launch {
-            alarmRepository.getAlarm(promise.promiseId).onSuccess { alarm ->
-                val pendingIntent = PendingIntent.getBroadcast(
-                    context,
-                    alarm.requestCode,
-                    intent,
-                    PendingIntent.FLAG_IMMUTABLE
-                )
-                alarmManager.cancel(pendingIntent)
-                registerAlarm(promise)
-            }
-        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            promiseId.hashCode(),
+            intent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
+        alarmManager.cancel(pendingIntent)
     }
 
     private fun transferToCalendar(date: List<Int>, time: List<Int>): Calendar {

@@ -3,74 +3,61 @@ package com.boosters.promise.ui.notification
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
+import androidx.core.app.TaskStackBuilder
 import com.boosters.promise.R
-import com.boosters.promise.data.alarm.AlarmRepository
-import com.boosters.promise.data.promise.Promise
+import com.boosters.promise.ui.detail.PromiseDetailActivity
+import com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class AlarmReceiver : BroadcastReceiver() {
 
     @Inject
-    lateinit var alarmRepository: AlarmRepository
-
-    @Inject
     lateinit var alarmDirector: AlarmDirector
-    private val coroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
 
     override fun onReceive(context: Context, intent: Intent) {
         val pendingResult = goAsync()
 
         if (intent.action.equals("android.intent.action.BOOT_COMPLETED")) {
-            callAlarm()
+            context.startService(Intent(context, BootService::class.java))
         } else {
             val promiseId = intent.getStringExtra(AlarmDirector.PROMISE_ID) ?: return
             val promiseTitle = intent.getStringExtra(AlarmDirector.PROMISE_TITLE)
             val promiseDate = intent.getStringExtra(AlarmDirector.PROMISE_DATE)
 
-            coroutineScope.launch {
-                alarmRepository.deleteAlarm(promiseId)
-                cancel()
-            }
-
-            showNotification(context, promiseTitle, promiseDate)
+            showNotification(context, promiseTitle, promiseDate, promiseId)
         }
 
         pendingResult.finish()
     }
 
-    private fun callAlarm() {
-        coroutineScope.launch {
-            val alarms = async {
-                alarmRepository.getAlarms()
-            }.await()
-            alarms.forEach {
-                alarmDirector.registerAlarm(
-                    Promise(
-                        promiseId = it.promiseId,
-                        date = it.promiseDate,
-                        time = it.promiseTime,
-                        title = it.promiseTitle,
-                    )
-                )
-            }
-            cancel()
+    private fun showNotification(
+        context: Context,
+        promiseTitle: String?,
+        promiseDate: String?,
+        promiseId: String?
+    ) {
+        val intent = Intent(
+            context,
+            PromiseDetailActivity::class.java
+        ).putExtra(PromiseCalendarActivity.PROMISE_ID_KEY, promiseId)
+        val pendingIntent: PendingIntent? = TaskStackBuilder.create(context).run {
+            addNextIntentWithParentStack(intent)
+            getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         }
-    }
-
-    private fun showNotification(context: Context, promiseTitle: String?, promiseDate: String?) {
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(createChannel())
         val builder = NotificationCompat.Builder(context, NotificationService.CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(promiseTitle)
+            .setContentIntent(pendingIntent)
             .setContentText(
                 String.format(
                     context.getString(R.string.notification_request),

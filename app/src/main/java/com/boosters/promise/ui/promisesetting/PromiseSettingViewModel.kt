@@ -145,11 +145,8 @@ class PromiseSettingViewModel @Inject constructor(
 
     private fun sendNotification() {
         val alarmPromise = _promiseUiState.value.copy(promiseId = promiseId)
-        if (_promiseUiState.value.promiseId.isNotEmpty()) {
-            alarmDirector.updateAlarm(alarmPromise)
-        } else {
-            alarmDirector.registerAlarm(alarmPromise)
-        }
+        alarmDirector.registerAlarm(alarmPromise)
+
         viewModelScope.launch {
             val userCodeList =
                 _promiseUiState.value.members.filter { it.userCode != myInfo.userCode }
