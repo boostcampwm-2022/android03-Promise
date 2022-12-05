@@ -84,8 +84,7 @@
 
         <service
             android:name=".ui.notification.BootService"
-            android:exported="false"
-            android:foregroundServiceType="location" />
+            android:exported="false" />
 
         <receiver
             android:name=".ui.notification.AlarmReceiver"
