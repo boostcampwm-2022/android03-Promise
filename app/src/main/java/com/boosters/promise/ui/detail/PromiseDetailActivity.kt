@@ -311,8 +311,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun sendPromiseUploadInfoToReceiver() {
         lifecycleScope.launch {
             promiseDetailViewModel.promiseUploadUiState.collectLatest promiseUploadStateCollect@{ promiseUploadUiState ->
-                if (promiseUploadUiState == null) return@promiseUploadStateCollect
-
                 when (promiseUploadUiState) {
                     is PromiseUploadUiState.Accept -> {
                         if (checkLocationPermission()) {

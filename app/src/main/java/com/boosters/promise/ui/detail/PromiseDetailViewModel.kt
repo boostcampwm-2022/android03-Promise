@@ -33,7 +33,8 @@ class PromiseDetailViewModel @AssistedInject constructor(
     @Assisted promiseId: String
 ) : ViewModel() {
 
-    val promise: SharedFlow<Promise> = promiseRepository.getPromise(promiseId).shareIn(viewModelScope, SharingStarted.Eagerly, 1)
+    val promise: Flow<Promise> = promiseRepository.getPromise(promiseId)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null).filterNotNull()
 
     private val _isDeleted = MutableLiveData<Boolean>()
     val isDeleted: LiveData<Boolean> = _isDeleted
@@ -41,7 +42,7 @@ class PromiseDetailViewModel @AssistedInject constructor(
     val isAcceptLocationSharing = memberRepository.getIsAcceptLocation(promiseId)
 
     private val _promiseUploadUiState = MutableStateFlow<PromiseUploadUiState?>(null)
-    val promiseUploadUiState = _promiseUploadUiState.asStateFlow()
+    val promiseUploadUiState: Flow<PromiseUploadUiState> = _promiseUploadUiState.filterNotNull()
 
     private val myInfo = userRepository.getMyInfo().shareIn(viewModelScope, SharingStarted.Eagerly, 1)
     val currentGeoLocation = locationRepository.lastGeoLocation
@@ -58,7 +59,7 @@ class PromiseDetailViewModel @AssistedInject constructor(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val userGeoLocations: SharedFlow<List<UserGeoLocation>> = members.flatMapLatest { members ->
+    val userGeoLocations: Flow<List<UserGeoLocation>> = members.flatMapLatest { members ->
         val locationSharingAcceptMembers = members.filter { member ->
             member.isAcceptLocation
         }.map { member ->
@@ -69,29 +70,25 @@ class PromiseDetailViewModel @AssistedInject constructor(
         } else {
             flow { emit(emptyList()) }
         }
-    }.shareIn(viewModelScope, SharingStarted.Eagerly, 1)
+    }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val memberUiModels: Flow<List<MemberUiModel>?> = userGeoLocations.flatMapLatest { userGeoLocations ->
-        val myUserCode = myInfo.first().getOrElse { throw IllegalStateException() }.userCode
-        flow<List<MemberUiModel>> {
-            val memberUiModel = promise.first().members.filter {
-                it.userCode != myUserCode
-            }.map { user ->
-                val userGeoLocation = userGeoLocations.find { it.userCode == user.userCode }
-                val destination = promise.first().destinationGeoLocation
-                MemberUiModel(
-                    userCode = user.userCode,
-                    userName = user.userName,
-                    isArrived = isArrival(destination, userGeoLocation)
-                )
-            }
-            emit(memberUiModel)
+    val memberUiModels: Flow<List<MemberUiModel>?> = userGeoLocations.map { userGeoLocations ->
+        val myUserCode = myInfo.first().getOrElse { return@map null }.userCode
+        promise.first().members.filter {
+            it.userCode != myUserCode
+        }.map { user ->
+            val userGeoLocation = userGeoLocations.find { it.userCode == user.userCode }
+            val destination = promise.first().destinationGeoLocation
+            MemberUiModel(
+                userCode = user.userCode,
+                userName = user.userName,
+                isArrived = isArrival(destination, userGeoLocation)
+            )
         }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val memberMarkerInfo: SharedFlow<List<MemberMarkerInfo>> = userGeoLocations.mapLatest { userGeoLocations ->
+    val memberMarkerInfo: Flow<List<MemberMarkerInfo>> = userGeoLocations.mapLatest { userGeoLocations ->
         userGeoLocations.mapNotNull { userGeoLocation ->
             MemberMarkerInfo(
                 id = userGeoLocation.userCode,
@@ -99,7 +96,7 @@ class PromiseDetailViewModel @AssistedInject constructor(
                 geoLocation = userGeoLocation.geoLocation ?: return@mapNotNull null
             )
         }
-    }.shareIn(viewModelScope, SharingStarted.Eagerly, 1)
+    }
 
     fun removePromise() {
         viewModelScope.launch {
