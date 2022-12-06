@@ -22,7 +22,6 @@ class BootService : LifecycleService() {
     @Inject
     lateinit var alarmDirector: AlarmDirector
 
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         lifecycleScope.launch {
             userRepository.getMyInfo().first().onSuccess { myInfo ->

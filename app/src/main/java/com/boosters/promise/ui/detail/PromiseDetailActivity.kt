@@ -334,7 +334,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }.let { intent ->
             sendOrderedBroadcast(intent, null)
         }
-
     }
 
     private fun sendPromiseUploadUiStateDenied(promiseUploadUiState: PromiseUploadUiState.Denied) {
