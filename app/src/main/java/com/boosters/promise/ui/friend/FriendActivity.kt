@@ -12,6 +12,7 @@ import com.boosters.promise.R
 import com.boosters.promise.data.user.User
 import com.boosters.promise.databinding.ActivityFriendBinding
 import com.boosters.promise.ui.friend.adapter.UserListAdapter
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -85,6 +86,15 @@ class FriendActivity : AppCompatActivity() {
 
             override fun onQueryTextChange(query: String?): Boolean = false
         })
+
+        lifecycleScope.launch {
+            friendViewModel.networkConnection.collectLatest {
+                if (!it) {
+                    Snackbar.make(binding.root, R.string.signUp_networkError, Snackbar.LENGTH_SHORT)
+                        .show()
+                }
+            }
+        }
     }
 
     companion object {

@@ -79,7 +79,6 @@ class PromiseDailyListAdapter :
     }
 
     companion object {
-
         private const val EMPTY_TYPE = 0
         private const val PROMISE_DAILY_TYPE = 1
 
@@ -98,7 +97,6 @@ class PromiseDailyListAdapter :
                 return oldItem == newItem
             }
         }
-
     }
 
 }

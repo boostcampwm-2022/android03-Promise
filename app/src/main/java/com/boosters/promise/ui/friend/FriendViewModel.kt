@@ -3,6 +3,7 @@ package com.boosters.promise.ui.friend
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.friend.FriendRepository
+import com.boosters.promise.data.network.NetworkConnectionUtil
 import com.boosters.promise.data.user.User
 import com.boosters.promise.data.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +14,8 @@ import javax.inject.Inject
 @HiltViewModel
 class FriendViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val friendRepository: FriendRepository
+    private val friendRepository: FriendRepository,
+    private val networkConnectionUtil: NetworkConnectionUtil
 ) : ViewModel() {
 
     private var _myInfo = User()
@@ -21,6 +23,9 @@ class FriendViewModel @Inject constructor(
 
     private val _usersList = MutableStateFlow(emptyList<User>())
     val usersList: StateFlow<List<User>> get() = _usersList.asStateFlow()
+
+    private val _networkConnection = MutableSharedFlow<Boolean>()
+    val networkConnection: SharedFlow<Boolean> = _networkConnection.asSharedFlow()
 
     init {
         viewModelScope.launch {
@@ -60,14 +65,20 @@ class FriendViewModel @Inject constructor(
 
     fun searchUser(query: String) {
         viewModelScope.launch {
+            runCatching {
+                networkConnectionUtil.checkNetworkOnline()
+            }.onFailure {
+                _networkConnection.emit(false)
+                return@launch
+            }.onSuccess {
+                _networkConnection.emit(true)
+            }
             val filterUserCodeList = friendRepository.getFriends().map {
                 it.userCode
             } + myInfo.userCode
-
             val result = if (query.matches(USER_CODE_REGEX)) {
                 listOf(userRepository.getUser(query.removePrefix("#")).first())
             } else userRepository.getUserByName(query).first()
-
             _usersList.value = result.filterNot { it.userCode in filterUserCodeList }
         }
     }
