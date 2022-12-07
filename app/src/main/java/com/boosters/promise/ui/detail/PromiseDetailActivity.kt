@@ -1,9 +1,14 @@
 package com.boosters.promise.ui.detail
 
+import android.Manifest.permission
 import android.content.Intent
+import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.CompoundButton.OnCheckedChangeListener
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -13,8 +18,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.boosters.promise.R
+import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.databinding.ActivityPromiseDetailBinding
+import com.boosters.promise.receiver.LocationUploadReceiver
 import com.boosters.promise.ui.detail.adapter.PromiseMemberAdapter
+import com.boosters.promise.ui.detail.model.MemberUiModel
+import com.boosters.promise.ui.detail.model.PromiseUploadUiState
+import com.boosters.promise.ui.detail.util.MapManager
 import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
 import com.google.android.material.snackbar.Snackbar
 import com.naver.maps.map.MapFragment
@@ -23,18 +33,8 @@ import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import android.Manifest.permission
-import android.content.IntentFilter
-import android.content.pm.PackageManager
-import android.view.View
-import android.widget.CompoundButton.OnCheckedChangeListener
-import com.boosters.promise.data.location.GeoLocation
-import com.boosters.promise.ui.detail.util.MapManager
-import com.boosters.promise.receiver.LocationUploadReceiver
-import com.boosters.promise.ui.detail.model.MemberUiModel
-import com.boosters.promise.ui.detail.model.PromiseUploadUiState
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -119,6 +119,9 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onMapReady(map: NaverMap) {
+        map.addOnLoadListener {
+            binding.isLoading = false
+        }
         mapManager = MapManager(map)
         setObserver()
     }
@@ -153,6 +156,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         lifecycleScope.launch {
             launch {
                 promiseDetailViewModel.promise.collectLatest {
+                    binding.isLoading = true
                     binding.promise = it
                 }
             }
