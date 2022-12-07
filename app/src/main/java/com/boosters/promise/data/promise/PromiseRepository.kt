@@ -7,6 +7,8 @@ interface PromiseRepository {
 
     suspend fun addPromise(promise: Promise): Flow<Result<String>>
 
+    suspend fun modifyPromise(promise: Promise): Flow<Result<String>>
+
     fun removePromise(promiseId: String): Flow<Boolean>
 
     fun getPromise(promiseId: String): Flow<Promise>

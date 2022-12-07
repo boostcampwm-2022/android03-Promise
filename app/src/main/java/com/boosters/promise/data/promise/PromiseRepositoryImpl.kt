@@ -5,10 +5,7 @@ import com.boosters.promise.data.promise.source.remote.PromiseRemoteDataSource
 import com.boosters.promise.data.promise.source.remote.toPromise
 import com.boosters.promise.data.user.User
 import com.boosters.promise.data.user.UserRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class PromiseRepositoryImpl @Inject constructor(
@@ -22,6 +19,22 @@ class PromiseRepositoryImpl @Inject constructor(
             result.mapCatching { promiseId ->
                 memberRepository.initMember(promiseId, promise.members.map { member -> member.userCode })
                 memberRepository.addIsAcceptLocation(promiseId)
+                promiseId
+            }
+        }
+    }
+
+    override suspend fun modifyPromise(promise: Promise): Flow<Result<String>> {
+        val promiseBody = promise.toPromiseBody()
+        return promiseRemoteDataSource.addPromise(promiseBody).map { result ->
+            result.mapCatching { promiseId ->
+                val memberCodes = memberRepository.getMembers(promiseId).first().map { it.userCode }
+                promiseBody.members.filterNot { it in memberCodes }.let {
+                    memberRepository.initMember(promiseId, it)
+                }
+                memberCodes.filterNot { it in promiseBody.members }.forEach {
+                    memberRepository.removeMember(promiseId, it)
+                }
                 promiseId
             }
         }
