@@ -29,8 +29,8 @@ class PromiseCalendarViewModel @Inject constructor(
     val myPromiseList: StateFlow<PromiseListUiState> =
         _myPromiseList.stateIn(viewModelScope, SharingStarted.Eagerly, PromiseListUiState.Empty)
 
-    private val _dailyPromiseList = MutableStateFlow(emptyList<Promise>())
-    val dailyPromiseList: StateFlow<List<Promise>> get() = _dailyPromiseList.asStateFlow()
+    private val _dailyPromiseList: MutableStateFlow<List<Promise>?> = MutableStateFlow(null)
+    val dailyPromiseList: StateFlow<List<Promise>?> get() = _dailyPromiseList.asStateFlow()
 
     private val dateFormatter = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
 

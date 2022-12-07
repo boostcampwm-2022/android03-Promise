@@ -105,12 +105,11 @@ class PromiseCalendarActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                promiseCalendarViewModel.dailyPromiseList.collectIndexed { index, value ->
-                    if (index == 0) return@collectIndexed
-                    if (value.isEmpty()) {
-                        promiseDailyListAdapter.submitList(value + listOf(Promise()))
+                promiseCalendarViewModel.dailyPromiseList.collectLatest { promiseList ->
+                    if (promiseList?.isEmpty() == true) {
+                        promiseDailyListAdapter.submitList(promiseList + listOf(Promise()))
                     } else {
-                        promiseDailyListAdapter.submitList(value)
+                        promiseDailyListAdapter.submitList(promiseList)
                     }
                 }
             }
