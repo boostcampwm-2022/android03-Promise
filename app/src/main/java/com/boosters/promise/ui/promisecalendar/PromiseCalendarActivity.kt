@@ -186,6 +186,15 @@ class PromiseCalendarActivity : AppCompatActivity() {
             }
             promiseCalendarViewModel.updateDailyPromiseList(selectedDate)
         }
+
+        lifecycleScope.launch {
+            promiseCalendarViewModel.networkConnection.collectLatest {
+                if (!it) {
+                    Snackbar.make(binding.root, R.string.signUp_networkError, Snackbar.LENGTH_SHORT)
+                        .show()
+                }
+            }
+        }
     }
 
     companion object {

@@ -86,16 +86,10 @@ class PromiseSettingViewModel @Inject constructor(
             return
         }
 
-        val networkConnection = runCatching {
-            networkConnectionUtil.checkNetworkOnline()
-        }.isSuccess
-        viewModelScope.launch {
-            _networkConnection.emit(networkConnection)
-        }
-        if (!networkConnection) return
+        if (!checkNetworkConnection()) return
 
         viewModelScope.launch {
-            val members = promise.members.toMutableList()
+            val members =promise.members.toMutableList()
             members.add(myInfo.copy(userToken = ""))
             promiseRepository.addPromise(promise.copy(members = members)).collect { result ->
                 result.onSuccess { id ->
@@ -112,13 +106,7 @@ class PromiseSettingViewModel @Inject constructor(
 
     fun onClickPickerEditText(event: PromiseSettingEvent) {
         if (event == PromiseSettingEvent.SELECT_PLACE) {
-            val networkConnection = runCatching {
-                networkConnectionUtil.checkNetworkOnline()
-            }.isSuccess
-            viewModelScope.launch {
-                _networkConnection.emit(networkConnection)
-            }
-            if (!networkConnection) return
+            if (!checkNetworkConnection()) return
         }
         viewModelScope.launch {
             _dialogEventFlow.emit(event)
@@ -204,6 +192,16 @@ class PromiseSettingViewModel @Inject constructor(
                 changeUiState(PromiseSettingUiState.Success)
             }
         }
+    }
+
+    private fun checkNetworkConnection(): Boolean {
+        val networkConnection = runCatching {
+            networkConnectionUtil.checkNetworkOnline()
+        }.isSuccess
+        viewModelScope.launch {
+            _networkConnection.emit(networkConnection)
+        }
+        return networkConnection
     }
 
     companion object {
