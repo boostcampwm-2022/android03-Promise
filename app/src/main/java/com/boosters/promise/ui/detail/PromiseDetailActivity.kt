@@ -25,6 +25,7 @@ import com.boosters.promise.ui.detail.adapter.PromiseMemberAdapter
 import com.boosters.promise.ui.detail.model.MemberUiModel
 import com.boosters.promise.ui.detail.model.PromiseUploadUiState
 import com.boosters.promise.ui.detail.util.MapManager
+import com.boosters.promise.ui.loading.LoadingDialog
 import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
 import com.google.android.material.snackbar.Snackbar
 import com.naver.maps.map.MapFragment
@@ -81,6 +82,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
+    private lateinit var loadingDialog: LoadingDialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_promise_detail)
@@ -120,7 +123,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(map: NaverMap) {
         map.addOnLoadListener {
-            binding.isLoading = false
+            loadingDialog.dismiss()
         }
         mapManager = MapManager(map)
         setObserver()
@@ -153,15 +156,18 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun setBinding() {
         binding.lifecycleOwner = this
         binding.recyclerViewPromiseDetailMemberList.adapter = promiseMemberAdapter
+
+        loadingDialog = LoadingDialog(this)
         lifecycleScope.launch {
             launch {
                 promiseDetailViewModel.promise.collectLatest {
-                    binding.isLoading = true
+                    loadingDialog.show()
                     binding.promise = it
                 }
             }
             binding.isAcceptLocationSharing = promiseDetailViewModel.isAcceptLocationSharing.first().getOrElse { false }
         }
+
         binding.onLocationSharingPermissionChangedListener = onLocationSharingPermissionChanged
         binding.onCurrentLocationButtonClickListener = onCurrentLocationButtonClickListener
     }

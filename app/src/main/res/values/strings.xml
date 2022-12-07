@@ -94,4 +94,7 @@
     <string name="notification_delete">[%s] 약속이 삭제되었습니다.</string>
     <string name="notification_request">약속시간이 다가옵니다!</string>
 
+    <!-- LoadingDialog 안내문 -->
+    <string name="dialogLoading_information">화면을 불러오는 중입니다.\n잠시만 기다려주세요.</string>
+
 </resources>

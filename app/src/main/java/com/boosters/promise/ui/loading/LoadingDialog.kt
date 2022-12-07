@@ -1,20 +1,20 @@
 package com.boosters.promise.ui.loading
 
-import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.fragment.app.DialogFragment
 import com.boosters.promise.R
 
-class LoadingDialog : DialogFragment() {
+class LoadingDialog(context: Context) : Dialog(context) {
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return activity?.let {
-            val builder = AlertDialog.Builder(context)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.dialog_loading_progress)
 
-            builder.setView(R.layout.dialog_loading_progress)
-            builder.create()
-        } ?: throw IllegalStateException("Activity cannot be null")
+        setCancelable(false)
+        window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 
 }
