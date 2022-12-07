@@ -21,6 +21,7 @@ import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.databinding.ActivityPromiseCalendarBinding
 import com.boosters.promise.ui.detail.PromiseDetailActivity
 import com.boosters.promise.ui.friend.FriendActivity
+import com.boosters.promise.ui.loading.LoadingDialog
 import com.boosters.promise.ui.promisecalendar.adapter.PromiseDailyListAdapter
 import com.boosters.promise.ui.promisecalendar.decorator.PromiseContainDecorator
 import com.boosters.promise.ui.promisecalendar.decorator.PromiseSaturdayDecorator
@@ -41,6 +42,8 @@ class PromiseCalendarActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPromiseCalendarBinding
     private val promiseCalendarViewModel: PromiseCalendarViewModel by viewModels()
 
+    private lateinit var loadingDialog: LoadingDialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -50,6 +53,8 @@ class PromiseCalendarActivity : AppCompatActivity() {
             DataBindingUtil.inflate(layoutInflater, R.layout.activity_promise_calendar, null, false)
         binding.lifecycleOwner = this
         setContentView(binding.root)
+
+        loadingDialog = LoadingDialog(this)
 
         attachAdapter()
         bindCalendarView()
@@ -146,9 +151,11 @@ class PromiseCalendarActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 promiseCalendarViewModel.myPromiseList.collectLatest { uiState ->
                     when (uiState) {
-                        is PromiseListUiState.Loading -> binding.isLoading = true
+                        is PromiseListUiState.Loading -> {
+                            loadingDialog.show()
+                        }
                         is PromiseListUiState.Success -> {
-                            binding.isLoading = false
+                            loadingDialog.dismiss()
                             promiseDayList.clear()
                             promiseDayList.addAll(
                                 uiState.data.map { promise ->
@@ -167,7 +174,7 @@ class PromiseCalendarActivity : AppCompatActivity() {
                                 promiseContainDecorator
                             )
                         }
-                        is PromiseListUiState.Failure -> binding.isLoading = false
+                        is PromiseListUiState.Failure -> loadingDialog.dismiss()
                     }
                 }
             }

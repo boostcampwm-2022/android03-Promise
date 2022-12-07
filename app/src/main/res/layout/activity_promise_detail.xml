@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="android.view.View" />
-
         <variable
             name="onLocationSharingPermissionChangedListener"
             type="android.widget.CompoundButton.OnCheckedChangeListener" />
@@ -20,10 +18,6 @@
 
         <variable
             name="isAcceptLocationSharing"
-            type="Boolean" />
-
-        <variable
-            name="isLoading"
             type="Boolean" />
     </data>
 
@@ -238,16 +232,6 @@
                 app:layout_constraintStart_toStartOf="@+id/guideline_promiseDetail_left"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_promiseDetail_map"
                 tools:listitem="@layout/item_promise_detail_member" />
-
-            <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:indeterminate="true"
-                android:visibility="@{isLoading ? View.VISIBLE : View.INVISIBLE}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>
