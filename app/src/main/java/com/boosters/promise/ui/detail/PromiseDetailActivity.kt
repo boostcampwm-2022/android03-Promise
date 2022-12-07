@@ -142,7 +142,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                         promiseDetailViewModel.promise.first()
                     )
                     startActivity(intent)
-                    finish()
                 }
             }
             R.id.item_detail_delete -> {

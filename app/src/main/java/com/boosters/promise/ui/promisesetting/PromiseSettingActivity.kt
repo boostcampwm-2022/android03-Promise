@@ -1,5 +1,6 @@
 package com.boosters.promise.ui.promisesetting
 
+import android.app.PendingIntent
 import android.content.Intent
 import android.os.Build.VERSION
 import android.os.Bundle
@@ -87,10 +88,11 @@ class PromiseSettingActivity : AppCompatActivity() {
                     PromiseSettingUiState.Success -> {
                         val intent =
                             Intent(this@PromiseSettingActivity, PromiseDetailActivity::class.java)
-                        intent.putExtra(
-                            PromiseCalendarActivity.PROMISE_ID_KEY,
-                            promiseSettingViewModel.promiseUiState.value.promiseId
-                        )
+                                .putExtra(
+                                    PromiseCalendarActivity.PROMISE_ID_KEY,
+                                    promiseSettingViewModel.promiseUiState.value.promiseId
+                                )
+                                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         startActivity(intent)
                         finish()
                     }
