@@ -12,4 +12,7 @@
     <color name="dusty_gray">#FF767676</color>
     <color name="silver_gray">#FFCCCCCC</color>
     <color name="azure_radiance">#FF009BFF</color>
+    <color name="melrose">#FFB5C4FF</color>
+    <color name="resolution_blue">#FF00297B</color>
+    <color name="turquoise_blue">#FF4FD8EB</color>
 </resources>
