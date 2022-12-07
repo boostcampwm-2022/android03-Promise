@@ -15,7 +15,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ActivityPromiseDetailBinding
 import com.boosters.promise.ui.detail.adapter.PromiseMemberAdapter
-import com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity
 import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
 import com.google.android.material.snackbar.Snackbar
 import com.naver.maps.map.MapFragment
@@ -28,20 +27,43 @@ import kotlinx.coroutines.launch
 import android.Manifest.permission
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.view.View
+import android.widget.CompoundButton.OnCheckedChangeListener
 import com.boosters.promise.data.location.GeoLocation
-import com.boosters.promise.data.user.toMemberUiModel
 import com.boosters.promise.ui.detail.util.MapManager
 import com.boosters.promise.receiver.LocationUploadReceiver
 import com.boosters.promise.ui.detail.model.MemberUiModel
 import com.boosters.promise.ui.detail.model.PromiseUploadUiState
 import kotlinx.coroutines.flow.first
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var binding: ActivityPromiseDetailBinding
-    private val promiseDetailViewModel: PromiseDetailViewModel by viewModels()
+
+    @Inject
+    lateinit var promiseDetailViewModelFactory: PromiseDetailViewModel.PromiseDetailViewModelFactory
+    private val promiseDetailViewModel: PromiseDetailViewModel by viewModels {
+        PromiseDetailViewModel.provideFactory(
+            promiseDetailViewModelFactory,
+            intent.getStringExtra(PROMISE_ID_KEY) ?: throw NullPointerException()
+        )
+    }
+
     private val promiseMemberAdapter = PromiseMemberAdapter()
+
+    private val onLocationSharingPermissionChanged = OnCheckedChangeListener { _, isChecked ->
+        promiseDetailViewModel.updateLocationSharingPermission(isChecked)
+    }
+
+    private val onCurrentLocationButtonClickListener = View.OnClickListener {
+        if (checkLocationPermission()) {
+            mapManager.moveToLocation(promiseDetailViewModel.currentGeoLocation.value)
+            return@OnClickListener
+        }
+        showRequireLocationPermissionSnackBar()
+    }
 
     private lateinit var mapManager: MapManager
     private val destinationMarker = Marker()
@@ -53,35 +75,42 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         permission.ACCESS_FINE_LOCATION
     )
     private val requestLocationPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { }
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            if (isLocationPermissionGranted(it.values.toList()) && promiseDetailViewModel.isStartLocationUpdates.value.not()) {
+                promiseDetailViewModel.startLocationUpdates()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_promise_detail)
         setBinding()
 
-        if (checkLocationPermission().not()) requestPermission()
         registerLocationUploadReceiver()
         sendPromiseUploadInfoToReceiver()
 
         initMap()
-        setPromiseInfo()
-        setListener()
+        setDestinationButtonClickListener()
 
         setSupportActionBar(binding.toolbarPromiseDetail)
         supportActionBar?.apply {
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true)
         }
+    }
 
-        promiseDetailViewModel.isDeleted.observe(this) {
-            if (it) {
-                finish()
-            } else {
-                showStateSnackbar(R.string.promiseDetail_delete_ask)
-            }
+    override fun onStart() {
+        super.onStart()
+        if (checkLocationPermission()) {
+            promiseDetailViewModel.startLocationUpdates()
+        } else {
+            requestPermission()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (promiseDetailViewModel.isStartLocationUpdates.value) promiseDetailViewModel.stopLocationUpdates()
     }
 
     override fun onDestroy() {
@@ -120,14 +149,17 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun setBinding() {
         binding.lifecycleOwner = this
-        binding.viewModel = promiseDetailViewModel
         binding.recyclerViewPromiseDetailMemberList.adapter = promiseMemberAdapter
-    }
-
-    private fun setPromiseInfo() {
-        intent.getStringExtra(PROMISE_ID_KEY)?.let { promiseId ->
-            promiseDetailViewModel.setPromiseInfo(promiseId)
+        lifecycleScope.launch {
+            launch {
+                promiseDetailViewModel.promise.collectLatest {
+                    binding.promise = it
+                }
+            }
+            binding.isAcceptLocationSharing = promiseDetailViewModel.isAcceptLocationSharing.first().getOrElse { false }
         }
+        binding.onLocationSharingPermissionChangedListener = onLocationSharingPermissionChanged
+        binding.onCurrentLocationButtonClickListener = onCurrentLocationButtonClickListener
     }
 
     private fun initMap() {
@@ -139,7 +171,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
     }
 
-    private fun setListener() {
+    private fun setDestinationButtonClickListener() {
         binding.imageButtonPromiseDetailDestination.setOnClickListener {
             lifecycleScope.launch {
                 promiseDetailViewModel.promise.first().let { promise ->
@@ -177,24 +209,26 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 promiseDetailViewModel.promise.collect { promise ->
-                    launch {
-                        promiseMemberAdapter.submitList(
-                            promise.members.map {
-                                it.toMemberUiModel()
-                            }
-                        )
-                    }
+                    val destinationLocation = promise.destinationGeoLocation
 
-                    launch {
-                        val destinationLocation = promise.destinationGeoLocation
-
-                        mapManager.markDestination(destinationLocation, destinationMarker)
-                        markUsersLocationOnMap()
-                        initCameraPosition(destinationLocation)
-                        checkArrival()
-                    }
+                    mapManager.markDestination(destinationLocation, destinationMarker)
+                    initCameraPosition(destinationLocation)
+                    checkArrival()
                 }
             }
+        }
+        markUsersLocationOnMap()
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                promiseDetailViewModel.currentGeoLocation.collectLatest { geoLocation ->
+                    mapManager.setCurrentLocation(geoLocation)
+                }
+            }
+        }
+
+        promiseDetailViewModel.isDeleted.observe(this) { isDeleted ->
+            if (isDeleted) finish() else showStateSnackbar(R.string.promiseDetail_delete_ask)
         }
     }
 
@@ -208,30 +242,17 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun overviewMemberLocation(destination: GeoLocation?) {
         lifecycleScope.launch {
-            promiseDetailViewModel.userGeoLocations.first().let { userGeoLocation ->
-                mapManager.overviewMemberLocation(destination, userGeoLocation)
-            }
+            val myLocation = promiseDetailViewModel.currentGeoLocation.first()
+            val userGeoLocations = promiseDetailViewModel.userGeoLocations.first().map { it.geoLocation }.plusElement(myLocation)
+            mapManager.overviewMemberLocation(destination, userGeoLocations.filterNotNull())
         }
     }
 
-    private suspend fun markUsersLocationOnMap() {
+    private fun markUsersLocationOnMap() {
         lifecycleScope.launch {
-            promiseDetailViewModel.userGeoLocations.collectLatest { userGeoLocations ->
-                userGeoLocations.forEachIndexed { idx, memberUiModel ->
-                    if (memberUiModel.geoLocation != null) {
-                        lifecycleScope.launch {
-                            if(promiseDetailViewModel.memberMarkers.isNotEmpty()) {
-                                val marker = promiseDetailViewModel.memberMarkers[idx]
-                                promiseDetailViewModel.memberUiModels.first()?.find { it.userCode == memberUiModel.userCode }?.userName?.let {
-                                    mapManager.markMemberLocation(
-                                        it,
-                                        memberUiModel.geoLocation,
-                                        marker
-                                    )
-                                }
-                            }
-                        }
-                    }
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                promiseDetailViewModel.memberMarkerInfo.collectLatest { memberMarkerInfo ->
+                    mapManager.updateMemberMarker(memberMarkerInfo)
                 }
             }
         }
@@ -254,9 +275,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             .setMessage(R.string.promiseDetail_delete_ask)
             .setPositiveButton(R.string.promiseDetail_dialog_yes) { _, _ ->
                 promiseDetailViewModel.removePromise()
-                startActivity(
-                    Intent(this, PromiseCalendarActivity::class.java)
-                ).also { finish() }
             }
             .setNegativeButton(R.string.promiseDetail_dialog_no) { _, _ ->
                 return@setNegativeButton
@@ -293,25 +311,41 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun sendPromiseUploadInfoToReceiver() {
         lifecycleScope.launch {
             promiseDetailViewModel.promiseUploadUiState.collectLatest promiseUploadStateCollect@{ promiseUploadUiState ->
-                if (promiseUploadUiState == null) return@promiseUploadStateCollect
-                val intent = when (promiseUploadUiState) {
+                when (promiseUploadUiState) {
                     is PromiseUploadUiState.Accept -> {
-                        if (checkLocationPermission().not()) {
-                            requestPermission().also { if (checkLocationPermission().not()) return@promiseUploadStateCollect }
+                        if (checkLocationPermission()) {
+                            sendPromiseUploadUiStateAccept(promiseUploadUiState)
+                            return@promiseUploadStateCollect
                         }
-                        Intent(LocationUploadReceiver.ACTION_LOCATION_UPLOAD_SERVICE_START).apply {
-                            putExtra(LocationUploadReceiver.PROMISE_DATE_TIME_KEY, promiseUploadUiState.dateAndTime)
-                        }
+                        binding.switchPromiseDetailLocationSharing.isChecked = false
+                        promiseDetailViewModel.stopLocationUpdates()
+                        showRequireLocationPermissionSnackBar()
                     }
-                    is PromiseUploadUiState.Denied -> {
-                        Intent(LocationUploadReceiver.ACTION_LOCATION_UPLOAD_SERVICE_STOP)
-                    }
-                }.apply {
-                    putExtra(LocationUploadReceiver.PROMISE_ID_KEY, promiseUploadUiState.id)
+                    is PromiseUploadUiState.Denied -> sendPromiseUploadUiStateDenied(promiseUploadUiState)
                 }
-                sendOrderedBroadcast(intent, null)
             }
         }
+    }
+
+    private fun sendPromiseUploadUiStateAccept(promiseUploadUiState: PromiseUploadUiState.Accept) {
+        Intent(LocationUploadReceiver.ACTION_LOCATION_UPLOAD_SERVICE_START).apply {
+            putExtra(LocationUploadReceiver.PROMISE_DATE_TIME_KEY, promiseUploadUiState.dateAndTime)
+            putExtra(LocationUploadReceiver.PROMISE_ID_KEY, promiseUploadUiState.id)
+        }.let { intent ->
+            sendOrderedBroadcast(intent, null)
+        }
+    }
+
+    private fun sendPromiseUploadUiStateDenied(promiseUploadUiState: PromiseUploadUiState.Denied) {
+        Intent(LocationUploadReceiver.ACTION_LOCATION_UPLOAD_SERVICE_STOP).apply {
+            putExtra(LocationUploadReceiver.PROMISE_ID_KEY, promiseUploadUiState.id)
+        }.let { intent ->
+            sendOrderedBroadcast(intent, null)
+        }
+    }
+
+    private fun showRequireLocationPermissionSnackBar() {
+        Snackbar.make(binding.root, R.string.promiseDetail_require_location_permission, Snackbar.LENGTH_SHORT).show()
     }
 
     companion object {

@@ -24,6 +24,8 @@ class LocationUploadForegroundService : LifecycleService() {
     private val alarmHandler = Handler(HandlerThread(ALARM_HANDLER_NAME).apply { start() }.looper)
     private val uploadRequests = HashMap<String, Long>()
 
+    private var isUploadStart = false
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (uploadRequests.isEmpty()) {
             startForeground(FOREGROUND_NOTIFICATION_ID, buildNotification())
@@ -37,7 +39,7 @@ class LocationUploadForegroundService : LifecycleService() {
         super.onDestroy()
         alarmHandler.looper.quit()
         lifecycleScope.launch { locationRepository.resetMyGeoLocation() }
-        locationRepository.stopLocationUpdates()
+        if (isUploadStart) locationRepository.stopLocationUpdates()
     }
 
     private fun handleUploadRequest(intent: Intent) {
@@ -120,6 +122,7 @@ class LocationUploadForegroundService : LifecycleService() {
 
     private fun startLocationUpload() {
         locationRepository.startLocationUpdates()
+        isUploadStart = true
 
         lifecycleScope.launch {
             locationRepository.lastGeoLocation.collectLatest { geoLocation ->
