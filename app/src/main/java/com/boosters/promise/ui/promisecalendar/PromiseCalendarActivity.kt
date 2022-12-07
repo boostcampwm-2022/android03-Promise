@@ -62,6 +62,8 @@ class PromiseCalendarActivity : AppCompatActivity() {
         binding.buttonPromiseCalendarCreatePromise.setOnClickListener {
             startActivity(Intent(this, PromiseSettingActivity::class.java))
         }
+
+        promiseCalendarViewModel.checkNetworkConnection()
     }
 
     override fun onRequestPermissionsResult(

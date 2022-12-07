@@ -84,7 +84,7 @@ class PromiseCalendarViewModel @Inject constructor(
         }
     }
 
-    private fun checkNetworkConnection() {
+    fun checkNetworkConnection() {
         val networkConnection = runCatching {
             networkConnectionUtil.checkNetworkOnline()
         }.isSuccess
