@@ -31,6 +31,7 @@ import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
 import com.google.android.material.snackbar.Snackbar
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.*
@@ -104,13 +105,19 @@ class PromiseCalendarActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                promiseCalendarViewModel.dailyPromiseList.collectLatest {
-                    promiseDailyListAdapter.submitList(it)
+                promiseCalendarViewModel.dailyPromiseList.collectIndexed { index, value ->
+                    if (index == 0) return@collectIndexed
+                    if (value.isEmpty()) {
+                        promiseDailyListAdapter.submitList(value + listOf(Promise()))
+                    } else {
+                        promiseDailyListAdapter.submitList(value)
+                    }
                 }
             }
         }
 
-        promiseDailyListAdapter.setOnItemClickListener(object : PromiseDailyListAdapter.OnItemClickListener {
+        promiseDailyListAdapter.setOnItemClickListener(object :
+            PromiseDailyListAdapter.OnItemClickListener {
             override fun onItemClick(promise: Promise) {
                 val intent = Intent(this@PromiseCalendarActivity, PromiseDetailActivity::class.java)
                 intent.putExtra(PROMISE_ID_KEY, promise.promiseId)
