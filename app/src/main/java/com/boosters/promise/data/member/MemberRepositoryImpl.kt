@@ -30,6 +30,14 @@ class MemberRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun removeMember(promiseId: String): Result<Unit> {
+        return memberRemoteDataSource.removeMember(promiseId)
+    }
+
+    override fun removeMember(promiseId: String, userCode: String): Result<Unit> {
+        return memberRemoteDataSource.removeMember(promiseId, userCode)
+    }
+
     override suspend fun addIsAcceptLocation(promiseId: String) {
         locationSharingPermissionLocalDataSource.saveLocationSharingPermission(promiseId, false)
     }
