@@ -181,7 +181,6 @@ class PromiseCalendarActivity : AppCompatActivity() {
             binding.materialCalendarViewPromiseCalendar.selectedDate = this
         }
 
-        binding.materialCalendarViewPromiseCalendar.selectionColor = primaryColor
         binding.materialCalendarViewPromiseCalendar.setOnDateChangedListener { _, date, _ ->
             val selectedDate = with(date) {
                 getString(R.string.date_format).format(year, month + 1, day)

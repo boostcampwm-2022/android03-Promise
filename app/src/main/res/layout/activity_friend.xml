@@ -39,14 +39,14 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.95" />
 
-        <com.google.android.material.appbar.MaterialToolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_friend"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:elevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:navigationIcon="@drawable/ic_navigate_back" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <include
             android:id="@+id/item_friend_myInfo"
