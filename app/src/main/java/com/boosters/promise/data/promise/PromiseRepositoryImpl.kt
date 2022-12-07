@@ -41,7 +41,9 @@ class PromiseRepositoryImpl @Inject constructor(
     }
 
     override fun removePromise(promiseId: String): Flow<Boolean> {
-        return promiseRemoteDataSource.removePromise(promiseId)
+        return promiseRemoteDataSource.removePromise(promiseId).onEach { isRemoveSuccess ->
+            if (isRemoveSuccess) memberRepository.removeMember(promiseId)
+        }
     }
 
     override fun getPromise(promiseId: String): Flow<Promise> {
