@@ -62,6 +62,8 @@
     <string name="friend_tabSearch">검색</string>
     <string name="friend_searchQueryHint">멤버 이름 / 멤버 코드(#000000)</string>
     <string name="friend_userCodeFormat">#%s</string>
+    <string name="friend_information_image">친구 초대 안내 이미지</string>
+    <string name="friend_empty_info">새로운 친구를 초대해보세요.</string>
 
     <!-- 약속 상세 화면 -->
     <string name="promiseDetail_location">장소</string>

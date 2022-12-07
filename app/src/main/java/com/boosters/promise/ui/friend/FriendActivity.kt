@@ -50,6 +50,8 @@ class FriendActivity : AppCompatActivity() {
                 launch {
                     friendViewModel.usersList.collectLatest { usersList ->
                         userListAdapter.submitList(usersList)
+
+                        binding.isEmpty = usersList.isEmpty()
                     }
                 }
             }
