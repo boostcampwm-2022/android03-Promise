@@ -115,12 +115,10 @@
 
         <Button
             android:id="@+id/button_invite_confirm"
-            style="@style/Promise.TextAppearance.MiddleBold"
+            style="@style/Promise.Button.SquareButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_confirm"
             android:text="@string/confirm"
-            app:backgroundTint="@null"
             app:layout_constraintBottom_toTopOf="@+id/guideline_invite_bottom"
             app:layout_constraintEnd_toStartOf="@+id/guideline_invite_right"
             app:layout_constraintStart_toStartOf="@+id/guideline_invite_left"
