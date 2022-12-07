@@ -99,6 +99,15 @@ class PromiseSettingActivity : AppCompatActivity() {
             }
         }
 
+        lifecycleScope.launch {
+            promiseSettingViewModel.networkConnection.collectLatest {
+                if (!it) {
+                    Snackbar.make(binding.root, R.string.signUp_networkError, Snackbar.LENGTH_SHORT)
+                        .show()
+                }
+            }
+        }
+
         initPromise()
 
     }

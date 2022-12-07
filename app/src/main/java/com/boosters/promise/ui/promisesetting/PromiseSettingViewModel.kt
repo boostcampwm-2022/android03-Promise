@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.R
 import com.boosters.promise.data.location.GeoLocation
+import com.boosters.promise.data.network.NetworkConnectionUtil
 import com.boosters.promise.data.notification.NotificationRepository
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
@@ -27,7 +28,8 @@ class PromiseSettingViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository,
     private val promiseRepository: PromiseRepository,
     private val userRepository: UserRepository,
-    private val alarmDirector: AlarmDirector
+    private val alarmDirector: AlarmDirector,
+    private val networkConnectionUtil: NetworkConnectionUtil
 ) : ViewModel() {
 
     private val _dialogEventFlow = MutableSharedFlow<PromiseSettingEvent>()
@@ -39,6 +41,9 @@ class PromiseSettingViewModel @Inject constructor(
     private val _promiseSettingUiState = MutableSharedFlow<PromiseSettingUiState>()
     val promiseSettingUiState: SharedFlow<PromiseSettingUiState> =
         _promiseSettingUiState.asSharedFlow()
+
+    private val _networkConnection = MutableSharedFlow<Boolean>()
+    val networkConnection: SharedFlow<Boolean> = _networkConnection.asSharedFlow()
 
     private val dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT)
     private lateinit var myInfo: User
@@ -80,6 +85,15 @@ class PromiseSettingViewModel @Inject constructor(
             changeUiState(PromiseSettingUiState.Fail(R.string.promiseSetting_beforeTime))
             return
         }
+
+        val networkConnection = runCatching {
+            networkConnectionUtil.checkNetworkOnline()
+        }.isSuccess
+        viewModelScope.launch {
+            _networkConnection.emit(networkConnection)
+        }
+        if (!networkConnection) return
+
         viewModelScope.launch {
             val members = promise.members.toMutableList()
             members.add(myInfo.copy(userToken = ""))
@@ -97,6 +111,15 @@ class PromiseSettingViewModel @Inject constructor(
     }
 
     fun onClickPickerEditText(event: PromiseSettingEvent) {
+        if (event == PromiseSettingEvent.SELECT_PLACE) {
+            val networkConnection = runCatching {
+                networkConnectionUtil.checkNetworkOnline()
+            }.isSuccess
+            viewModelScope.launch {
+                _networkConnection.emit(networkConnection)
+            }
+            if (!networkConnection) return
+        }
         viewModelScope.launch {
             _dialogEventFlow.emit(event)
         }
