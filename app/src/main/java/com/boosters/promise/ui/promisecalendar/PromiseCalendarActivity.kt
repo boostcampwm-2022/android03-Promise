@@ -144,25 +144,30 @@ class PromiseCalendarActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                promiseCalendarViewModel.myPromiseList.collectLatest {
-                    if (it is PromiseListUiState.Success) {
-                        promiseDayList.clear()
-                        promiseDayList.addAll(
-                            it.data.map { promise ->
-                                CalendarDay.from(
-                                    Calendar.getInstance().apply {
-                                        time = dateFormatter.parse(promise.date)
-                                    }
-                                )
-                            }
-                        )
+                promiseCalendarViewModel.myPromiseList.collectLatest { uiState ->
+                    when (uiState) {
+                        is PromiseListUiState.Loading -> binding.isLoading = true
+                        is PromiseListUiState.Success -> {
+                            binding.isLoading = false
+                            promiseDayList.clear()
+                            promiseDayList.addAll(
+                                uiState.data.map { promise ->
+                                    CalendarDay.from(
+                                        Calendar.getInstance().apply {
+                                            time = dateFormatter.parse(promise.date)
+                                        }
+                                    )
+                                }
+                            )
 
-                        binding.materialCalendarViewPromiseCalendar.removeDecorator(
-                            promiseContainDecorator
-                        )
-                        binding.materialCalendarViewPromiseCalendar.addDecorator(
-                            promiseContainDecorator
-                        )
+                            binding.materialCalendarViewPromiseCalendar.removeDecorator(
+                                promiseContainDecorator
+                            )
+                            binding.materialCalendarViewPromiseCalendar.addDecorator(
+                                promiseContainDecorator
+                            )
+                        }
+                        is PromiseListUiState.Failure -> binding.isLoading = false
                     }
                 }
             }
