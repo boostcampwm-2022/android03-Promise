@@ -35,7 +35,7 @@ class PromiseDailyListAdapter :
                     parent,
                     false
                 )
-                val holder = PlaceSearchViewHolder(binding)
+                val holder = PromiseViewHolder(binding)
 
                 binding.root.setOnClickListener {
                     val position = holder.adapterPosition
@@ -54,7 +54,7 @@ class PromiseDailyListAdapter :
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         if (getItem(position).promiseId.isNotEmpty()) {
-            (viewHolder as PlaceSearchViewHolder).bind(getItem(position))
+            (viewHolder as PromiseViewHolder).bind(getItem(position))
         }
     }
 
@@ -62,7 +62,7 @@ class PromiseDailyListAdapter :
         onItemClickListener = listener
     }
 
-    class PlaceSearchViewHolder(private val binding: ItemPromiseCardBinding) :
+    class PromiseViewHolder(private val binding: ItemPromiseCardBinding) :
         ViewHolder(binding.root) {
 
         fun bind(item: Promise) {

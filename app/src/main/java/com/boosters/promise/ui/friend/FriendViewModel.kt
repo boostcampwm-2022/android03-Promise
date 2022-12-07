@@ -65,14 +65,7 @@ class FriendViewModel @Inject constructor(
 
     fun searchUser(query: String) {
         viewModelScope.launch {
-            runCatching {
-                networkConnectionUtil.checkNetworkOnline()
-            }.onFailure {
-                _networkConnection.emit(false)
-                return@launch
-            }.onSuccess {
-                _networkConnection.emit(true)
-            }
+            if (!checkNetworkConnection()) return@launch
             val filterUserCodeList = friendRepository.getFriends().map {
                 it.userCode
             } + myInfo.userCode
@@ -81,6 +74,16 @@ class FriendViewModel @Inject constructor(
             } else userRepository.getUserByName(query).first()
             _usersList.value = result.filterNot { it.userCode in filterUserCodeList }
         }
+    }
+
+    private fun checkNetworkConnection(): Boolean {
+        val networkConnection = runCatching {
+            networkConnectionUtil.checkNetworkOnline()
+        }.isSuccess
+        viewModelScope.launch {
+            _networkConnection.emit(networkConnection)
+        }
+        return networkConnection
     }
 
     companion object {
