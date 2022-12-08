@@ -87,6 +87,9 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_promise_detail)
+
+        loadingDialog.show()
+
         setBinding()
 
         registerLocationUploadReceiver()
@@ -161,7 +164,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         lifecycleScope.launch {
             launch {
                 promiseDetailViewModel.promise.collectLatest {
-                    loadingDialog.show()
                     binding.promise = it
                 }
             }
