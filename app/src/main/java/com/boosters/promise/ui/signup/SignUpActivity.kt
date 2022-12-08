@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.boosters.promise.R
 import com.boosters.promise.databinding.ActivitySignUpBinding
+import com.boosters.promise.ui.loading.LoadingDialog
 import com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity
 import com.boosters.promise.ui.signup.model.SignUpUiState
 import com.google.android.material.snackbar.Snackbar
@@ -25,6 +26,8 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding
     private val signUpViewModel: SignUpViewModel by viewModels()
 
+    private lateinit var loadingDialog: LoadingDialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding =
@@ -32,6 +35,8 @@ class SignUpActivity : AppCompatActivity() {
                 .apply {
                     lifecycleOwner = this@SignUpActivity
                 }
+
+        loadingDialog = LoadingDialog(this)
 
         initSignUpButton()
         bindVariable()
@@ -64,9 +69,9 @@ class SignUpActivity : AppCompatActivity() {
         lifecycleScope.launch {
             signUpViewModel.signUpUiState.collect { signUpUiState ->
                 when (signUpUiState) {
-                    is SignUpUiState.Loading -> binding.isLoading = true
+                    is SignUpUiState.Loading -> loadingDialog.show()
                     is SignUpUiState.Success -> {
-                        binding.isLoading = false
+                        loadingDialog.dismiss()
                         startActivity(
                             Intent(
                                 this@SignUpActivity,
@@ -75,7 +80,7 @@ class SignUpActivity : AppCompatActivity() {
                         ).also { finish() }
                     }
                     is SignUpUiState.Fail -> {
-                        binding.isLoading = false
+                        loadingDialog.dismiss()
                         signUpUiState.signUpErrorMessageResId?.let {
                             Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
                         }
@@ -84,4 +89,5 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
     }
+
 }
