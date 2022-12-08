@@ -64,6 +64,9 @@ class InviteViewModel @Inject constructor(
             } else {
                 user.userName.contains(query)
             }
+        }?.map { userUiModel ->
+            _currentMemberItems.value?.find {it.userCode == userUiModel.userCode}?.copy(isSelected = true)
+                ?: userUiModel
         }
     }
 
