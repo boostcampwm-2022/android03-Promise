@@ -8,7 +8,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton.OnCheckedChangeListener
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -371,8 +370,13 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun setPromiseFailUiStateObserver() {
         lifecycleScope.launch {
             promiseDetailViewModel.promiseFailUiState.collectLatest { promiseFailUiState ->
-                Toast.makeText(applicationContext, promiseFailUiState.messageResId, Toast.LENGTH_SHORT).show()
-                if (promiseFailUiState.isActivityFinish) finish()
+                AlertDialog.Builder(this@PromiseDetailActivity)
+                    .setMessage(promiseFailUiState.messageResId)
+                    .setNeutralButton(R.string.ok) { _, _ ->
+                        if (promiseFailUiState.isActivityFinish) finish()
+                    }
+                    .create()
+                    .show()
             }
         }
     }
