@@ -15,6 +15,17 @@
         android:layout_height="match_parent"
         tools:context=".ui.invite.InviteActivity">
 
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_invite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:elevation="0dp"
+            app:layout_constraintVertical_chainStyle="spread_inside"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/textView_invite_inviteMember"/>
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_invite_left"
             android:layout_width="wrap_content"
@@ -53,7 +64,7 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline_invite_right"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="@+id/guideline_invite_left"
-            app:layout_constraintTop_toTopOf="@+id/guideline_invite_top" />
+            app:layout_constraintTop_toBottomOf="@+id/toolbar_invite" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView_invite_memberList"
@@ -72,7 +83,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.2" />
+            app:layout_constraintGuide_percent="0.25" />
 
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divider_invite"

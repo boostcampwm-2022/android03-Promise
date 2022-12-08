@@ -65,6 +65,12 @@ class PromiseSettingActivity : AppCompatActivity() {
 
         loadingDialog = LoadingDialog(this, getString(R.string.dialogLoading_promiseSetting_message))
 
+        setSupportActionBar(binding.toolbarPromiseSetting)
+        supportActionBar?.apply {
+            setDisplayShowTitleEnabled(false)
+            setDisplayHomeAsUpEnabled(true)
+        }
+
         promiseMemberListAdapter =
             PromiseMemberListAdapter { promiseSettingViewModel.removeMember(it) }
         binding.recyclerViewPromiseSettingPromiseMembers.adapter = promiseMemberListAdapter
@@ -122,6 +128,11 @@ class PromiseSettingActivity : AppCompatActivity() {
 
         initPromise()
         setTextChangedListener()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return super.onSupportNavigateUp()
     }
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
