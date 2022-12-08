@@ -83,21 +83,18 @@
             app:layout_constraintStart_toStartOf="@+id/guideline_invite_left"
             app:layout_constraintTop_toBottomOf="@id/guideline_invite_center" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout_invite_searchMember"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView_invite_searchMember"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/button_confirm"
+            app:iconifiedByDefault="false"
             app:layout_constraintBottom_toTopOf="@id/recyclerView_invite_friendList"
             app:layout_constraintEnd_toStartOf="@+id/guideline_invite_right"
             app:layout_constraintStart_toStartOf="@+id/guideline_invite_left"
-            app:layout_constraintTop_toBottomOf="@id/divider_invite">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:afterTextChanged="@{(text) -> viewModel.searchFriendItems(text.toString())}" />
-        </com.google.android.material.textfield.TextInputLayout>
+            app:layout_constraintTop_toBottomOf="@id/divider_invite"
+            app:queryHint="@string/friend_searchQueryHint" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView_invite_friendList"
@@ -110,7 +107,7 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline_invite_right"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline_invite_left"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_invite_searchMember"
+            app:layout_constraintTop_toBottomOf="@+id/searchView_invite_searchMember"
             tools:listitem="@layout/item_invite_friend" />
 
         <Button

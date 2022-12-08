@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.databinding.DataBindingUtil
 import com.boosters.promise.R
 import com.boosters.promise.data.user.User
@@ -32,6 +33,7 @@ class InviteActivity : AppCompatActivity() {
         setFriendItemClickListener()
         setMemberItemClickListener()
         setConfirmButtonClickListener()
+        setQueryTextListener()
 
         if (savedInstanceState == null) {
             inviteViewModel.initAllFriendItems()
@@ -67,7 +69,8 @@ class InviteActivity : AppCompatActivity() {
     }
 
     private fun setMemberItemClickListener() {
-        inviteMemberAdapter.setOnItemClickListener(object : InviteMemberAdapter.OnItemClickListener {
+        inviteMemberAdapter.setOnItemClickListener(object :
+            InviteMemberAdapter.OnItemClickListener {
             override fun onItemClick(user: UserUiModel) {
                 inviteViewModel.removeMemberItems(user)
             }
@@ -83,6 +86,19 @@ class InviteActivity : AppCompatActivity() {
             setResult(RESULT_OK, intent)
             finish()
         }
+    }
+
+    private fun setQueryTextListener() {
+        binding.searchViewInviteSearchMember.setOnQueryTextListener(object : OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean = false
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null) {
+                    inviteViewModel.searchFriendItems(newText)
+                }
+                return true
+            }
+        })
     }
 
     private fun initMemberItems() {
