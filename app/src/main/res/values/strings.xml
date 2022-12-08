@@ -62,6 +62,8 @@
     <string name="friend_tabSearch">검색</string>
     <string name="friend_searchQueryHint">멤버 이름 / 멤버 코드(#000000)</string>
     <string name="friend_userCodeFormat">#%s</string>
+    <string name="friend_information_image">친구 초대 안내 이미지</string>
+    <string name="friend_empty_info">새로운 친구를 초대해보세요.</string>
 
     <!-- 약속 상세 화면 -->
     <string name="promiseDetail_location">장소</string>
@@ -93,5 +95,8 @@
     <string name="notification_edit">[%s] 약속이 수정되었습니다.</string>
     <string name="notification_delete">[%s] 약속이 삭제되었습니다.</string>
     <string name="notification_request">약속시간이 다가옵니다!</string>
+
+    <!-- LoadingDialog 안내문 -->
+    <string name="dialogLoading_information">화면을 불러오는 중입니다.\n잠시만 기다려주세요.</string>
 
 </resources>

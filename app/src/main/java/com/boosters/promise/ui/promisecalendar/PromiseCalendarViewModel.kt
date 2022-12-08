@@ -27,7 +27,7 @@ class PromiseCalendarViewModel @Inject constructor(
     private val _myPromiseList: MutableStateFlow<PromiseListUiState> =
         MutableStateFlow(PromiseListUiState.Loading)
     val myPromiseList: StateFlow<PromiseListUiState> =
-        _myPromiseList.stateIn(viewModelScope, SharingStarted.Eagerly, PromiseListUiState.Empty)
+        _myPromiseList.stateIn(viewModelScope, SharingStarted.Eagerly, PromiseListUiState.Loading)
 
     private val _dailyPromiseList = MutableStateFlow(emptyList<Promise>())
     val dailyPromiseList: StateFlow<List<Promise>> get() = _dailyPromiseList.asStateFlow()

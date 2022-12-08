@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="onLocationSharingPermissionChangedListener"
             type="android.widget.CompoundButton.OnCheckedChangeListener" />

@@ -19,6 +19,11 @@
         <item name="android:textSize">@dimen/big</item>
     </style>
 
+    <style name="Promise.TextAppearance.BigGray" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/big</item>
+        <item name="android:textColor">@color/silver_gray</item>
+    </style>
+
     <style name="Promise.TextAppearance.MiddleBold" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/middle</item>
         <item name="android:textStyle">bold</item>

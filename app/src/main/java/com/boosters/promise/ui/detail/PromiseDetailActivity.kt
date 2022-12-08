@@ -1,9 +1,14 @@
 package com.boosters.promise.ui.detail
 
+import android.Manifest.permission
 import android.content.Intent
+import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.CompoundButton.OnCheckedChangeListener
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -13,8 +18,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.boosters.promise.R
+import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.databinding.ActivityPromiseDetailBinding
+import com.boosters.promise.receiver.LocationUploadReceiver
 import com.boosters.promise.ui.detail.adapter.PromiseMemberAdapter
+import com.boosters.promise.ui.detail.model.MemberUiModel
+import com.boosters.promise.ui.detail.model.PromiseUploadUiState
+import com.boosters.promise.ui.detail.util.MapManager
+import com.boosters.promise.ui.loading.LoadingDialog
 import com.boosters.promise.ui.promisesetting.PromiseSettingActivity
 import com.google.android.material.snackbar.Snackbar
 import com.naver.maps.map.MapFragment
@@ -82,9 +93,14 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
+    private lateinit var loadingDialog: LoadingDialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_promise_detail)
+
+        loadingDialog.show()
+
         setBinding()
 
         sendPromiseUploadInfoToReceiver()
@@ -114,6 +130,9 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onMapReady(map: NaverMap) {
+        map.addOnLoadListener {
+            loadingDialog.dismiss()
+        }
         mapManager = MapManager(map)
         setObserver()
     }
@@ -145,6 +164,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun setBinding() {
         binding.lifecycleOwner = this
         binding.recyclerViewPromiseDetailMemberList.adapter = promiseMemberAdapter
+
+        loadingDialog = LoadingDialog(this)
         lifecycleScope.launch {
             launch {
                 promiseDetailViewModel.promise.collectLatest {
@@ -153,6 +174,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             }
             binding.isAcceptLocationSharing = promiseDetailViewModel.isAcceptLocationSharing.first().getOrElse { false }
         }
+
         binding.onLocationSharingPermissionChangedListener = onLocationSharingPermissionChanged
         binding.onCurrentLocationButtonClickListener = onCurrentLocationButtonClickListener
     }

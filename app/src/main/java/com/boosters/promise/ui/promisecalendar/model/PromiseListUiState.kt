@@ -8,8 +8,6 @@ sealed class PromiseListUiState {
 
     object Loading : PromiseListUiState()
 
-    object Empty : PromiseListUiState()
-
     data class Failure(val throwable: Throwable) : PromiseListUiState()
 
 }
