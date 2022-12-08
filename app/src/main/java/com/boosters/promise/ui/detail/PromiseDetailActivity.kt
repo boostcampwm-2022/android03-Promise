@@ -90,6 +90,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_promise_detail)
 
         setPromiseFailUiStateObserver()
+
         loadingDialog = LoadingDialog(this)
         loadingDialog.show()
 
@@ -166,6 +167,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun setBinding() {
         binding.lifecycleOwner = this
         binding.recyclerViewPromiseDetailMemberList.adapter = promiseMemberAdapter
+
         lifecycleScope.launch {
             launch {
                 promiseDetailViewModel.promise.collectLatest {

@@ -18,6 +18,7 @@ import com.boosters.promise.databinding.ActivityPromiseSettingBinding
 import com.boosters.promise.ui.detail.PromiseDetailActivity
 import com.boosters.promise.ui.invite.InviteActivity
 import com.boosters.promise.ui.invite.model.UserUiModel
+import com.boosters.promise.ui.loading.LoadingDialog
 import com.boosters.promise.ui.place.PlaceSearchDialogFragment
 import com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity
 import com.boosters.promise.ui.promisesetting.adapter.PromiseMemberListAdapter
@@ -37,6 +38,7 @@ class PromiseSettingActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPromiseSettingBinding
     private lateinit var promiseMemberListAdapter: PromiseMemberListAdapter
+    private lateinit var loadingDialog: LoadingDialog
     private val promiseSettingViewModel: PromiseSettingViewModel by viewModels()
     private val getContent =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -61,6 +63,8 @@ class PromiseSettingActivity : AppCompatActivity() {
         binding.promiseSettingViewModel = promiseSettingViewModel
         setContentView(binding.root)
 
+        loadingDialog = LoadingDialog(this, getString(R.string.dialogLoading_promiseSetting_message))
+
         promiseMemberListAdapter =
             PromiseMemberListAdapter { promiseSettingViewModel.removeMember(it) }
         binding.recyclerViewPromiseSettingPromiseMembers.adapter = promiseMemberListAdapter
@@ -84,7 +88,9 @@ class PromiseSettingActivity : AppCompatActivity() {
         lifecycleScope.launch {
             promiseSettingViewModel.promiseSettingUiState.collectLatest { promiseSettingUiState ->
                 when (promiseSettingUiState) {
-                    PromiseSettingUiState.Edit -> return@collectLatest
+                    PromiseSettingUiState.Loading -> {
+                        loadingDialog.show()
+                    }
                     PromiseSettingUiState.Success -> {
                         val intent =
                             Intent(this@PromiseSettingActivity, PromiseDetailActivity::class.java)
@@ -94,9 +100,13 @@ class PromiseSettingActivity : AppCompatActivity() {
                                 )
                                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         startActivity(intent)
+                        loadingDialog.dismiss()
                         finish()
                     }
-                    is PromiseSettingUiState.Fail -> showStateSnackbar(promiseSettingUiState.message)
+                    is PromiseSettingUiState.Fail -> {
+                        loadingDialog.dismiss()
+                        showStateSnackbar(promiseSettingUiState.message)
+                    }
                 }
             }
         }

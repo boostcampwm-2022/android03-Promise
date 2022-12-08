@@ -36,7 +36,7 @@ class SignUpActivity : AppCompatActivity() {
                     lifecycleOwner = this@SignUpActivity
                 }
 
-        loadingDialog = LoadingDialog(this)
+        loadingDialog = LoadingDialog(this, getString(R.string.dialogLoading_signUp_message))
 
         initSignUpButton()
         bindVariable()
