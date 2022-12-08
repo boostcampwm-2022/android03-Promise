@@ -9,13 +9,13 @@
 
     <!-- 약속 추가 화면 -->
     <string name="promiseSetting_promiseTitle">제목을 입력하세요</string>
-    <string name="promiseSetting_promiseDate">날짜  ⃰</string>
+    <string name="promiseSetting_promiseDate">날짜&#160;&#160;⃰</string>
     <string name="promiseSetting_promiseDate_placeholder">다같이 만날 날짜를 입력하세요.</string>
-    <string name="promiseSetting_promiseTime">시간  ⃰</string>
+    <string name="promiseSetting_promiseTime">시간&#160;&#160;⃰</string>
     <string name="promiseSetting_promiseTime_placeholder">다같이 만날 시간을 입력하세요.</string>
-    <string name="promiseSetting_promisePlace">장소  ⃰</string>
+    <string name="promiseSetting_promisePlace">장소&#160;&#160;⃰</string>
     <string name="promiseSetting_promisePlace_placeholder">다같이 만날 장소를 입력하세요.</string>
-    <string name="promiseSetting_promiseMember">멤버  ⃰</string>
+    <string name="promiseSetting_promiseMember">멤버</string>
     <string name="promiseSetting_promiseMember_placeholder">함께할 사람을 초대하세요.</string>
     <string name="promiseSetting_completion">완료</string>
     <string name="promiseSetting_fail">저장에 실패했습니다.</string>

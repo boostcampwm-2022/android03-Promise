@@ -35,10 +35,21 @@ class InviteActivity : AppCompatActivity() {
         setConfirmButtonClickListener()
         setQueryTextListener()
 
+        setSupportActionBar(binding.toolbarInvite)
+        supportActionBar?.apply {
+            setDisplayShowTitleEnabled(false)
+            setDisplayHomeAsUpEnabled(true)
+        }
+
         if (savedInstanceState == null) {
             inviteViewModel.initAllFriendItems()
             initMemberItems()
         }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return super.onNavigateUp()
     }
 
     private fun setBinding() {
