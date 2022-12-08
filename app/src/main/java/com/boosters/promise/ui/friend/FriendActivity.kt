@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -55,6 +56,12 @@ class FriendActivity : AppCompatActivity() {
                         binding.isEmpty = usersList.isEmpty()
                     }
                 }
+            }
+        }
+
+        lifecycleScope.launch {
+            friendViewModel.selectedTab.first().let {
+                binding.tabFriend.run { selectTab(getTabAt(it)) }
             }
         }
 
