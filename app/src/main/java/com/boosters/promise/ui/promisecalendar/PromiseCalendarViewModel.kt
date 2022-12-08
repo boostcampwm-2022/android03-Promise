@@ -2,6 +2,7 @@ package com.boosters.promise.ui.promisecalendar
 
 import android.icu.text.SimpleDateFormat
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.network.NetworkConnectionUtil
 import com.boosters.promise.data.promise.Promise
@@ -9,17 +10,19 @@ import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.user.UserRepository
 import com.boosters.promise.ui.promisecalendar.model.PromiseListUiState
 import com.boosters.promise.ui.promisecalendar.model.UserUiState
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
-import javax.inject.Inject
 
-@HiltViewModel
-class PromiseCalendarViewModel @Inject constructor(
+class PromiseCalendarViewModel @AssistedInject constructor(
     private val userRepository: UserRepository,
     private val promiseRepository: PromiseRepository,
-    private val networkConnectionUtil: NetworkConnectionUtil
+    private val networkConnectionUtil: NetworkConnectionUtil,
+    @Assisted val today: String
 ) : ViewModel() {
 
     private val _myInfo: MutableStateFlow<UserUiState> = MutableStateFlow(UserUiState.Loading)
@@ -31,13 +34,26 @@ class PromiseCalendarViewModel @Inject constructor(
     val myPromiseList: StateFlow<PromiseListUiState> =
         _myPromiseList.stateIn(viewModelScope, SharingStarted.Eagerly, PromiseListUiState.Loading)
 
-    private val _dailyPromiseList: MutableStateFlow<List<Promise>?> = MutableStateFlow(null)
-    val dailyPromiseList: StateFlow<List<Promise>?> get() = _dailyPromiseList.asStateFlow()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val dailyPromiseList: Flow<List<Promise>?> get() = selectedDate.flatMapLatest { date ->
+        myPromiseList.map { promiseListUiState ->
+            if (promiseListUiState is PromiseListUiState.Success) {
+                return@map promiseListUiState.data
+                    .filter { promise: Promise -> promise.date == date }
+                    .sortedBy { promise ->
+                        dateFormatter.parse(promise.time).time
+                    }
+            }
+            null
+        }
+    }
 
     private val _networkConnection = MutableSharedFlow<Boolean>()
     val networkConnection: SharedFlow<Boolean> = _networkConnection.asSharedFlow()
 
     private val dateFormatter = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
+
+    private val selectedDate = MutableStateFlow(today)
 
     init {
         loadMyInfo()
@@ -69,19 +85,9 @@ class PromiseCalendarViewModel @Inject constructor(
         }
     }
 
-    fun updateDailyPromiseList(date: String) {
+    fun selectDate(date: String) {
         checkNetworkConnection()
-        viewModelScope.launch {
-            _myPromiseList.collectLatest {
-                if (it is PromiseListUiState.Success) {
-                    _dailyPromiseList.value = it.data.filter { promise ->
-                        promise.date == date
-                    }.sortedBy { promise ->
-                        dateFormatter.parse(promise.time).time
-                    }
-                }
-            }
-        }
+        selectedDate.value = date
     }
 
     fun checkNetworkConnection() {
@@ -95,6 +101,26 @@ class PromiseCalendarViewModel @Inject constructor(
 
     companion object {
         private const val DATE_FORMAT = "HH:mm"
+
+        @Suppress("UNCHECKED_CAST")
+        fun provideFactory(
+            assistedFactory: PromiseCalendarModelFactory,
+            today: String
+        ) = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                if (modelClass.isAssignableFrom(PromiseCalendarViewModel::class.java)) {
+                    return assistedFactory.create(today) as T
+                }
+                throw IllegalArgumentException()
+            }
+        }
+    }
+
+    @AssistedFactory
+    interface PromiseCalendarModelFactory {
+
+        fun create(today: String): PromiseCalendarViewModel
+
     }
 
 }
