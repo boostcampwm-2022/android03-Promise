@@ -60,7 +60,7 @@ class InviteViewModel @Inject constructor(
     fun searchFriendItems(query: String) {
         _currentFriendItems.value = allFriendItems?.filter { user ->
             if (query.matches(userCodeRegex)) {
-                user.userCode.contains(query)
+                user.userCode.contains(query.replace("#", ""))
             } else {
                 user.userName.contains(query)
             }

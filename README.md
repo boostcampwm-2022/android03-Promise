@@ -15,14 +15,40 @@
 
 ⏰ 약속시간이 다가오면 알림을 받을 수 있어요
 
+<br>
+
+## 🧑‍💻 팀원
+
+| K012                                | K020                              | K025                             | K028                               |
+|-------------------------------------|-----------------------------------|----------------------------------|------------------------------------|
+| [류대현](https://github.com/jerrytrap) | [박찬호](https://github.com/hoho-97) | [양성현](https://github.com/dogeby) | [유수미](https://github.com/Yoo-sumi) |
+
+<br>
+
+## ✏️ 기술 스택
+
+| Category             | Tech Stack                                                                              |
+|----------------------|-----------------------------------------------------------------------------------------|
+| Language             | Kotlin                                                                                  |
+| Architecture         | MVVM, DataBinding                                                                       |
+| Async Task           | Kotlin Coroutine, Flow                                                                  |
+| API                  | Fused Location Provider API, Firebase Cloud Messaging, Naver Maps API, Naver Search API |
+| Background Task      | AlarmManager                                                                            |
+| Database             | Cloud FireStore, Room, Preferences DataStore                                            |
+| External Library     | Material Calendar View                                                                  |
+| Dependency Injection | Hilt                                                                                    |
+| Network              | Retrofit2                                                                               |
+
+<br>
+
 ## 💡 주요 기능
 
 | <img width="250" src="https://user-images.githubusercontent.com/61190129/205502540-0098798d-996e-4d80-a641-7490981f0e0d.png"> | <img width="250" src="https://user-images.githubusercontent.com/61190129/205502570-3b7f65c8-4712-4e54-ad31-86846a4f43a1.png"> | <img width="250" src="https://user-images.githubusercontent.com/61190129/205502604-0b6985be-4902-4b28-b91d-d624391ffb88.png"> | <img width="250" src="https://user-images.githubusercontent.com/61190129/205502677-a4568937-7257-47ec-b3bc-2562f2a9625a.png"> |
 |-------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
 | <div align="center">약속 리스트<div>                                                                                               | <div align="center">약속 생성<div>                                                                                                | <div align="center">약속 상세 정보<div>                                                                                             | <div align="center">약속 알림<div>                                                                                                |
 
-## 🧑‍💻 팀원 소개
+<br>
 
-| K012 | K020 | K025 | K028 |
-|------|------|------|------|
-| 류대현  | 박찬호  | 양성현  | 유수미  |
+## 📝 개발 일지
+
+- [Naver Maps API 사용기](https://github.com/boostcampwm-2022/android03-Promise/wiki/Naver-Maps-API-%EC%82%AC%EC%9A%A9%EA%B8%B0)

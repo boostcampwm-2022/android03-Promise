@@ -45,6 +45,27 @@ class MemberRemoteDataSource @Inject constructor(
             it.toObjects(MemberBody::class.java)
         }
 
+    fun removeMember(promiseId: String): Result<Unit> = runCatching {
+        memberCollectionReference
+            .whereEqualTo(PROMISE_ID_KEY, promiseId)
+            .get()
+            .addOnSuccessListener { documents ->
+                documents.forEach {
+                    memberCollectionReference.document(it.id).delete()
+                }
+            }
+    }
+
+    fun removeMember(promiseId: String, userCode: String): Result<Unit> = runCatching {
+        memberCollectionReference
+            .whereEqualTo(PROMISE_ID_KEY, promiseId)
+            .whereEqualTo(USER_CODE_KEY, userCode)
+            .get()
+            .addOnSuccessListener { documents ->
+                memberCollectionReference.document(documents.first().id).delete()
+            }
+    }
+
     private companion object {
         const val PROMISE_ID_KEY = "promiseId"
         const val USER_CODE_KEY = "userCode"

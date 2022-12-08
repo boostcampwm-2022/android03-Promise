@@ -91,13 +91,25 @@ class PromiseSettingViewModel @Inject constructor(
         viewModelScope.launch {
             val members = promise.members.toMutableList()
             members.add(myInfo.copy(userToken = ""))
-            promiseRepository.addPromise(promise.copy(members = members)).collect { result ->
-                result.onSuccess { id ->
-                    if (id.isEmpty()) {
-                        changeUiState(PromiseSettingUiState.Fail(R.string.promiseSetting_fail))
-                    } else {
+            if (promise.promiseId.isNotBlank()) {
+                promiseRepository.modifyPromise(promise.copy(members = members)).first()
+                    .onSuccess { id ->
                         promiseId = id
                         sendNotification()
+                    }
+                    .onFailure {
+                        changeUiState(PromiseSettingUiState.Fail(R.string.promiseSetting_fail))
+                    }
+                return@launch
+            } else {
+                promiseRepository.addPromise(promise.copy(members = members)).collect { result ->
+                    result.onSuccess { id ->
+                        if (id.isEmpty()) {
+                            changeUiState(PromiseSettingUiState.Fail(R.string.promiseSetting_fail))
+                        } else {
+                            promiseId = id
+                            sendNotification()
+                        }
                     }
                 }
             }

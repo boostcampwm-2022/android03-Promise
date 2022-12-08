@@ -17,6 +17,7 @@ import com.boosters.promise.ui.detail.model.MemberUiModel
 import com.boosters.promise.ui.detail.model.PromiseUploadUiState
 import com.boosters.promise.ui.notification.AlarmDirector
 import com.boosters.promise.ui.notification.NotificationService
+import com.boosters.promise.util.DateUtil
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -125,7 +126,7 @@ class PromiseDetailViewModel @AssistedInject constructor(
             _promiseUploadUiState.value = if (isAcceptLocationSharing) {
                 PromiseUploadUiState.Accept(
                     id = promise.promiseId,
-                    dateAndTime = "${promise.date} ${promise.time}"
+                    delayMillisFromCurrentTime = DateUtil.getDelayMillisFromCurrentTime("${promise.date} ${promise.time}")
                 )
             } else {
                 PromiseUploadUiState.Denied(

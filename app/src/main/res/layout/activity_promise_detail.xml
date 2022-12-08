@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="onLocationSharingPermissionChangedListener"
             type="android.widget.CompoundButton.OnCheckedChangeListener" />
@@ -179,7 +178,7 @@
                 android:background="@drawable/button_map_control"
                 android:contentDescription="@string/promiseDetail_overview"
                 android:elevation="5dp"
-                android:padding="5dp"
+                android:padding="10dp"
                 android:src="@drawable/ic_map_overview"
                 app:layout_constraintBottom_toBottomOf="@+id/imageButton_promiseDetail_destination"
                 app:layout_constraintEnd_toStartOf="@+id/imageButton_promiseDetail_destination"
@@ -195,7 +194,7 @@
                 android:background="@drawable/button_map_control"
                 android:contentDescription="@string/promiseDetail_destination"
                 android:elevation="5dp"
-                android:padding="5dp"
+                android:padding="10dp"
                 android:src="@drawable/ic_destination_flag"
                 app:layout_constraintBottom_toBottomOf="@+id/fragment_promiseDetail_map"
                 app:layout_constraintEnd_toStartOf="@+id/guideline_promiseDetail_right"
