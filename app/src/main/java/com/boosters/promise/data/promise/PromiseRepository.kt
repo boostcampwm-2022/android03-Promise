@@ -11,7 +11,7 @@ interface PromiseRepository {
 
     fun removePromise(promiseId: String): Flow<Boolean>
 
-    fun getPromise(promiseId: String): Flow<Promise>
+    fun getPromise(promiseId: String): Flow<Promise?>
 
     fun getPromiseList(user: User): Flow<List<Promise>>
 

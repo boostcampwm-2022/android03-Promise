@@ -46,9 +46,9 @@ class PromiseRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getPromise(promiseId: String): Flow<Promise> {
-        return promiseRemoteDataSource.getPromise(promiseId).mapNotNull { promiseBody ->
-            promiseBody.toPromise(
+    override fun getPromise(promiseId: String): Flow<Promise?> {
+        return promiseRemoteDataSource.getPromise(promiseId).map { promiseBody ->
+            promiseBody?.toPromise(
                 promiseBody.members.map {
                     userRepository.getUser(it).first()
                 }

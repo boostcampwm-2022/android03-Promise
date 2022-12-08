@@ -89,10 +89,12 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_promise_detail)
 
+        setPromiseFailUiStateObserver()
+        loadingDialog = LoadingDialog(this)
         loadingDialog.show()
 
         setBinding()
-
+        setDestinationButtonClickListener()
         sendPromiseUploadInfoToReceiver()
 
         initMap()
@@ -118,6 +120,11 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onStop() {
         super.onStop()
         if (promiseDetailViewModel.isStartLocationUpdates.value) promiseDetailViewModel.stopLocationUpdates()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        loadingDialog.dismiss()
     }
 
     override fun onMapReady(map: NaverMap) {
@@ -159,8 +166,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun setBinding() {
         binding.lifecycleOwner = this
         binding.recyclerViewPromiseDetailMemberList.adapter = promiseMemberAdapter
-
-        loadingDialog = LoadingDialog(this)
         lifecycleScope.launch {
             launch {
                 promiseDetailViewModel.promise.collectLatest {
@@ -202,22 +207,22 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         promiseMemberAdapter.setOnItemClickListener(object :
-            PromiseMemberAdapter.OnItemClickListener {
-            override fun onItemClick(memberUiModel: MemberUiModel) {
-                lifecycleScope.launch {
-                    promiseDetailViewModel.userGeoLocations.first().let { userGeoLocation ->
-                        val selectedMemberLocation =
-                            userGeoLocation.find { it.userCode == memberUiModel.userCode }?.geoLocation
+                PromiseMemberAdapter.OnItemClickListener {
+                override fun onItemClick(memberUiModel: MemberUiModel) {
+                    lifecycleScope.launch {
+                        promiseDetailViewModel.userGeoLocations.first().let { userGeoLocation ->
+                            val selectedMemberLocation =
+                                userGeoLocation.find { it.userCode == memberUiModel.userCode }?.geoLocation
 
-                        if (selectedMemberLocation != null) {
-                            mapManager.moveToLocation(selectedMemberLocation)
-                        } else {
-                            showStateSnackbar(R.string.promiseDetail_memberLocation_null)
+                            if (selectedMemberLocation != null) {
+                                mapManager.moveToLocation(selectedMemberLocation)
+                            } else {
+                                showStateSnackbar(R.string.promiseDetail_memberLocation_null)
+                            }
                         }
                     }
                 }
-            }
-        })
+            })
     }
 
     private fun setObserver() {
@@ -358,6 +363,20 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     Snackbar.make(binding.root, R.string.signUp_networkError, Snackbar.LENGTH_SHORT)
                         .show()
                 }
+            }
+        }
+    }
+
+    private fun setPromiseFailUiStateObserver() {
+        lifecycleScope.launch {
+            promiseDetailViewModel.promiseFailUiState.collectLatest { promiseFailUiState ->
+                AlertDialog.Builder(this@PromiseDetailActivity)
+                    .setMessage(promiseFailUiState.messageResId)
+                    .setNeutralButton(R.string.ok) { _, _ ->
+                        if (promiseFailUiState.isActivityFinish) finish()
+                    }
+                    .create()
+                    .show()
             }
         }
     }
