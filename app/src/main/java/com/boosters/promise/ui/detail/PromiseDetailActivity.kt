@@ -34,8 +34,21 @@ import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import android.Manifest.permission
+import android.content.pm.PackageManager
+import android.view.View
+import android.widget.CompoundButton.OnCheckedChangeListener
+import com.boosters.promise.data.location.GeoLocation
+import com.boosters.promise.ui.detail.util.MapManager
+import com.boosters.promise.service.locationupload.LocationUploadForegroundService
+import com.boosters.promise.service.locationupload.LocationUploadForegroundService.Companion.ACTION_LOCATION_UPLOAD_SERVICE_START
+import com.boosters.promise.service.locationupload.LocationUploadForegroundService.Companion.ACTION_LOCATION_UPLOAD_SERVICE_STOP
+import com.boosters.promise.service.locationupload.LocationUploadForegroundService.Companion.DELAY_UNTIL_END_TIME_KEY
+import com.boosters.promise.service.locationupload.LocationUploadForegroundService.Companion.ID_KEY
+import com.boosters.promise.ui.detail.model.MemberUiModel
+import com.boosters.promise.ui.detail.model.PromiseUploadUiState
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -59,7 +72,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private val onCurrentLocationButtonClickListener = View.OnClickListener {
-        if (checkLocationPermission()) {
+        if (isLocationPermissionGranted()) {
             mapManager.moveToLocation(promiseDetailViewModel.currentGeoLocation.value)
             return@OnClickListener
         }
@@ -68,8 +81,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mapManager: MapManager
     private val destinationMarker = Marker()
-
-    private val locationUploadReceiver = LocationUploadReceiver()
 
     private val locationPermissions = arrayOf(
         permission.ACCESS_COARSE_LOCATION,
@@ -92,7 +103,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         setBinding()
 
-        registerLocationUploadReceiver()
         sendPromiseUploadInfoToReceiver()
 
         initMap()
@@ -107,7 +117,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onStart() {
         super.onStart()
-        if (checkLocationPermission()) {
+        if (isLocationPermissionGranted()) {
             promiseDetailViewModel.startLocationUpdates()
         } else {
             requestPermission()
@@ -117,11 +127,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onStop() {
         super.onStop()
         if (promiseDetailViewModel.isStartLocationUpdates.value) promiseDetailViewModel.stopLocationUpdates()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        unregisterReceiver(locationUploadReceiver)
     }
 
     override fun onMapReady(map: NaverMap) {
@@ -295,7 +300,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             .show()
     }
 
-    private fun checkLocationPermission(): Boolean {
+    private fun isLocationPermissionGranted(): Boolean {
         val locationPermissionCheckResult = locationPermissions.map {
             checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
         }
@@ -312,47 +317,29 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun registerLocationUploadReceiver() {
-        val intentFilter = IntentFilter().apply {
-            addAction(LocationUploadReceiver.ACTION_LOCATION_UPLOAD_SERVICE_START)
-            addAction(LocationUploadReceiver.ACTION_LOCATION_UPLOAD_SERVICE_STOP)
-        }
-        registerReceiver(locationUploadReceiver, intentFilter)
-    }
-
     private fun sendPromiseUploadInfoToReceiver() {
         lifecycleScope.launch {
             promiseDetailViewModel.promiseUploadUiState.collectLatest promiseUploadStateCollect@{ promiseUploadUiState ->
-                when (promiseUploadUiState) {
-                    is PromiseUploadUiState.Accept -> {
-                        if (checkLocationPermission()) {
-                            sendPromiseUploadUiStateAccept(promiseUploadUiState)
-                            return@promiseUploadStateCollect
+                val locationUploadIntent = Intent(this@PromiseDetailActivity, LocationUploadForegroundService::class.java).apply {
+                    putExtra(ID_KEY, promiseUploadUiState.id)
+                    when (promiseUploadUiState) {
+                        is PromiseUploadUiState.Accept -> {
+                            if (isLocationPermissionGranted().not()) {
+                                binding.switchPromiseDetailLocationSharing.isChecked = false
+                                promiseDetailViewModel.stopLocationUpdates()
+                                showRequireLocationPermissionSnackBar()
+                                return@promiseUploadStateCollect
+                            }
+                            action = ACTION_LOCATION_UPLOAD_SERVICE_START
+                            putExtra(DELAY_UNTIL_END_TIME_KEY, promiseUploadUiState.delayMillisFromCurrentTime)
                         }
-                        binding.switchPromiseDetailLocationSharing.isChecked = false
-                        promiseDetailViewModel.stopLocationUpdates()
-                        showRequireLocationPermissionSnackBar()
+                        is PromiseUploadUiState.Denied -> {
+                            action = ACTION_LOCATION_UPLOAD_SERVICE_STOP
+                        }
                     }
-                    is PromiseUploadUiState.Denied -> sendPromiseUploadUiStateDenied(promiseUploadUiState)
                 }
+                startForegroundService(locationUploadIntent)
             }
-        }
-    }
-
-    private fun sendPromiseUploadUiStateAccept(promiseUploadUiState: PromiseUploadUiState.Accept) {
-        Intent(LocationUploadReceiver.ACTION_LOCATION_UPLOAD_SERVICE_START).apply {
-            putExtra(LocationUploadReceiver.PROMISE_DATE_TIME_KEY, promiseUploadUiState.dateAndTime)
-            putExtra(LocationUploadReceiver.PROMISE_ID_KEY, promiseUploadUiState.id)
-        }.let { intent ->
-            sendOrderedBroadcast(intent, null)
-        }
-    }
-
-    private fun sendPromiseUploadUiStateDenied(promiseUploadUiState: PromiseUploadUiState.Denied) {
-        Intent(LocationUploadReceiver.ACTION_LOCATION_UPLOAD_SERVICE_STOP).apply {
-            putExtra(LocationUploadReceiver.PROMISE_ID_KEY, promiseUploadUiState.id)
-        }.let { intent ->
-            sendOrderedBroadcast(intent, null)
         }
     }
 
