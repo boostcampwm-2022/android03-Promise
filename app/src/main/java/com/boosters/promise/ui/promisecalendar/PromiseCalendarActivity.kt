@@ -66,6 +66,8 @@ class PromiseCalendarActivity : AppCompatActivity() {
         binding.buttonPromiseCalendarCreatePromise.setOnClickListener {
             startActivity(Intent(this, PromiseSettingActivity::class.java))
         }
+
+        promiseCalendarViewModel.checkNetworkConnection()
     }
 
     override fun onRequestPermissionsResult(
@@ -109,13 +111,18 @@ class PromiseCalendarActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                promiseCalendarViewModel.dailyPromiseList.collectLatest {
-                    promiseDailyListAdapter.submitList(it)
+                promiseCalendarViewModel.dailyPromiseList.collectLatest { promiseList ->
+                    if (promiseList?.isEmpty() == true) {
+                        promiseDailyListAdapter.submitList(listOf(Promise()))
+                    } else {
+                        promiseDailyListAdapter.submitList(promiseList)
+                    }
                 }
             }
         }
 
-        promiseDailyListAdapter.setOnItemClickListener(object : PromiseDailyListAdapter.OnItemClickListener {
+        promiseDailyListAdapter.setOnItemClickListener(object :
+            PromiseDailyListAdapter.OnItemClickListener {
             override fun onItemClick(promise: Promise) {
                 val intent = Intent(this@PromiseCalendarActivity, PromiseDetailActivity::class.java)
                 intent.putExtra(PROMISE_ID_KEY, promise.promiseId)
@@ -191,6 +198,15 @@ class PromiseCalendarActivity : AppCompatActivity() {
                 getString(R.string.date_format).format(year, month + 1, day)
             }
             promiseCalendarViewModel.updateDailyPromiseList(selectedDate)
+        }
+
+        lifecycleScope.launch {
+            promiseCalendarViewModel.networkConnection.collectLatest {
+                if (!it) {
+                    Snackbar.make(binding.root, R.string.signUp_networkError, Snackbar.LENGTH_SHORT)
+                        .show()
+                }
+            }
         }
     }
 

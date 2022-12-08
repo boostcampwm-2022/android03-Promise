@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.boosters.promise.R
 import com.boosters.promise.data.promise.Promise
@@ -87,10 +88,11 @@ class PromiseSettingActivity : AppCompatActivity() {
                     PromiseSettingUiState.Success -> {
                         val intent =
                             Intent(this@PromiseSettingActivity, PromiseDetailActivity::class.java)
-                        intent.putExtra(
-                            PromiseCalendarActivity.PROMISE_ID_KEY,
-                            promiseSettingViewModel.promiseUiState.value.promiseId
-                        )
+                                .putExtra(
+                                    PromiseCalendarActivity.PROMISE_ID_KEY,
+                                    promiseSettingViewModel.promiseUiState.value.promiseId
+                                )
+                                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         startActivity(intent)
                         finish()
                     }
@@ -99,12 +101,21 @@ class PromiseSettingActivity : AppCompatActivity() {
             }
         }
 
-        initPromise()
+        lifecycleScope.launch {
+            promiseSettingViewModel.networkConnection.collectLatest {
+                if (!it) {
+                    Snackbar.make(binding.root, R.string.signUp_networkError, Snackbar.LENGTH_SHORT)
+                        .show()
+                }
+            }
+        }
 
+        initPromise()
+        setTextChangedListener()
     }
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (binding.editTextPromiseSettingPromiseTitle.hasFocus()) {
+        if (event?.action == MotionEvent.ACTION_DOWN) {
             currentFocus?.clearFocus()
             hideKeyBoard()
         }
@@ -117,8 +128,6 @@ class PromiseSettingActivity : AppCompatActivity() {
             binding.editTextPromiseSettingPromiseTitle.windowToken,
             0
         )
-        val promiseTitle = binding.editTextPromiseSettingPromiseTitle.text.toString()
-        promiseSettingViewModel.setPromiseTitle(promiseTitle)
     }
 
     private fun showDatePicker() {
@@ -198,6 +207,12 @@ class PromiseSettingActivity : AppCompatActivity() {
             intent.getParcelableExtra(PROMISE_KEY, Promise::class.java)
         }?.let {
             promiseSettingViewModel.initPromise(it)
+        }
+    }
+
+    private fun setTextChangedListener() {
+        binding.editTextPromiseSettingPromiseTitle.addTextChangedListener {
+            promiseSettingViewModel.setPromiseTitle(it.toString())
         }
     }
 

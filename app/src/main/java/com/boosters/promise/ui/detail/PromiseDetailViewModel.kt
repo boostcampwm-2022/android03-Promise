@@ -7,6 +7,7 @@ import com.boosters.promise.data.location.UserGeoLocation
 import com.boosters.promise.data.location.toLatLng
 import com.boosters.promise.data.member.Member
 import com.boosters.promise.data.member.MemberRepository
+import com.boosters.promise.data.network.NetworkConnectionUtil
 import com.boosters.promise.data.notification.NotificationRepository
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
@@ -31,6 +32,7 @@ class PromiseDetailViewModel @AssistedInject constructor(
     private val locationRepository: LocationRepository,
     private val notificationRepository: NotificationRepository,
     private val alarmDirector: AlarmDirector,
+    private val networkConnectionUtil: NetworkConnectionUtil,
     @Assisted promiseId: String
 ) : ViewModel() {
 
@@ -45,11 +47,15 @@ class PromiseDetailViewModel @AssistedInject constructor(
     private val _promiseUploadUiState = MutableStateFlow<PromiseUploadUiState?>(null)
     val promiseUploadUiState: Flow<PromiseUploadUiState> = _promiseUploadUiState.filterNotNull()
 
-    private val myInfo = userRepository.getMyInfo().shareIn(viewModelScope, SharingStarted.Eagerly, 1)
+    private val myInfo =
+        userRepository.getMyInfo().shareIn(viewModelScope, SharingStarted.Eagerly, 1)
     val currentGeoLocation = locationRepository.lastGeoLocation
 
     private val _isStartLocationUpdates = MutableStateFlow(false)
     val isStartLocationUpdates: StateFlow<Boolean> = _isStartLocationUpdates.asStateFlow()
+
+    private val _networkConnection = MutableSharedFlow<Boolean>()
+    val networkConnection: SharedFlow<Boolean> = _networkConnection.asSharedFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val members: Flow<List<Member>> = promise.flatMapLatest { promise ->
@@ -89,15 +95,17 @@ class PromiseDetailViewModel @AssistedInject constructor(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val memberMarkerInfo: Flow<List<MemberMarkerInfo>> = userGeoLocations.mapLatest { userGeoLocations ->
-        userGeoLocations.mapNotNull { userGeoLocation ->
-            MemberMarkerInfo(
-                id = userGeoLocation.userCode,
-                name = promise.first().members.find { it.userCode == userGeoLocation.userCode }?.userName ?: "",
-                geoLocation = userGeoLocation.geoLocation ?: return@mapNotNull null
-            )
+    val memberMarkerInfo: Flow<List<MemberMarkerInfo>> =
+        userGeoLocations.mapLatest { userGeoLocations ->
+            userGeoLocations.mapNotNull { userGeoLocation ->
+                MemberMarkerInfo(
+                    id = userGeoLocation.userCode,
+                    name = promise.first().members.find { it.userCode == userGeoLocation.userCode }?.userName
+                        ?: "",
+                    geoLocation = userGeoLocation.geoLocation ?: return@mapNotNull null
+                )
+            }
         }
-    }
 
     fun removePromise() {
         viewModelScope.launch {
@@ -171,6 +179,16 @@ class PromiseDetailViewModel @AssistedInject constructor(
 
     private fun calculateDistance(location1: GeoLocation, location2: GeoLocation): Double {
         return location1.toLatLng().distanceTo(location2.toLatLng())
+    }
+
+    fun checkNetworkConnection(): Boolean {
+        val networkConnection = runCatching {
+            networkConnectionUtil.checkNetworkOnline()
+        }.isSuccess
+        viewModelScope.launch {
+            _networkConnection.emit(networkConnection)
+        }
+        return networkConnection
     }
 
     companion object {

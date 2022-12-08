@@ -5,6 +5,7 @@
     <string name="start_item_promisePlace">장소</string>
     <string name="start_item_promiseTime">일시</string>
     <string name="start_item_notification_permission">알림 권한을 설정해주세요.</string>
+    <string name="start_item_empty">오늘은 약속이 없어요!</string>
 
     <!-- 약속 추가 화면 -->
     <string name="promiseSetting_promiseTitle">제목을 입력하세요</string>

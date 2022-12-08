@@ -3,6 +3,7 @@ package com.boosters.promise.ui.promisecalendar
 import android.icu.text.SimpleDateFormat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boosters.promise.data.network.NetworkConnectionUtil
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.user.UserRepository
@@ -17,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class PromiseCalendarViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val promiseRepository: PromiseRepository
+    private val promiseRepository: PromiseRepository,
+    private val networkConnectionUtil: NetworkConnectionUtil
 ) : ViewModel() {
 
     private val _myInfo: MutableStateFlow<UserUiState> = MutableStateFlow(UserUiState.Loading)
@@ -29,8 +31,11 @@ class PromiseCalendarViewModel @Inject constructor(
     val myPromiseList: StateFlow<PromiseListUiState> =
         _myPromiseList.stateIn(viewModelScope, SharingStarted.Eagerly, PromiseListUiState.Loading)
 
-    private val _dailyPromiseList = MutableStateFlow(emptyList<Promise>())
-    val dailyPromiseList: StateFlow<List<Promise>> get() = _dailyPromiseList.asStateFlow()
+    private val _dailyPromiseList: MutableStateFlow<List<Promise>?> = MutableStateFlow(null)
+    val dailyPromiseList: StateFlow<List<Promise>?> get() = _dailyPromiseList.asStateFlow()
+
+    private val _networkConnection = MutableSharedFlow<Boolean>()
+    val networkConnection: SharedFlow<Boolean> = _networkConnection.asSharedFlow()
 
     private val dateFormatter = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
 
@@ -51,6 +56,7 @@ class PromiseCalendarViewModel @Inject constructor(
     }
 
     private fun loadPromiseList() {
+        checkNetworkConnection()
         viewModelScope.launch {
             _myPromiseList.emit(PromiseListUiState.Loading)
             myInfo.collectLatest { myInfo ->
@@ -64,6 +70,7 @@ class PromiseCalendarViewModel @Inject constructor(
     }
 
     fun updateDailyPromiseList(date: String) {
+        checkNetworkConnection()
         viewModelScope.launch {
             _myPromiseList.collectLatest {
                 if (it is PromiseListUiState.Success) {
@@ -74,6 +81,15 @@ class PromiseCalendarViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun checkNetworkConnection() {
+        val networkConnection = runCatching {
+            networkConnectionUtil.checkNetworkOnline()
+        }.isSuccess
+        viewModelScope.launch {
+            _networkConnection.emit(networkConnection)
         }
     }
 

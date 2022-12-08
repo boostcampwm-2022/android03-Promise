@@ -106,13 +106,14 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         sendPromiseUploadInfoToReceiver()
 
         initMap()
-        setDestinationButtonClickListener()
-
         setSupportActionBar(binding.toolbarPromiseDetail)
         supportActionBar?.apply {
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true)
         }
+
+        setNetworkConnectionObserver()
+        promiseDetailViewModel.checkNetworkConnection()
     }
 
     override fun onStart() {
@@ -145,16 +146,20 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.item_detail_edit -> {
+                if (!promiseDetailViewModel.checkNetworkConnection()) return false
                 lifecycleScope.launch {
-                    val intent = Intent(this@PromiseDetailActivity, PromiseSettingActivity::class.java).putExtra(
+                    val intent = Intent(
+                        this@PromiseDetailActivity,
+                        PromiseSettingActivity::class.java
+                    ).putExtra(
                         PromiseSettingActivity.PROMISE_KEY,
                         promiseDetailViewModel.promise.first()
                     )
                     startActivity(intent)
-                    finish()
                 }
             }
             R.id.item_detail_delete -> {
+                if (!promiseDetailViewModel.checkNetworkConnection()) return false
                 showDeleteDialog()
             }
         }
@@ -172,7 +177,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     binding.promise = it
                 }
             }
-            binding.isAcceptLocationSharing = promiseDetailViewModel.isAcceptLocationSharing.first().getOrElse { false }
+            binding.isAcceptLocationSharing =
+                promiseDetailViewModel.isAcceptLocationSharing.first().getOrElse { false }
         }
 
         binding.onLocationSharingPermissionChangedListener = onLocationSharingPermissionChanged
@@ -205,11 +211,13 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
-        promiseMemberAdapter.setOnItemClickListener(object : PromiseMemberAdapter.OnItemClickListener {
+        promiseMemberAdapter.setOnItemClickListener(object :
+            PromiseMemberAdapter.OnItemClickListener {
             override fun onItemClick(memberUiModel: MemberUiModel) {
                 lifecycleScope.launch {
                     promiseDetailViewModel.userGeoLocations.first().let { userGeoLocation ->
-                        val selectedMemberLocation = userGeoLocation.find { it.userCode == memberUiModel.userCode }?.geoLocation
+                        val selectedMemberLocation =
+                            userGeoLocation.find { it.userCode == memberUiModel.userCode }?.geoLocation
 
                         if (selectedMemberLocation != null) {
                             mapManager.moveToLocation(selectedMemberLocation)
@@ -260,7 +268,9 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun overviewMemberLocation(destination: GeoLocation?) {
         lifecycleScope.launch {
             val myLocation = promiseDetailViewModel.currentGeoLocation.first()
-            val userGeoLocations = promiseDetailViewModel.userGeoLocations.first().map { it.geoLocation }.plusElement(myLocation)
+            val userGeoLocations =
+                promiseDetailViewModel.userGeoLocations.first().map { it.geoLocation }
+                    .plusElement(myLocation)
             mapManager.overviewMemberLocation(destination, userGeoLocations.filterNotNull())
         }
     }
@@ -344,7 +354,22 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun showRequireLocationPermissionSnackBar() {
-        Snackbar.make(binding.root, R.string.promiseDetail_require_location_permission, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(
+            binding.root,
+            R.string.promiseDetail_require_location_permission,
+            Snackbar.LENGTH_SHORT
+        ).show()
+    }
+
+    private fun setNetworkConnectionObserver() {
+        lifecycleScope.launch {
+            promiseDetailViewModel.networkConnection.collectLatest {
+                if (!it) {
+                    Snackbar.make(binding.root, R.string.signUp_networkError, Snackbar.LENGTH_SHORT)
+                        .show()
+                }
+            }
+        }
     }
 
     companion object {
