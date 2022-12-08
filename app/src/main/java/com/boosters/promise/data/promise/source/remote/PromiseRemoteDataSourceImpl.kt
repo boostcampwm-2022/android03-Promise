@@ -6,6 +6,7 @@ import com.google.firebase.firestore.ktx.snapshots
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import javax.inject.Inject
 
@@ -49,8 +50,8 @@ class PromiseRemoteDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getPromise(promiseId: String): Flow<PromiseBody> =
-        promiseRef.document(promiseId).snapshots().mapNotNull {
+    override fun getPromise(promiseId: String): Flow<PromiseBody?> =
+        promiseRef.document(promiseId).snapshots().map {
             it.toObject(PromiseBody::class.java)
         }
 

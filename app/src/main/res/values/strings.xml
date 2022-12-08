@@ -85,6 +85,7 @@
     <string name="promiseDetail_location_sharing_permission">위치 공유</string>
     <string name="promiseDetail_myLocation">내 위치</string>
     <string name="promiseDetail_require_location_permission">위치 권한이 필요합니다.</string>
+    <string name="promiseDetail_promise_load_exception">약속이 삭제되었습니다.</string>
 
     <!-- LocationService 알림 -->
     <string name="locationService_notification_title">위치 공유중입니다.</string>

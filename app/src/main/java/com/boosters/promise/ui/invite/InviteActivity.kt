@@ -69,12 +69,13 @@ class InviteActivity : AppCompatActivity() {
     }
 
     private fun setMemberItemClickListener() {
-        inviteMemberAdapter.setOnItemClickListener(object :
-            InviteMemberAdapter.OnItemClickListener {
-            override fun onItemClick(user: UserUiModel) {
-                inviteViewModel.removeMemberItems(user)
+        inviteMemberAdapter.setOnItemClickListener(
+            object : InviteMemberAdapter.OnItemClickListener {
+                override fun onItemClick(user: UserUiModel) {
+                    inviteViewModel.removeMemberItems(user)
+                }
             }
-        })
+        )
     }
 
     private fun setConfirmButtonClickListener() {

@@ -118,7 +118,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:text="@{@string/promiseDetail_date_format(promise.date, promise.time)}"
+            android:text='@{promise.date == null ? "" : @string/promiseDetail_date_format(promise.date, promise.time)}'
             app:layout_constraintBottom_toBottomOf="@+id/textView_promiseDetail_date"
             app:layout_constraintEnd_toStartOf="@id/switch_promiseDetail_locationSharing"
             app:layout_constraintStart_toEndOf="@+id/textView_promiseDetail_date"
