@@ -121,14 +121,15 @@ class PromiseCalendarActivity : AppCompatActivity() {
             }
         }
 
-        promiseDailyListAdapter.setOnItemClickListener(object :
-            PromiseDailyListAdapter.OnItemClickListener {
-            override fun onItemClick(promise: Promise) {
-                val intent = Intent(this@PromiseCalendarActivity, PromiseDetailActivity::class.java)
-                intent.putExtra(PROMISE_ID_KEY, promise.promiseId)
-                startActivity(intent)
+        promiseDailyListAdapter.setOnItemClickListener(
+            object : PromiseDailyListAdapter.OnItemClickListener {
+                override fun onItemClick(promise: Promise) {
+                    val intent = Intent(this@PromiseCalendarActivity, PromiseDetailActivity::class.java)
+                    intent.putExtra(PROMISE_ID_KEY, promise.promiseId)
+                    startActivity(intent)
+                }
             }
-        })
+        )
     }
 
     private fun bindCalendarView() {
