@@ -35,12 +35,23 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class PromiseCalendarActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPromiseCalendarBinding
-    private val promiseCalendarViewModel: PromiseCalendarViewModel by viewModels()
+
+    @Inject
+    lateinit var promiseCalendarModelFactory: PromiseCalendarViewModel.PromiseCalendarModelFactory
+    private val promiseCalendarViewModel: PromiseCalendarViewModel by viewModels {
+        PromiseCalendarViewModel.provideFactory(
+            promiseCalendarModelFactory,
+            with(CalendarDay.today()) {
+                getString(R.string.date_format).format(year, month + 1, day)
+            }
+        )
+    }
 
     private lateinit var loadingDialog: LoadingDialog
 
@@ -137,6 +148,7 @@ class PromiseCalendarActivity : AppCompatActivity() {
         val primaryColor = TypedValue().also {
             theme.resolveAttribute(colorPrimary, it, true)
         }.data
+        binding.materialCalendarViewPromiseCalendar.selectedDate = CalendarDay.today()
 
         val promiseDayList = arrayListOf<CalendarDay>()
 
@@ -188,17 +200,11 @@ class PromiseCalendarActivity : AppCompatActivity() {
             }
         }
 
-        with(CalendarDay.today()) {
-            val today = getString(R.string.date_format).format(year, month + 1, day)
-            promiseCalendarViewModel.updateDailyPromiseList(today)
-            binding.materialCalendarViewPromiseCalendar.selectedDate = this
-        }
-
         binding.materialCalendarViewPromiseCalendar.setOnDateChangedListener { _, date, _ ->
             val selectedDate = with(date) {
                 getString(R.string.date_format).format(year, month + 1, day)
             }
-            promiseCalendarViewModel.updateDailyPromiseList(selectedDate)
+            promiseCalendarViewModel.selectDate(selectedDate)
         }
 
         lifecycleScope.launch {
