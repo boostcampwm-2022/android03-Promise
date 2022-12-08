@@ -89,7 +89,7 @@ class PromiseSettingViewModel @Inject constructor(
         if (!checkNetworkConnection()) return
 
         viewModelScope.launch {
-            val members =promise.members.toMutableList()
+            val members = promise.members.toMutableList()
             members.add(myInfo.copy(userToken = ""))
             promiseRepository.addPromise(promise.copy(members = members)).collect { result ->
                 result.onSuccess { id ->

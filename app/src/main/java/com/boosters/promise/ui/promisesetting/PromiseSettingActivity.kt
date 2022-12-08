@@ -1,6 +1,5 @@
 package com.boosters.promise.ui.promisesetting
 
-import android.app.PendingIntent
 import android.content.Intent
 import android.os.Build.VERSION
 import android.os.Bundle
