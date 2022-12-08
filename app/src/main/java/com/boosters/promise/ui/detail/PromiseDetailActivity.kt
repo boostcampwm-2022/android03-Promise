@@ -2,7 +2,6 @@ package com.boosters.promise.ui.detail
 
 import android.Manifest.permission
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
@@ -20,7 +19,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.boosters.promise.R
 import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.databinding.ActivityPromiseDetailBinding
-import com.boosters.promise.receiver.LocationUploadReceiver
+import com.boosters.promise.service.locationupload.LocationUploadForegroundService
+import com.boosters.promise.service.locationupload.LocationUploadForegroundService.Companion.ACTION_LOCATION_UPLOAD_SERVICE_START
+import com.boosters.promise.service.locationupload.LocationUploadForegroundService.Companion.ACTION_LOCATION_UPLOAD_SERVICE_STOP
+import com.boosters.promise.service.locationupload.LocationUploadForegroundService.Companion.DELAY_UNTIL_END_TIME_KEY
+import com.boosters.promise.service.locationupload.LocationUploadForegroundService.Companion.ID_KEY
 import com.boosters.promise.ui.detail.adapter.PromiseMemberAdapter
 import com.boosters.promise.ui.detail.model.MemberUiModel
 import com.boosters.promise.ui.detail.model.PromiseUploadUiState
@@ -34,21 +37,8 @@ import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import android.Manifest.permission
-import android.content.pm.PackageManager
-import android.view.View
-import android.widget.CompoundButton.OnCheckedChangeListener
-import com.boosters.promise.data.location.GeoLocation
-import com.boosters.promise.ui.detail.util.MapManager
-import com.boosters.promise.service.locationupload.LocationUploadForegroundService
-import com.boosters.promise.service.locationupload.LocationUploadForegroundService.Companion.ACTION_LOCATION_UPLOAD_SERVICE_START
-import com.boosters.promise.service.locationupload.LocationUploadForegroundService.Companion.ACTION_LOCATION_UPLOAD_SERVICE_STOP
-import com.boosters.promise.service.locationupload.LocationUploadForegroundService.Companion.DELAY_UNTIL_END_TIME_KEY
-import com.boosters.promise.service.locationupload.LocationUploadForegroundService.Companion.ID_KEY
-import com.boosters.promise.ui.detail.model.MemberUiModel
-import com.boosters.promise.ui.detail.model.PromiseUploadUiState
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
