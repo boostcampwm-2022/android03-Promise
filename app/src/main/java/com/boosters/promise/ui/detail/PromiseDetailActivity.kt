@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton.OnCheckedChangeListener
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -89,6 +90,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_promise_detail)
 
+        setPromiseFailUiStateObserver()
         loadingDialog = LoadingDialog(this)
         loadingDialog.show()
 
@@ -119,6 +121,11 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onStop() {
         super.onStop()
         if (promiseDetailViewModel.isStartLocationUpdates.value) promiseDetailViewModel.stopLocationUpdates()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        loadingDialog.dismiss()
     }
 
     override fun onMapReady(map: NaverMap) {
@@ -357,6 +364,15 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     Snackbar.make(binding.root, R.string.signUp_networkError, Snackbar.LENGTH_SHORT)
                         .show()
                 }
+            }
+        }
+    }
+
+    private fun setPromiseFailUiStateObserver() {
+        lifecycleScope.launch {
+            promiseDetailViewModel.promiseFailUiState.collectLatest { promiseFailUiState ->
+                Toast.makeText(applicationContext, promiseFailUiState.messageResId, Toast.LENGTH_SHORT).show()
+                if (promiseFailUiState.isActivityFinish) finish()
             }
         }
     }

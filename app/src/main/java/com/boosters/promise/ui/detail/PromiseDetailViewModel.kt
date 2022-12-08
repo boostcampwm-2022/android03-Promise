@@ -1,6 +1,7 @@
 package com.boosters.promise.ui.detail
 
 import androidx.lifecycle.*
+import com.boosters.promise.R
 import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.data.location.LocationRepository
 import com.boosters.promise.data.location.UserGeoLocation
@@ -14,6 +15,7 @@ import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.user.UserRepository
 import com.boosters.promise.ui.detail.model.MemberMarkerInfo
 import com.boosters.promise.ui.detail.model.MemberUiModel
+import com.boosters.promise.ui.detail.model.PromiseFailUiState
 import com.boosters.promise.ui.detail.model.PromiseUploadUiState
 import com.boosters.promise.ui.notification.AlarmDirector
 import com.boosters.promise.ui.notification.NotificationService
@@ -36,8 +38,21 @@ class PromiseDetailViewModel @AssistedInject constructor(
     @Assisted promiseId: String
 ) : ViewModel() {
 
-    val promise: Flow<Promise> = promiseRepository.getPromise(promiseId)
-        .stateIn(viewModelScope, SharingStarted.Eagerly, null).filterNotNull()
+    private val _promise: StateFlow<Promise?> = promiseRepository.getPromise(promiseId)
+        .onEach { promise ->
+            myInfo.first().onSuccess { myInfo ->
+                if (promise == null || promise.members.none { it.userCode == myInfo.userCode }) {
+                    _promiseFailUiState.emit(PromiseFailUiState(R.string.promiseDetail_promise_load_exception, true))
+                    return@onEach
+                }
+            }
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val promise: Flow<Promise> = _promise.filterNotNull()
+
+    private val _promiseFailUiState = MutableSharedFlow<PromiseFailUiState>()
+    val promiseFailUiState: SharedFlow<PromiseFailUiState> = _promiseFailUiState
 
     private val _isDeleted = MutableLiveData<Boolean>()
     val isDeleted: LiveData<Boolean> = _isDeleted
