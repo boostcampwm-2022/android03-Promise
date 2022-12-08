@@ -6,6 +6,8 @@ import com.boosters.promise.data.friend.FriendRepository
 import com.boosters.promise.data.network.NetworkConnectionUtil
 import com.boosters.promise.data.user.User
 import com.boosters.promise.data.user.UserRepository
+import com.boosters.promise.ui.friend.FriendActivity.Companion.ALLUSER_TAB_INDEX
+import com.boosters.promise.ui.friend.FriendActivity.Companion.FRIEND_TAB_INDEX
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -24,6 +26,9 @@ class FriendViewModel @Inject constructor(
     private val _usersList = MutableStateFlow(emptyList<User>())
     val usersList: StateFlow<List<User>> get() = _usersList.asStateFlow()
 
+    private val _selectedTab = MutableStateFlow(FRIEND_TAB_INDEX)
+    val selectedTab get() = _selectedTab.asStateFlow()
+
     private val _networkConnection = MutableSharedFlow<Boolean>()
     val networkConnection: SharedFlow<Boolean> = _networkConnection.asSharedFlow()
 
@@ -38,6 +43,7 @@ class FriendViewModel @Inject constructor(
 
     fun loadFriendsList() {
         viewModelScope.launch {
+            _selectedTab.value = FRIEND_TAB_INDEX
             _usersList.value = friendRepository.getFriends()
         }
     }
@@ -54,7 +60,6 @@ class FriendViewModel @Inject constructor(
     fun searchFriend(query: String) {
         viewModelScope.launch {
             val allFriendList = _usersList.value
-
             _usersList.value = if (query.matches(USER_CODE_REGEX)) allFriendList.filter { user ->
                 user.userCode.contains(query.removePrefix("#"))
             } else allFriendList.filter { user ->
@@ -66,6 +71,7 @@ class FriendViewModel @Inject constructor(
     fun searchUser(query: String) {
         checkNetworkConnection()
         viewModelScope.launch {
+            _selectedTab.value = ALLUSER_TAB_INDEX
             val filterUserCodeList = friendRepository.getFriends().map {
                 it.userCode
             } + myInfo.userCode
