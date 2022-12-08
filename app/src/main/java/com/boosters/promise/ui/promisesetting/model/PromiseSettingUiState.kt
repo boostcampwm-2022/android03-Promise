@@ -4,6 +4,8 @@ import androidx.annotation.StringRes
 
 sealed class PromiseSettingUiState {
 
+    object Loading : PromiseSettingUiState()
+
     object Edit : PromiseSettingUiState()
 
     object Success : PromiseSettingUiState()

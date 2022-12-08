@@ -92,6 +92,7 @@ class PromiseSettingViewModel @Inject constructor(
             val members = promise.members.toMutableList()
             members.add(myInfo.copy(userToken = ""))
             if (promise.promiseId.isNotBlank()) {
+                changeUiState(PromiseSettingUiState.Loading)
                 promiseRepository.modifyPromise(promise.copy(members = members)).first()
                     .onSuccess { id ->
                         promiseId = id
@@ -102,6 +103,7 @@ class PromiseSettingViewModel @Inject constructor(
                     }
                 return@launch
             } else {
+                changeUiState(PromiseSettingUiState.Loading)
                 promiseRepository.addPromise(promise.copy(members = members)).collect { result ->
                     result.onSuccess { id ->
                         if (id.isEmpty()) {
