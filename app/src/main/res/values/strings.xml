@@ -98,6 +98,8 @@
     <string name="notification_request">약속시간이 다가옵니다!</string>
 
     <!-- LoadingDialog 안내문 -->
-    <string name="dialogLoading_information">화면을 불러오는 중입니다.\n잠시만 기다려주세요.</string>
+    <string name="dialogLoading_default_message">화면을 불러오는 중입니다.\n잠시만 기다려주세요.</string>
+    <string name="dialogLoading_promiseSetting_message">약속을 생성하고 있습니다.\n잠시만 기다려주세요.</string>
+    <string name="dialogLoading_signUp_message">사용자 등록 중입니다.\n잠시만 기다려주세요.</string>
 
 </resources>

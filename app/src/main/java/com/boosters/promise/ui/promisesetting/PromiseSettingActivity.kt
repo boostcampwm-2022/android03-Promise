@@ -63,7 +63,7 @@ class PromiseSettingActivity : AppCompatActivity() {
         binding.promiseSettingViewModel = promiseSettingViewModel
         setContentView(binding.root)
 
-        loadingDialog = LoadingDialog(this)
+        loadingDialog = LoadingDialog(this, getString(R.string.dialogLoading_promiseSetting_message))
 
         promiseMemberListAdapter =
             PromiseMemberListAdapter { promiseSettingViewModel.removeMember(it) }
@@ -88,10 +88,8 @@ class PromiseSettingActivity : AppCompatActivity() {
         lifecycleScope.launch {
             promiseSettingViewModel.promiseSettingUiState.collectLatest { promiseSettingUiState ->
                 when (promiseSettingUiState) {
-                    PromiseSettingUiState.Loading -> loadingDialog.show()
-                    PromiseSettingUiState.Edit -> {
-                        loadingDialog.dismiss()
-                        return@collectLatest
+                    PromiseSettingUiState.Loading -> {
+                        loadingDialog.show()
                     }
                     PromiseSettingUiState.Success -> {
                         val intent =

@@ -6,8 +6,6 @@ sealed class PromiseSettingUiState {
 
     object Loading : PromiseSettingUiState()
 
-    object Edit : PromiseSettingUiState()
-
     object Success : PromiseSettingUiState()
 
     data class Fail(@StringRes val message: Int) : PromiseSettingUiState()
