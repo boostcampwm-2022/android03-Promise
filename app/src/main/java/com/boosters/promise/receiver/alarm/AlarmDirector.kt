@@ -7,15 +7,32 @@ import android.content.Context.ALARM_SERVICE
 import android.content.Intent
 import android.os.SystemClock
 import com.boosters.promise.data.promise.Promise
+import com.boosters.promise.receiver.alarm.AlarmDirector.Companion.PROMISE_DATE
+import com.boosters.promise.receiver.alarm.AlarmDirector.Companion.PROMISE_ID
+import com.boosters.promise.receiver.alarm.AlarmDirector.Companion.PROMISE_TITLE
 import java.util.*
 
-class AlarmDirector(
+interface AlarmDirector {
+
+    fun registerAlarm(promise: Promise)
+
+    fun removeAlarm(promiseId: String)
+
+    companion object {
+        const val PROMISE_ID = "promiseId"
+        const val PROMISE_TITLE = "promiseTitle"
+        const val PROMISE_DATE = "promiseDate"
+    }
+
+}
+
+class AlarmDirectorImpl(
     private val context: Context
-) {
+) : AlarmDirector {
 
     private val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
 
-    fun registerAlarm(promise: Promise) {
+    override fun registerAlarm(promise: Promise) {
         val date = promise.date.split(DATE_SPLIT).map { it.toInt() }
         val time = promise.time.split(TIME_SPLIT).map { it.toInt() }
 
@@ -45,7 +62,7 @@ class AlarmDirector(
         )
     }
 
-    fun removeAlarm(promiseId: String) {
+    override fun removeAlarm(promiseId: String) {
         val intent = Intent(context, AlarmReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
@@ -71,9 +88,6 @@ class AlarmDirector(
         private const val ONE_HOUR_IN_MILLIS = 3_600_000
         private const val DATE_SPLIT = "/"
         private const val TIME_SPLIT = ":"
-        const val PROMISE_ID = "promiseId"
-        const val PROMISE_TITLE = "promiseTitle"
-        const val PROMISE_DATE = "promiseDate"
     }
 
 }

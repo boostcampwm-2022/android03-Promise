@@ -2,6 +2,7 @@ package com.boosters.promise.receiver.alarm.di
 
 import android.content.Context
 import com.boosters.promise.receiver.alarm.AlarmDirector
+import com.boosters.promise.receiver.alarm.AlarmDirectorImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,7 +19,7 @@ object AlarmModule {
     fun provideAlarmDirector(
         @ApplicationContext applicationContext: Context
     ): AlarmDirector {
-        return AlarmDirector(applicationContext)
+        return AlarmDirectorImpl(applicationContext)
     }
 
 }
