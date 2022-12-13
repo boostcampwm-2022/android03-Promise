@@ -29,15 +29,15 @@
 
 | Category             | Tech Stack                                                                              |
 |----------------------|-----------------------------------------------------------------------------------------|
-| Language             | Kotlin                                                                                  |
-| Architecture         | MVVM, DataBinding                                                                       |
-| Async Task           | Kotlin Coroutine, Flow                                                                  |
-| API                  | Fused Location Provider API, Firebase Cloud Messaging, Naver Maps API, Naver Search API |
-| Background Task      | AlarmManager                                                                            |
-| Database             | Cloud FireStore, Room, Preferences DataStore                                            |
-| External Library     | Material Calendar View                                                                  |
-| Dependency Injection | Hilt                                                                                    |
-| Network              | Retrofit2                                                                               |
+| Language             | <img src="https://img.shields.io/badge/Kotlin-FAF8F1? style=bold&logo=Kotlin&logoColor=#7F52FF"/>  |
+| Architecture         | <img src="https://img.shields.io/badge/MVVM-FAF8F1? style=flat"/>  <img src="https://img.shields.io/badge/DataBinding-FAF8F1? style=flat"/> |
+| Async Task           | <img src="https://img.shields.io/badge/Kotlin Coroutine-FAF8F1? style=flat&logo=Kotlin&logoColor=#7F52FF"/>  <img src="https://img.shields.io/badge/Kotlin Flows-FAF8F1? style=flat&logo=Kotlin&logoColor=#7F52FF"/>                                                                |
+| API                  | <img src="https://img.shields.io/badge/Fused Location Provider API-FAF8F1? style=flat&logo=Google-Maps&logoColor=#4285F4"/> <img src="https://img.shields.io/badge/Firebase Cloud Messaging-FAF8F1? style=flat&logo=Firebase&logoColor=#FFCA28"/> <img src="https://img.shields.io/badge/Naver Maps API-FAF8F1? style=flat&logo=Naver&logoColor=#03C75A"/> <img src="https://img.shields.io/badge/Naver Search API-FAF8F1? style=flat&logo=Naver&logoColor=#03C75A"/> |
+| Background Task      | <img src="https://img.shields.io/badge/AlarmManager-FAF8F1? style=flat&logo=Android&logoColor=#3DDC84"/>  |
+| Database             | <img src="https://img.shields.io/badge/Cloud FireStore-FAF8F1? style=flat&logo=Firebase&logoColor=#FFCA28"/> <img src="https://img.shields.io/badge/Room-FAF8F1? style=flat&logo=Android&logoColor=#3DDC84"/> <img src="https://img.shields.io/badge/Preferences DataStore-FAF8F1? style=for-the-badge&logo=Android&logoColor=#3DDC84"/> |
+| External Library     | <img src="https://img.shields.io/badge/Material Calendar View-FAF8F1? style=flat"/> |
+| Dependency Injection | <img src="https://img.shields.io/badge/Hilt-FAF8F1? style=flat&logo=Android&logoColor=#3DDC84"/> |
+| Network              | <img src="https://img.shields.io/badge/Retrofit2-FAF8F1? style=flat"/>                  |
 
 <br>
 
