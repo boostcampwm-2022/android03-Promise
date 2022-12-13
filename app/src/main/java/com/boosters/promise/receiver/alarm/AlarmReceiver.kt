@@ -1,4 +1,4 @@
-package com.boosters.promise.ui.notification
+package com.boosters.promise.receiver.alarm
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -10,6 +10,8 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
 import com.boosters.promise.R
+import com.boosters.promise.service.notification.BootService
+import com.boosters.promise.service.notification.NotificationService
 import com.boosters.promise.ui.detail.PromiseDetailActivity
 import com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity
 import dagger.hilt.android.AndroidEntryPoint

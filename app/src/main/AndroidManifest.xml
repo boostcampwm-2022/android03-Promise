@@ -83,7 +83,7 @@
         </activity>
 
         <service
-            android:name=".ui.notification.NotificationService"
+            android:name=".service.notification.NotificationService"
             android:directBootAware="true"
             android:exported="false">
             <intent-filter>
@@ -97,11 +97,11 @@
             android:foregroundServiceType="location" />
 
         <service
-            android:name=".ui.notification.BootService"
+            android:name=".service.notification.BootService"
             android:exported="false" />
 
         <receiver
-            android:name=".ui.notification.AlarmReceiver"
+            android:name=".receiver.alarm.AlarmReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

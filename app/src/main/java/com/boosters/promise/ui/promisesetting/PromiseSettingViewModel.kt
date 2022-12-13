@@ -12,8 +12,8 @@ import com.boosters.promise.data.user.User
 import com.boosters.promise.data.user.UserRepository
 import com.boosters.promise.ui.invite.model.UserUiModel
 import com.boosters.promise.ui.invite.model.toUser
-import com.boosters.promise.ui.notification.AlarmDirector
-import com.boosters.promise.ui.notification.NotificationService
+import com.boosters.promise.receiver.alarm.AlarmDirector
+import com.boosters.promise.service.notification.NotificationService
 import com.boosters.promise.ui.promisesetting.model.PromiseSettingEvent
 import com.boosters.promise.ui.promisesetting.model.PromiseSettingUiState
 import dagger.hilt.android.lifecycle.HiltViewModel

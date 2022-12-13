@@ -1,4 +1,4 @@
-package com.boosters.promise.ui.notification
+package com.boosters.promise.receiver.alarm
 
 import android.app.AlarmManager
 import android.app.PendingIntent
