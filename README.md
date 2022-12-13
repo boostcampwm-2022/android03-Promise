@@ -42,12 +42,13 @@
 <br>
 
 ## 💡 주요 기능
-
-| <img width="250" src="https://user-images.githubusercontent.com/61190129/205502540-0098798d-996e-4d80-a641-7490981f0e0d.png"> | <img width="250" src="https://user-images.githubusercontent.com/61190129/205502570-3b7f65c8-4712-4e54-ad31-86846a4f43a1.png"> | <img width="250" src="https://user-images.githubusercontent.com/61190129/205502604-0b6985be-4902-4b28-b91d-d624391ffb88.png"> | <img width="250" src="https://user-images.githubusercontent.com/61190129/205502677-a4568937-7257-47ec-b3bc-2562f2a9625a.png"> |
-|-------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
-| <div align="center">약속 리스트<div>                                                                                               | <div align="center">약속 생성<div>                                                                                                | <div align="center">약속 상세 정보<div>                                                                                             | <div align="center">약속 알림<div>                                                                                                |
-
-<br>
+![image](https://user-images.githubusercontent.com/68229193/207253076-33061ccc-a7ff-4d0b-b135-0c72b8476388.png)
+<br><br>
+![image](https://user-images.githubusercontent.com/68229193/207254273-3899b4ed-81a7-449f-abc4-885dbee6af51.png)
+<br><br>
+![image](https://user-images.githubusercontent.com/68229193/207254609-75a7e9d4-95fc-4509-9f82-d367209e9c30.png)
+<br><br>
+![image](https://user-images.githubusercontent.com/68229193/207255214-4ba93af3-2f0e-4706-b3b8-f7d905ce8b85.png)
 
 ## 📝 개발 일지
 
