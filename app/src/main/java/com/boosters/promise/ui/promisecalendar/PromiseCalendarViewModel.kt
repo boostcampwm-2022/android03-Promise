@@ -4,7 +4,7 @@ import android.icu.text.SimpleDateFormat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.boosters.promise.data.network.NetworkConnectionUtil
+import com.boosters.promise.util.NetworkConnectionUtil
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
 import com.boosters.promise.data.user.UserRepository

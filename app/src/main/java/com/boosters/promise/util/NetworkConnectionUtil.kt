@@ -1,4 +1,4 @@
-package com.boosters.promise.data.network
+package com.boosters.promise.util
 
 import android.content.Context
 import android.net.ConnectivityManager

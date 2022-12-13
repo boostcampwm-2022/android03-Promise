@@ -8,7 +8,7 @@ import com.boosters.promise.data.location.UserGeoLocation
 import com.boosters.promise.data.location.toLatLng
 import com.boosters.promise.data.member.Member
 import com.boosters.promise.data.member.MemberRepository
-import com.boosters.promise.data.network.NetworkConnectionUtil
+import com.boosters.promise.util.NetworkConnectionUtil
 import com.boosters.promise.data.notification.NotificationRepository
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
