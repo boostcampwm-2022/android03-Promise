@@ -53,3 +53,9 @@
 ## 📝 개발 일지
 
 - [Naver Maps API 사용기](https://github.com/boostcampwm-2022/android03-Promise/wiki/Naver-Maps-API-%EC%82%AC%EC%9A%A9%EA%B8%B0)
+- [AlarmManager](https://github.com/boostcampwm-2022/android03-Promise/wiki/AlarmManager)
+- [Firebase Cloud Messaging](https://github.com/boostcampwm-2022/android03-Promise/wiki/Firebase-Cloud-Messaging)
+- [MVVM](https://github.com/boostcampwm-2022/android03-Promise/wiki/MVVM)
+- [Location API 선택하기](https://github.com/boostcampwm-2022/android03-Promise/wiki/Location-API-%EC%84%A0%ED%83%9D%ED%95%98%EA%B8%B0)
+- [Activity와 Service 상호작용하기](https://github.com/boostcampwm-2022/android03-Promise/wiki/Activity%EC%99%80-Service-%EC%83%81%ED%98%B8%EC%9E%91%EC%9A%A9%ED%95%98%EA%B8%B0)
+- [상세화면 ViewModel 리펙토링](https://github.com/boostcampwm-2022/android03-Promise/wiki/%EC%83%81%EC%84%B8%ED%99%94%EB%A9%B4-ViewModel-%EB%A6%AC%ED%8E%99%ED%86%A0%EB%A7%81)
