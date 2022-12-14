@@ -50,7 +50,7 @@
 - [Location API 선택하기](https://github.com/boostcampwm-2022/android03-Promise/wiki/Location-API-%EC%84%A0%ED%83%9D%ED%95%98%EA%B8%B0)
 - [Activity와 Service 상호작용하기](https://github.com/boostcampwm-2022/android03-Promise/wiki/Activity%EC%99%80-Service-%EC%83%81%ED%98%B8%EC%9E%91%EC%9A%A9%ED%95%98%EA%B8%B0)
 - [상세화면 ViewModel 리펙토링](https://github.com/boostcampwm-2022/android03-Promise/wiki/%EC%83%81%EC%84%B8%ED%99%94%EB%A9%B4-ViewModel-%EB%A6%AC%ED%8E%99%ED%86%A0%EB%A7%81)
-- [RecyclerView가 왜 업데이트되지 않을까?](https://github.com/boostcampwm-2022/android03-Promise/wiki/RecyclerView%EB%8A%94-%EC%96%B4%EB%96%BB%EA%B2%8C-%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8%EB%90%A0%EA%B9%8C%3F)
+- [RecyclerView가 왜 업데이트되지 않을까?](https://github.com/boostcampwm-2022/android03-Promise/wiki/RecyclerView%EA%B0%80-%EC%99%9C-%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8%EB%90%98%EC%A7%80-%EC%95%8A%EC%9D%84%EA%B9%8C%3F)
 
 <br>
 
