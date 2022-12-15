@@ -39,6 +39,14 @@
 | Dependency Injection | <img src="https://img.shields.io/badge/Hilt-FAF8F1? style=flat&logo=Android&logoColor=#3DDC84"/> |
 | Network              | <img src="https://img.shields.io/badge/Retrofit2-FAF8F1? style=flat"/>                  |
 
+### ❓ 선정한 이유
+- [MVVM](https://github.com/boostcampwm-2022/android03-Promise/wiki/%EA%B8%B0%EC%88%A0%EC%8A%A4%ED%83%9D#MVVM-패턴)
+- [Naver Maps API](https://github.com/boostcampwm-2022/android03-Promise/wiki/%EA%B8%B0%EC%88%A0%EC%8A%A4%ED%83%9D#Naver-Maps-API)
+- [Cloud FireStore](https://github.com/boostcampwm-2022/android03-Promise/wiki/%EA%B8%B0%EC%88%A0%EC%8A%A4%ED%83%9D#Cloud-FireStore)
+- [Hilt](https://github.com/boostcampwm-2022/android03-Promise/wiki/%EA%B8%B0%EC%88%A0%EC%8A%A4%ED%83%9D#Hilt)
+- [Room](https://github.com/boostcampwm-2022/android03-Promise/wiki/%EA%B8%B0%EC%88%A0%EC%8A%A4%ED%83%9D#Room)
+- [AlarmManager](https://github.com/boostcampwm-2022/android03-Promise/wiki/%EA%B8%B0%EC%88%A0%EC%8A%A4%ED%83%9D#AlarmManager)
+- [Preferences DataStore](https://github.com/boostcampwm-2022/android03-Promise/wiki/%EA%B8%B0%EC%88%A0%EC%8A%A4%ED%83%9D#Preferences-DataStore)
 <br>
 
 ## 📝 개발 일지
@@ -46,12 +54,15 @@
 - [Naver Maps API 사용기](https://github.com/boostcampwm-2022/android03-Promise/wiki/Naver-Maps-API-%EC%82%AC%EC%9A%A9%EA%B8%B0)
 - [AlarmManager](https://github.com/boostcampwm-2022/android03-Promise/wiki/AlarmManager)
 - [Firebase Cloud Messaging](https://github.com/boostcampwm-2022/android03-Promise/wiki/Firebase-Cloud-Messaging)
-- [MVVM](https://github.com/boostcampwm-2022/android03-Promise/wiki/MVVM)
 - [Location API 선택하기](https://github.com/boostcampwm-2022/android03-Promise/wiki/Location-API-%EC%84%A0%ED%83%9D%ED%95%98%EA%B8%B0)
 - [Activity와 Service 상호작용하기](https://github.com/boostcampwm-2022/android03-Promise/wiki/Activity%EC%99%80-Service-%EC%83%81%ED%98%B8%EC%9E%91%EC%9A%A9%ED%95%98%EA%B8%B0)
 - [상세화면 ViewModel 리펙토링](https://github.com/boostcampwm-2022/android03-Promise/wiki/%EC%83%81%EC%84%B8%ED%99%94%EB%A9%B4-ViewModel-%EB%A6%AC%ED%8E%99%ED%86%A0%EB%A7%81)
+- [Flow는 처음이지?](https://github.com/boostcampwm-2022/android03-Promise/wiki/Flow-%EC%A0%81%EC%9A%A9%EA%B8%B0)
+- [Dialog 커스텀 해보기](https://github.com/boostcampwm-2022/android03-Promise/wiki/Dialog-%EC%BB%A4%EC%8A%A4%ED%85%80-%ED%95%B4%EB%B3%B4%EA%B8%B0)
+- [Unit Test를 해보자](https://github.com/boostcampwm-2022/android03-Promise/wiki/Unit-Test%EB%A5%BC-%ED%95%B4%EB%B3%B4%EC%9E%90)
 - [RecyclerView가 왜 업데이트되지 않을까?](https://github.com/boostcampwm-2022/android03-Promise/wiki/RecyclerView%EA%B0%80-%EC%99%9C-%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8%EB%90%98%EC%A7%80-%EC%95%8A%EC%9D%84%EA%B9%8C%3F)
 
+### 더 자세한 내용이 궁금하시다면 Wiki를 참고해주세요! [[Wiki 바로가기](https://github.com/boostcampwm-2022/android03-Promise/wiki)]
 <br>
 
 ## 💡 주요 기능
