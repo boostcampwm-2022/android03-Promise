@@ -82,10 +82,6 @@ class PromiseDetailViewModelTest {
             time = "21:47",
             members = usersIncludeMe
         )
-    }
-
-    @Test
-    fun getPromise_CorrectMyPromise() = runTest {
         `when`(promiseRepository.getPromise(myPromise.promiseId)).thenReturn(
             flow {
                 emit(myPromise)
@@ -96,37 +92,10 @@ class PromiseDetailViewModelTest {
                 emit(Result.success(myInfo))
             }
         )
-
-        val promise = promiseDetailViewModel.promise.first()
-
-        assertEquals(myPromise, promise)
     }
 
     @Test
-    fun getPromise_IncorrectMyPromise() = runTest {
-        val usersExcludeMe =
-            listOf(User("other1", "otherName1", null, "otherToken1"))
-        val incorrectPromise = Promise(
-            promiseId = "other1",
-            title = "제목",
-            destinationName = "도착지",
-            destinationGeoLocation = GeoLocation(),
-            date = "2022/12/10",
-            time = "21:47",
-            members = usersExcludeMe
-        )
-        `when`(promiseRepository.getPromise(incorrectPromise.promiseId)).thenReturn(
-            flow {
-                emit(incorrectPromise)
-                emit(myPromise)
-            }
-        )
-        `when`(userRepository.getMyInfo()).thenReturn(
-            flow {
-                emit(Result.success(myInfo))
-            }
-        )
-
+    fun getPromise_CorrectMyPromise() = runTest {
         val promise = promiseDetailViewModel.promise.first()
 
         assertEquals(myPromise, promise)
@@ -143,16 +112,6 @@ class PromiseDetailViewModelTest {
                 null
             )
         }
-        `when`(promiseRepository.getPromise(myPromise.promiseId)).thenReturn(
-            flow {
-                emit(myPromise)
-            }
-        )
-        `when`(userRepository.getMyInfo()).thenReturn(
-            flow {
-                emit(Result.success(myInfo))
-            }
-        )
         `when`(memberRepository.getMembers(myPromise.promiseId)).thenReturn(
             flow {
                 emit(
@@ -181,16 +140,6 @@ class PromiseDetailViewModelTest {
         val fakeMembers = myPromise.members.map { user ->
             Member(myPromise.promiseId, user.userCode, false)
         }
-        `when`(promiseRepository.getPromise(myPromise.promiseId)).thenReturn(
-            flow {
-                emit(myPromise)
-            }
-        )
-        `when`(userRepository.getMyInfo()).thenReturn(
-            flow {
-                emit(Result.success(myInfo))
-            }
-        )
         `when`(memberRepository.getMembers(myPromise.promiseId)).thenReturn(
             flow {
                 emit(
