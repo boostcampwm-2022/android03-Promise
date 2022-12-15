@@ -1,21 +1,20 @@
-package com.boosters.promise.ui.notification
+package com.boosters.promise.receiver.alarm
 
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Context.ALARM_SERVICE
 import android.content.Intent
 import android.os.SystemClock
 import com.boosters.promise.data.promise.Promise
 import java.util.*
 
-class AlarmDirector(
+class AlarmDirectorImpl(
     private val context: Context
-) {
+) : AlarmDirector {
 
-    private val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
+    private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    fun registerAlarm(promise: Promise) {
+    override fun registerAlarm(promise: Promise) {
         val date = promise.date.split(DATE_SPLIT).map { it.toInt() }
         val time = promise.time.split(TIME_SPLIT).map { it.toInt() }
 
@@ -35,9 +34,9 @@ class AlarmDirector(
 
     private fun getPendingIntent(promise: Promise, requestCode: Int): PendingIntent {
         val intent = Intent(context, AlarmReceiver::class.java)
-            .putExtra(PROMISE_ID, promise.promiseId)
-            .putExtra(PROMISE_TITLE, promise.title)
-            .putExtra(PROMISE_DATE, promise.date)
+            .putExtra(AlarmDirector.PROMISE_ID, promise.promiseId)
+            .putExtra(AlarmDirector.PROMISE_TITLE, promise.title)
+            .putExtra(AlarmDirector.PROMISE_DATE, promise.date)
 
         return PendingIntent.getBroadcast(
             context, requestCode, intent,
@@ -45,7 +44,7 @@ class AlarmDirector(
         )
     }
 
-    fun removeAlarm(promiseId: String) {
+    override fun removeAlarm(promiseId: String) {
         val intent = Intent(context, AlarmReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
@@ -71,9 +70,6 @@ class AlarmDirector(
         private const val ONE_HOUR_IN_MILLIS = 3_600_000
         private const val DATE_SPLIT = "/"
         private const val TIME_SPLIT = ":"
-        const val PROMISE_ID = "promiseId"
-        const val PROMISE_TITLE = "promiseTitle"
-        const val PROMISE_DATE = "promiseDate"
     }
 
 }

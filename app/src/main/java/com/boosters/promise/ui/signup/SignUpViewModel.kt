@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.R
-import com.boosters.promise.data.network.NetworkNotOnlineException
+import com.boosters.promise.util.NetworkNotOnlineException
 import com.boosters.promise.data.user.UserRepository
 import com.boosters.promise.ui.signup.model.NameInputUiState
 import com.boosters.promise.ui.signup.model.SignUpUiState

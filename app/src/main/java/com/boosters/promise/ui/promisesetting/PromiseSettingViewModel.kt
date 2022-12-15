@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.R
 import com.boosters.promise.data.location.GeoLocation
-import com.boosters.promise.data.network.NetworkConnectionUtil
+import com.boosters.promise.util.NetworkConnectionUtil
 import com.boosters.promise.data.notification.NotificationRepository
 import com.boosters.promise.data.promise.Promise
 import com.boosters.promise.data.promise.PromiseRepository
@@ -12,8 +12,8 @@ import com.boosters.promise.data.user.User
 import com.boosters.promise.data.user.UserRepository
 import com.boosters.promise.ui.invite.model.UserUiModel
 import com.boosters.promise.ui.invite.model.toUser
-import com.boosters.promise.ui.notification.AlarmDirector
-import com.boosters.promise.ui.notification.NotificationService
+import com.boosters.promise.receiver.alarm.AlarmDirector
+import com.boosters.promise.service.notification.NotificationService
 import com.boosters.promise.ui.promisesetting.model.PromiseSettingEvent
 import com.boosters.promise.ui.promisesetting.model.PromiseSettingUiState
 import dagger.hilt.android.lifecycle.HiltViewModel

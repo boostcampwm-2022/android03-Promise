@@ -1,4 +1,4 @@
-package com.boosters.promise.ui.notification
+package com.boosters.promise.service.notification
 
 import android.app.*
 import android.content.Context
@@ -7,6 +7,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
 import com.boosters.promise.R
 import com.boosters.promise.data.promise.Promise
+import com.boosters.promise.receiver.alarm.AlarmDirector
 import com.boosters.promise.ui.detail.PromiseDetailActivity
 import com.boosters.promise.ui.promisecalendar.PromiseCalendarActivity
 import com.google.firebase.messaging.FirebaseMessagingService

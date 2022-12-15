@@ -3,7 +3,7 @@ package com.boosters.promise.ui.friend
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boosters.promise.data.friend.FriendRepository
-import com.boosters.promise.data.network.NetworkConnectionUtil
+import com.boosters.promise.util.NetworkConnectionUtil
 import com.boosters.promise.data.user.User
 import com.boosters.promise.data.user.UserRepository
 import com.boosters.promise.ui.friend.FriendActivity.Companion.ALLUSER_TAB_INDEX

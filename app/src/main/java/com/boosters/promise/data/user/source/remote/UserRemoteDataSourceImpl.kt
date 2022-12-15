@@ -1,6 +1,6 @@
 package com.boosters.promise.data.user.source.remote
 
-import com.boosters.promise.data.network.NetworkConnectionUtil
+import com.boosters.promise.util.NetworkConnectionUtil
 import com.boosters.promise.data.user.di.UserModule
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ktx.snapshots

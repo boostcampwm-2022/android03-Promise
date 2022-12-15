@@ -2,7 +2,7 @@ package com.boosters.promise.data.location.source.remote
 
 import com.boosters.promise.data.location.GeoLocation
 import com.boosters.promise.data.location.di.LocationModule.LocationCollectionReference
-import com.boosters.promise.data.network.NetworkConnectionUtil
+import com.boosters.promise.util.NetworkConnectionUtil
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ktx.snapshots
 import kotlinx.coroutines.flow.Flow
