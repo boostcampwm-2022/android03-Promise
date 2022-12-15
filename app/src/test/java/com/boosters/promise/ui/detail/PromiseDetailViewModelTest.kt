@@ -24,9 +24,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.anyList
+import org.mockito.Mockito.*
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.argumentCaptor
 
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
@@ -71,7 +71,6 @@ class PromiseDetailViewModelTest {
         usersIncludeMe = listOf(
             User("ABCDE1", "user1", null, "userToken1"),
             User("ABCDE2", "user2", null, "userToken2"),
-
         )
         myPromiseId = "1"
         myPromise = Promise(
@@ -161,14 +160,19 @@ class PromiseDetailViewModelTest {
                 )
             }
         )
+
         `when`(locationRepository.getGeoLocations(anyList())).thenReturn(
             flow {
                 emit(expectedUserGeoLocations)
             }
         )
 
+        val userCodesArgumentCaptor = argumentCaptor<List<String>>()
+
         val userGeoLocations = promiseDetailViewModel.userGeoLocations.first()
 
+        verify(locationRepository).getGeoLocations(userCodesArgumentCaptor.capture())
+        assertEquals(userCodesArgumentCaptor.firstValue, listOf("ABCDE2"))
         assertEquals(expectedUserGeoLocations, userGeoLocations)
     }
 
